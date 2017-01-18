@@ -105,7 +105,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm .|. shiftMask, xK_p     ), spawn "gmrun")
  
     -- close focused window
-    , ((modm .|. shiftMask, xK_r     ), spawn "xmonad --recompile; xmonad --restart")
+    , ((modm .|. shiftMask, xK_r     ), spawn "killall xmobar; xmonad --recompile; xmonad --restart")
  
      -- Rotate through the available layout algorithms
     , ((modm,               xK_p     ), sendMessage NextLayout)
@@ -157,6 +157,9 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- See also the statusBar function from Hooks.DynamicLog.
     --
     -- , ((modm              , xK_b     ), sendMessage ToggleStruts)
+    -- Volume control
+    , ((0                 , xK_F12   ) , spawn "amixer -q set Master 3%+")
+    , ((0                 , xK_F11   ) , spawn "amixer -q set Master 3%-")
  
     -- Quit xmonad
     , ((modm .|. shiftMask, xK_q     ), io (exitWith ExitSuccess))
@@ -309,11 +312,11 @@ myEventHook = mempty
 --
 myStartupHook =
       spawn "source ~/.fehbg"
-          <+> spawnOnce "compton -fcC"
+          <+> spawnOnce "compton --backend glx --vsync -fcC"
           <+> setDefaultCursor xC_left_ptr
           <+> spawnOnce "sleep 1;xcape -e 'Control_L=Escape'"
           <+> spawnOnce "goldendict"
-          -- <+> spawn "fcitx"
+          <+> spawn "fcitx"
           -- <+> spawn "xbindkeys"
  
 ------------------------------------------------------------------------
