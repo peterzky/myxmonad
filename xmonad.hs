@@ -17,6 +17,7 @@
 import System.IO 
 import XMonad
 import Data.Monoid
+import Data.List
 import System.Exit
 import XMonad.Hooks.DynamicLog
 import XMonad.Layout.Spacing
@@ -248,14 +249,19 @@ myLayout =
 -- To match on the WM_NAME, you can use 'title' in the same way that
 -- 'className' and 'resource' are used below.
 --
-myManageHook = composeAll
-    [ className =? "mpv"        --> doFloat
+
+myManageHook = composeAll . concat $
+   [[ className =? "mpv"        --> doFloat
     , className =? "Lxappearance" --> doFloat
+    , title =? "Library" --> doFloat
+    , title =? "Add Downloads" --> doFloat
     , className =? "Nautilus" --> doFloat
     , className =? "Pavucontrol" --> doFloat
     , className =? "Gimp"           --> doFloat
     , resource  =? "desktop_window" --> doIgnore
     , resource  =? "kdesktop"       --> doIgnore ]
+   , [ fmap ( c `isInfixOf`) title     --> doFloat | c <- ["DownThemAll!"]]
+   ]
  
 ------------------------------------------------------------------------
 -- Event handling
@@ -332,7 +338,7 @@ main = do
                           , ppTitle = xmobarColor xmobarTitleColor "" . shorten 100
                           , ppCurrent = xmobarColor xmobarCurrentWorkspaceColor ""
                           , ppSep = "   "
-                          }  
+                          } 
           , manageHook = manageDocks <+> myManageHook
           }
     
