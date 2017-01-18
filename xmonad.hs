@@ -312,7 +312,7 @@ myEventHook = mempty
 --
 myStartupHook =
       spawn "source ~/.fehbg"
-          <+> spawnOnce "compton --backend glx --vsync -fcC"
+          <+> spawnOnce "compton -fcC"
           <+> setDefaultCursor xC_left_ptr
           <+> spawnOnce "sleep 1;xcape -e 'Control_L=Escape'"
           <+> spawnOnce "goldendict"
@@ -321,7 +321,7 @@ myStartupHook =
  
 ------------------------------------------------------------------------
   -- Xmobar config
-xmobarTitleColor = "#FFB6B0"
+xmobarTitleColor = "#3399ff"
 xmobarCurrentWorkspaceColor = "#CEFFAC"
 myNormalBorderColor  = "#7c7c7c"
 myFocusedBorderColor = "#ffb6b0"

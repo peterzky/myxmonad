@@ -7,5 +7,5 @@ case $STATE in
 2*)
   echo "CN";;
 *)
-  echo "ER";;
+  echo "NA";;
 esac
