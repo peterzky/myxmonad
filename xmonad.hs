@@ -80,7 +80,7 @@ myModMask       = mod4Mask
 --
 -- > workspaces = ["web", "irc", "code" ] ++ map show [4..9]
 --
-myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
+myWorkspaces    = withScreens 3 ["1","2","3","4","5","6","7","8","9"]
  
 -- Border colors for unfocused and focused windows, respectively.
 --
@@ -250,9 +250,9 @@ myLayout =
 --
 myManageHook = composeAll
     [ className =? "mpv"        --> doFloat
-    , className =? "lxappearance" --> doFloat
+    , className =? "Lxappearance" --> doFloat
     , className =? "Nautilus" --> doFloat
-    , className =? "pavucontrol" --> doFloat
+    , className =? "Pavucontrol" --> doFloat
     , className =? "Gimp"           --> doFloat
     , resource  =? "desktop_window" --> doIgnore
     , resource  =? "kdesktop"       --> doIgnore ]
@@ -332,7 +332,7 @@ main = do
                           , ppTitle = xmobarColor xmobarTitleColor "" . shorten 100
                           , ppCurrent = xmobarColor xmobarCurrentWorkspaceColor ""
                           , ppSep = "   "
-                          }   
+                          }  
           , manageHook = manageDocks <+> myManageHook
           }
     
