@@ -11,10 +11,10 @@ Config {
    -- layout
    , sepChar =  "%"   -- delineator between plugin names and straight text
    , alignSep = "}{"  -- separator between left-right alignment
-   , template = "%StdinReader% } { %multicpu% | %coretemp% | %memory% | %dynnetwork% | %date% | %default:Master% %kbd% "
+   , template = "%StdinReader% } { %multicpu% | %coretemp% | %memory% | %dynnetwork% | %date% | %default:Master%| <fc=#8B0000>%iem%</fc> "
 
    -- general behavior
-   , lowerOnStart =     True    -- send to bottom of window stack on start
+   , lowerOnStart =     False    -- send to bottom of window stack on start
    , hideOnStart =      False   -- start with window unmapped (hidden)
    , allDesktops =      True    -- show on all desktops
    , overrideRedirect = True    -- set the Override Redirect flag (Xlib)
@@ -39,6 +39,7 @@ Config {
 
         -- weather monitor
         [ Run StdinReader
+        , Run Com "/home/peterzky/.xmonad/fcitx.sh" [] "iem" 10
         , Run Volume "default" "Master" [] 10
 
         -- network activity monitor (dynamic interface resolution)
