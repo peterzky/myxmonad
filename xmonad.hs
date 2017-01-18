@@ -26,6 +26,7 @@ import XMonad.Util.Cursor
 import XMonad.Util.Run(spawnPipe)
 import XMonad.Actions.UpdatePointer 
 import XMonad.Layout.IndependentScreens
+import XMonad.Hooks.EwmhDesktops
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
  
@@ -332,7 +333,7 @@ myFocusedBorderColor = "#ffb6b0"
 main = do
   xmproc <- spawnPipe "xmobar ~/.xmonad/xmobar.hs"
 
-  xmonad $ defaults {
+  xmonad $ ewmh defaults {
           logHook = dynamicLogWithPP $ xmobarPP {
                           ppOutput = hPutStrLn xmproc
                           , ppTitle = xmobarColor xmobarTitleColor "" . shorten 100
@@ -367,6 +368,6 @@ defaults = defaultConfig {
  
       -- hooks, layouts
         layoutHook         = avoidStruts $  smartSpacing 2 $ myLayout,
-        handleEventHook    = myEventHook,
+        handleEventHook    = myEventHook <+> fullscreenEventHook,
         startupHook        = myStartupHook
     }
