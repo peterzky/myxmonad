@@ -20,6 +20,7 @@ import Data.Monoid
 import Data.List
 import System.Exit
 import XMonad.Hooks.DynamicLog
+import XMonad.Util.SpawnOnce
 import XMonad.Layout.Spacing
 import XMonad.Hooks.ManageDocks
 import XMonad.Util.Cursor
@@ -254,6 +255,7 @@ myLayout =
 myManageHook = composeAll . concat $
    [[ className =? "mpv"        --> doFloat
     , className =? "Lxappearance" --> doFloat
+    , className =? "GoldenDict" --> doFloat
     , title =? "Library" --> doFloat
     , title =? "Add Downloads" --> doFloat
     , className =? "Nautilus" --> doFloat
@@ -290,10 +292,6 @@ myEventHook = mempty
 -- It will add EWMH logHook actions to your custom log hook by
 -- combining it with ewmhDesktopsLogHook.
 --
--- myLogHook = dynamicLogWithPP xmobarPP
---             { ppOutput = hPutStrLn xmproc
---             , ppTitle  = xmobarColor "green" "" .shorten 50
---             }
  
 ------------------------------------------------------------------------
 -- Startup hook
@@ -311,9 +309,10 @@ myEventHook = mempty
 --
 myStartupHook =
       spawn "source ~/.fehbg"
-          <+> spawn "compton -fcC"
+          <+> spawnOnce "compton -fcC"
           <+> setDefaultCursor xC_left_ptr
-          <+> spawn "sleep 1;xcape -e 'Control_L=Escape'"
+          <+> spawnOnce "sleep 1;xcape -e 'Control_L=Escape'"
+          <+> spawnOnce "goldendict"
           -- <+> spawn "fcitx"
           -- <+> spawn "xbindkeys"
  
@@ -323,6 +322,12 @@ xmobarTitleColor = "#FFB6B0"
 xmobarCurrentWorkspaceColor = "#CEFFAC"
 myNormalBorderColor  = "#7c7c7c"
 myFocusedBorderColor = "#ffb6b0"
+
+myLogHook h = dynamicLogWithPP $ xmobarPP
+            {
+              ppOutput = hPutStrLn h
+            , ppTitle = xmobarColor xmobarTitleColor "" . shorten 50
+            } 
 
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
@@ -334,12 +339,8 @@ main = do
   xmproc <- spawnPipe "xmobar ~/.xmonad/xmobar.hs"
 
   xmonad $ ewmh defaults {
-          logHook = dynamicLogWithPP $ xmobarPP {
-                          ppOutput = hPutStrLn xmproc
-                          , ppTitle = xmobarColor xmobarTitleColor "" . shorten 100
-                          , ppCurrent = xmobarColor xmobarCurrentWorkspaceColor ""
-                          , ppSep = "   "
-                          } 
+            logHook = myLogHook xmproc
+                      >> updatePointer (0.9,0.9) (0.9,0.9)
           , manageHook = manageDocks <+> myManageHook
           }
     
@@ -367,7 +368,7 @@ defaults = defaultConfig {
         mouseBindings      = myMouseBindings,
  
       -- hooks, layouts
-        layoutHook         = avoidStruts $  smartSpacing 2 $ myLayout,
+        layoutHook         = avoidStruts $ smartSpacing 2 $ myLayout,
         handleEventHook    = myEventHook <+> fullscreenEventHook,
         startupHook        = myStartupHook
     }
