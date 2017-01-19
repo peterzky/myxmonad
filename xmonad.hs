@@ -268,7 +268,7 @@ myManageHook = composeAll . concat $
     , resource  =? "desktop_window" --> doIgnore
     , resource  =? "kdesktop"       --> doIgnore
     , isFullscreen --> doFullFloat]
-   , [ fmap ( c `isInfixOf`) title     --> doFloat | c <- ["DownThemAll!"]]
+   , [ fmap ( c `isInfixOf`) title     --> doFloat | c <- ["DownThemAll!","AutoProxy"]]
    ]
  
 ------------------------------------------------------------------------
