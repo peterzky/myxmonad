@@ -159,8 +159,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     --
     -- , ((modm              , xK_b     ), sendMessage ToggleStruts)
     -- Volume control
-    , ((0                 , xK_F12   ) , spawn "amixer -q set Master 3%+")
-    , ((0                 , xK_F11   ) , spawn "amixer -q set Master 3%-")
+    , ((0                 , xK_F12   ) , spawn "pactl set-sink-volume 1 +5%")
+    , ((0                 , xK_F11   ) , spawn "pactl set-sink-volume 1 -5%")
  
     -- Quit xmonad
     , ((modm .|. shiftMask, xK_q     ), io (exitWith ExitSuccess))
