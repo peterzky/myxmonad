@@ -180,6 +180,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- Volume control
     , ((0                 , xK_F12   ) , spawn "pactl set-sink-volume 1 +5%")
     , ((0                 , xK_F11   ) , spawn "pactl set-sink-volume 1 -5%")
+
+    -- Screenshots
+    , ((0                 , xK_Print ) , spawn "scrot -u ~/Sync/Screenshots/Screenshot%Y-%m-%d%H:%M:%S.png")
+    , ((modm              , xK_Print ) , spawn "scrot -s ~/Sync/Screenshots/Screenshot%Y-%m-%d%H:%M:%S.png")
  
     -- Quit xmonad
     , ((modm .|. shiftMask, xK_q     ), io (exitWith ExitSuccess))
