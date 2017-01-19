@@ -28,6 +28,7 @@ import XMonad.Util.Run(spawnPipe)
 import XMonad.Actions.UpdatePointer 
 import XMonad.Layout.IndependentScreens
 import XMonad.Hooks.EwmhDesktops
+import XMonad.Hooks.ManageHelpers
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
  
@@ -265,7 +266,8 @@ myManageHook = composeAll . concat $
     , className =? "Pavucontrol" --> doFloat
     , className =? "Gimp"           --> doFloat
     , resource  =? "desktop_window" --> doIgnore
-    , resource  =? "kdesktop"       --> doIgnore ]
+    , resource  =? "kdesktop"       --> doIgnore
+    , isFullscreen --> doFullFloat]
    , [ fmap ( c `isInfixOf`) title     --> doFloat | c <- ["DownThemAll!"]]
    ]
  
@@ -344,7 +346,7 @@ main = do
   xmonad $ ewmh defaults {
             logHook = myLogHook xmproc
                       >> updatePointer (0.9,0.9) (0.9,0.9)
-          , manageHook = manageDocks <+> myManageHook
+          , manageHook = manageDocks <+> myManageHook 
           }
     
  
@@ -372,6 +374,6 @@ defaults = defaultConfig {
  
       -- hooks, layouts
         layoutHook         = avoidStruts $ smartSpacing 2 $ myLayout,
-        handleEventHook    = myEventHook <+> fullscreenEventHook,
+        handleEventHook    = myEventHook <+> fullscreenEventHook <+> docksEventHook,
         startupHook        = myStartupHook
     }
