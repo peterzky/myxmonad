@@ -29,9 +29,28 @@ import XMonad.Actions.UpdatePointer
 import XMonad.Layout.IndependentScreens
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageHelpers
+
+import XMonad.Prompt
+import XMonad.Prompt.XMonad
+import XMonad.Prompt.Shell
+
+  
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
- 
+
+
+
+systemPromptCmds = [
+        ("Shutdown", spawn "sudo systemctl poweroff"),
+        ("Reboot", spawn "sudo systemctl reboot"),
+        ("Exit", io $ exitWith ExitSuccess),
+        ("Hibernate", spawn "sudo systemctl hibernate"),
+        ("Restart", restart "xmonad" True)
+    ]
+                   
+
+
+
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
 --
@@ -167,6 +186,11 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
  
     -- Restart xmonad
     , ((modm              , xK_q     ), kill)
+
+
+
+    , ((0                 , xK_Pause  ),
+                    xmonadPromptC systemPromptCmds defaultXPConfig)
     -- Copy and Paste
     -- , ((modm              , xK_v     ), pasteSelection)
     ]
