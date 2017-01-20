@@ -106,7 +106,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((0                 , xK_Pause  ), xmonadPromptC systemPromptCmds defaultXPConfig)
     , ((modm              , xK_f      ), namedScratchpadAction myScratchPads "fileManager")
     , ((modm              , xK_e      ), namedScratchpadAction myScratchPads "music")
-    , ((modm              , xK_r      ), namedScratchpadAction myScratchPads "htop")
+    , ((modm .|. shiftMask, xK_h      ), namedScratchpadAction myScratchPads "htop")
     -- , ((modm              , xK_z      ), namedScratchpadAction myScratchPads "dict")
 
     -- Volume control
