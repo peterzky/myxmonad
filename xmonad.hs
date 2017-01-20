@@ -47,10 +47,13 @@ myScratchPads = [ NS "fileManager" "nautilus"
                   defaultFloating
                 , NS "music" "xfce4-terminal -T musicbox -x musicbox"
                   (title =? "musicbox") 
-                  (customFloating $ W.RationalRect (1/6) (1/6) (2/3) (2/3))
+                  (customFloating $ W.RationalRect (1/4) (1/4) (1/2) (1/2))
                 , NS "htop" "xfce4-terminal -T htop -x htop"
                   (title =? "htop")
                   (customFloating $ W.RationalRect (1/6) (1/6) (2/3) (2/3))
+                , NS "nm" "xfce4-terminal -T nmtui -x nmtui"
+                  (title =? "nmtui")
+                  (customFloating $ W.RationalRect (1/3) (1/3) (1/3) (1/3))
                 ]
   -- where
   --   spawnFM = "nautilus"
@@ -107,6 +110,9 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm              , xK_f      ), namedScratchpadAction myScratchPads "fileManager")
     , ((modm              , xK_e      ), namedScratchpadAction myScratchPads "music")
     , ((modm .|. shiftMask, xK_h      ), namedScratchpadAction myScratchPads "htop")
+    , ((modm .|. shiftMask, xK_n      ), namedScratchpadAction myScratchPads "nm")
+    , ((modm .|. shiftMask, xK_f      ), spawn "firefox")
+
     -- , ((modm              , xK_z      ), namedScratchpadAction myScratchPads "dict")
 
     -- Volume control
