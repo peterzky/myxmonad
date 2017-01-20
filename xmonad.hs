@@ -15,6 +15,7 @@ import XMonad.Hooks.ManageHelpers       -- provide isDialog
 import XMonad.Util.Cursor               -- setdefaultcursor
 import XMonad.Util.Run(spawnPipe)       -- spawnPipe
 import XMonad.Util.SpawnOnce            -- startup hook
+import XMonad.Util.NamedScratchpad           -- scratchpad
 
 import XMonad.Actions.UpdatePointer     -- cursor follow focus
 
@@ -41,6 +42,18 @@ systemPromptCmds = [
         ("Restart"   , restart "xmonad" True)
     ]
                    
+myScratchPads = [ NS "fileManager" "nautilus" (className =? "Nautilus") defaultFloating
+                , NS "music" "xfce4-terminal -T musicbox -x musicbox"
+                                     (title =? "musicbox") defaultFloating
+                ]
+  -- where
+  --   spawnFM = "nautilus"
+  --   findFM  = className =? "Nautilus"
+  --   manageFM = customFloating $ W.RationalRect (1/6) (1/6) (2/3) (2/3)
+
+  --   spawnMU = "xfce4-terminal -T musicbox -x musicbox"
+  --   findMU = title =? "musicbox"
+  --   manageMU = customFloating $ W.RationalRect (1/6) (1/6) (2/3) (2/3)
 
 
 
@@ -82,10 +95,11 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm              , xK_period), sendMessage (IncMasterN (-1)))
 
     -- Applications
-    , ((modm,               xK_f     ), spawn "nautilus")
     , ((modm .|. shiftMask, xK_p     ), spawn "gmrun")
     , ((modm .|. shiftMask, xK_r     ), spawn "killall xmobar; xmonad --recompile; xmonad --restart")
     , ((0                 , xK_Pause  ), xmonadPromptC systemPromptCmds defaultXPConfig)
+    , ((modm              , xK_f      ), namedScratchpadAction myScratchPads "fileManager")
+    , ((modm              , xK_e      ), namedScratchpadAction myScratchPads "music")
 
     -- Volume control
     , ((0                 , xK_F12   ) , spawn "pactl set-sink-volume 1 +5%")
@@ -160,7 +174,7 @@ myManageHook = composeAll . concat $
 
   where
     myCFloats  = ["mpv","Lxappearance","GoldenDict","Nautilus","Pavucontrol"]
-    myTFloats  = ["Add Downloads","Library"]
+    myTFloats  = ["Add Downloads","Library","musicbox"]
     myRFloats  = ["desktop_window"]
     myPCFloats = ["DownThemAll!","AutoProxy"]
  
