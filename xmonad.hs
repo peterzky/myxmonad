@@ -42,9 +42,15 @@ systemPromptCmds = [
         ("Restart"   , restart "xmonad" True)
     ]
                    
-myScratchPads = [ NS "fileManager" "nautilus" (className =? "Nautilus") defaultFloating
+myScratchPads = [ NS "fileManager" "nautilus"
+                  (className =? "Nautilus")
+                  defaultFloating
                 , NS "music" "xfce4-terminal -T musicbox -x musicbox"
-                                     (title =? "musicbox") defaultFloating
+                  (title =? "musicbox") 
+                  (customFloating $ W.RationalRect (1/6) (1/6) (2/3) (2/3))
+                , NS "htop" "xfce4-terminal -T htop -x htop"
+                  (title =? "htop")
+                  (customFloating $ W.RationalRect (1/6) (1/6) (2/3) (2/3))
                 ]
   -- where
   --   spawnFM = "nautilus"
@@ -100,6 +106,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((0                 , xK_Pause  ), xmonadPromptC systemPromptCmds defaultXPConfig)
     , ((modm              , xK_f      ), namedScratchpadAction myScratchPads "fileManager")
     , ((modm              , xK_e      ), namedScratchpadAction myScratchPads "music")
+    , ((modm              , xK_r      ), namedScratchpadAction myScratchPads "htop")
+    -- , ((modm              , xK_z      ), namedScratchpadAction myScratchPads "dict")
 
     -- Volume control
     , ((0                 , xK_F12   ) , spawn "pactl set-sink-volume 1 +5%")
@@ -170,11 +178,12 @@ myManageHook = composeAll . concat $
    , [title     =? t               --> doFloat | t  <- myTFloats  ]
    , [resource  =? r               --> doFloat | r  <- myRFloats  ]
    , [fmap ( pc `isInfixOf`) title --> doFloat | pc <- myPCFloats ]
+   , [namedScratchpadManageHook myScratchPads                     ]
    ]
 
   where
-    myCFloats  = ["mpv","Lxappearance","GoldenDict","Nautilus","Pavucontrol"]
-    myTFloats  = ["Add Downloads","Library","musicbox"]
+    myCFloats  = ["mpv","Lxappearance","GoldenDict","Pavucontrol"]
+    myTFloats  = ["Add Downloads","Library"]
     myRFloats  = ["desktop_window"]
     myPCFloats = ["DownThemAll!","AutoProxy"]
  
