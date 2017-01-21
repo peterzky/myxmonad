@@ -21,8 +21,7 @@ import XMonad.Actions.UpdatePointer     -- cursor follow focus
 
 import XMonad.Layout.IndependentScreens -- multi-head setup provide withScreens
 import XMonad.Layout.Spacing            -- provide Smartspacing 
-import XMonad.Layout.Renamed            -- custom layout names
-
+import XMonad.Layout.Renamed            -- custom layout
 
 import XMonad.Prompt                    -- provide system menu evoke with pluse key
 import XMonad.Prompt.XMonad
@@ -40,7 +39,7 @@ systemPromptCmds = [
         ("Exit"      , io $ exitWith ExitSuccess),
         ("Hibernate" , spawn "sudo systemctl hibernate"),
         ("Restart"   , restart "xmonad" True)
-    ]
+                   ]
                    
 myScratchPads = [ NS "fileManager" "nautilus"
                   (className =? "Nautilus")
@@ -66,7 +65,7 @@ myScratchPads = [ NS "fileManager" "nautilus"
 
 
 
-myTerminal          = "urxvt"
+myTerminal          = "urxvtc"
 myFocusFollowsMouse = True
 myBorderWidth       = 0
 myModMask           = mod4Mask
@@ -222,6 +221,7 @@ myStartupHook =
           <+> spawnOnce "sleep 1;xcape -e 'Control_L=Escape'"
           <+> spawnOnce "goldendict"
           <+> spawn "fcitx"
+          <+> spawn "urxvtd"
           -- <+> spawn "xbindkeys"
  
 ------------------------------------------------------------------------
