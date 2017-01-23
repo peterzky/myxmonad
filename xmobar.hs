@@ -1,7 +1,7 @@
 Config { 
 
    -- appearance
-     font =         "-*-Fixed-Bold-R-Normal-*-13-*-*-*-*-*-*-*"
+     font =         "xft:Bitstream Vera Sans Mono:size=9,xft:WenQuanYi Micro Hei:size=10"
    , bgColor =      "black"
    , fgColor =      "#646464"
    , position =     Top
