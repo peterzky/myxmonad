@@ -1,8 +1,8 @@
 Config { 
 
    -- appearance
-     font =         "xft:Bitstream Vera Sans Mono:size=9"
-   , additionalFonts = ["xft:WenQuanYi Micro Hei:size=10"]
+     font =         "xft:Bitstream Vera Sans Mono:size=9,WenQuanYi Micro Hei:size=10"
+   , additionalFonts = []
    , alpha = 160 
    , textOffset = -1
    , iconOffset = -1
