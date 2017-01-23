@@ -23,6 +23,7 @@ import XMonad.Actions.UpdatePointer     -- cursor follow focus
 import XMonad.Layout.IndependentScreens -- multi-head setup provide withScreens
 import XMonad.Layout.Spacing            -- provide Smartspacing 
 import XMonad.Layout.Renamed            -- custom layout
+-- import XMonad.Layout.Fullscreen         -- fix fullscreen issue
 
 import XMonad.Prompt                    -- provide system menu evoke with pluse key
 import XMonad.Prompt.XMonad
@@ -106,7 +107,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- Applications
     , ((modm .|. shiftMask, xK_p     ), spawn "gmrun")
     , ((modm .|. shiftMask, xK_r     ), spawn "killall xmobar; xmonad --recompile; xmonad --restart")
-    , ((0                 , xK_Pause  ), xmonadPromptC systemPromptCmds defaultXPConfig)
+    , ((0                 , xK_Pause  ), xmonadPromptC systemPromptCmds def)
     , ((modm              , xK_f      ), namedScratchpadAction myScratchPads "fileManager")
     , ((modm              , xK_e      ), namedScratchpadAction myScratchPads "music")
     , ((modm .|. shiftMask, xK_h      ), namedScratchpadAction myScratchPads "htop")
@@ -179,7 +180,8 @@ myLayout = myTiled ||| myMirror ||| Full
 -- Window rules:
 
 myManageHook = composeAll . concat $
-   [ [isFullscreen                 --> doFullFloat                ]
+   [ [manageDocks                                                 ]
+   , [isFullscreen                 --> doFullFloat                ]
    , [isDialog                     --> doFloat                    ]
    , [className =? c               --> doFloat | c  <- myCFloats  ]
    , [title     =? t               --> doFloat | t  <- myTFloats  ]
@@ -197,7 +199,6 @@ myManageHook = composeAll . concat $
 ------------------------------------------------------------------------
 -- Event handling
 
-myEventHook = mempty
  
 ------------------------------------------------------------------------
 -- Status bars and logging
@@ -236,14 +237,7 @@ myStartupHook =
 main = do
   xmproc <- spawnPipe "xmobar ~/.xmonad/xmobar.hs"
 
-  xmonad $ ewmh defaults {
-            logHook = myLogHook xmproc
-                      >> updatePointer (0.9,0.9) (0.9,0.9)
-          }
-    
- 
---
-defaults = defaultConfig {
+  xmonad $ ewmh def {
       -- simple stuff
           terminal           = myTerminal
         , focusFollowsMouse  = myFocusFollowsMouse
@@ -259,7 +253,12 @@ defaults = defaultConfig {
  
       -- hooks, layouts
         , layoutHook         = avoidStruts $  myLayout
-        , handleEventHook    = myEventHook <+> docksEventHook <+> fullscreenEventHook
+        , handleEventHook    = mempty <+> docksEventHook <+> fullscreenEventHook
         , startupHook        = myStartupHook
-        , manageHook         = myManageHook <+> manageDocks
-    }
+        , manageHook         = myManageHook 
+        , logHook            = myLogHook xmproc
+                             >> updatePointer (0.9,0.9) (0.9,0.9)
+          }
+    
+ 
+--
