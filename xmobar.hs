@@ -10,8 +10,8 @@ Config {
    , bgColor =      "black"
    , fgColor =      "#646464"
    , position =     Top
-   , border =       BottomB
-   , borderColor =  "#646464"
+   -- , border =       BottomB
+   -- , borderColor =  "#646464"
 
    -- layout
    , sepChar =  "%"   -- delineator between plugin names and straight text
