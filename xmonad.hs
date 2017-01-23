@@ -16,6 +16,7 @@ import XMonad.Util.Cursor               -- setdefaultcursor
 import XMonad.Util.Run(spawnPipe)       -- spawnPipe
 import XMonad.Util.SpawnOnce            -- startup hook
 import XMonad.Util.NamedScratchpad           -- scratchpad
+import XMonad.Util.WorkspaceCompare     -- provide sortByxineramaRule
 
 import XMonad.Actions.UpdatePointer     -- cursor follow focus
 
@@ -210,6 +211,8 @@ myLogHook h = dynamicLogWithPP $ xmobarPP
             {
               ppOutput = hPutStrLn h
             , ppTitle = xmobarColor xmobarTitleColor "" . shorten 50
+            , ppSort = getSortByXineramaRule
+            , ppLayout = xmobarColor "red" ""
             } 
  
 ------------------------------------------------------------------------
@@ -256,7 +259,7 @@ defaults = defaultConfig {
  
       -- hooks, layouts
         , layoutHook         = avoidStruts $  myLayout
-        , handleEventHook    = myEventHook <+> fullscreenEventHook <+> docksEventHook
+        , handleEventHook    = myEventHook <+> docksEventHook <+> fullscreenEventHook
         , startupHook        = myStartupHook
-        , manageHook         = manageDocks <+> myManageHook 
+        , manageHook         = myManageHook <+> manageDocks
     }

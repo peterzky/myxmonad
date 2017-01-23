@@ -2,13 +2,13 @@ Config {
 
    -- appearance
      font =         "xft:Bitstream Vera Sans Mono:size=9,WenQuanYi Micro Hei:size=10"
-   , additionalFonts = []
+   , additionalFonts = ["xft:FontAwesome:size=10"]
    , alpha = 160 
    , textOffset = -1
    , iconOffset = -1
    , iconRoot = "."
    , bgColor =      "black"
-   , fgColor =      "#646464"
+   , fgColor =      "#ABABAB"
    , position =     Top
    -- , border =       BottomB
    -- , borderColor =  "#646464"
@@ -16,7 +16,7 @@ Config {
    -- layout
    , sepChar =  "%"   -- delineator between plugin names and straight text
    , alignSep = "}{"  -- separator between left-right alignment
-   , template = "%StdinReader% } { %multicpu% | %coretemp% | %memory% | %dynnetwork% | %date% | %default:Master%| <fc=#8B0000>%iem%</fc> "
+   , template = "%StdinReader% } { %multicpu% | %coretemp% | %memory% | %dynnetwork% | %date% | %default:Master% | <fc=#8B0000>%iem%</fc> "
 
    -- general behavior
    , lowerOnStart =     False    -- send to bottom of window stack on start
@@ -45,7 +45,14 @@ Config {
         -- weather monitor
         [ Run StdinReader
         , Run Com "/home/peterzky/.xmonad/fcitx.sh" [] "iem" 10
-        , Run Volume "default" "Master" [] 10
+        , Run Volume "default" "Master" [
+                "-t", "<status> <volume>%",
+            "--",
+            "-o", "<fn=1>\xf026</fn>",
+            "-O", "<fn=1>\xf028</fn>",
+            "-c", "#2f343f",
+            "-C", "#2f343f"
+                                        ] 10
 
         -- network activity monitor (dynamic interface resolution)
         , Run DynNetwork     [ "--template" , "<dev>: <tx>kB/s|<rx>kB/s"
