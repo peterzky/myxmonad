@@ -50,8 +50,8 @@ Config {
             "--",
             "-o", "<fn=1>\xf026</fn>",
             "-O", "<fn=1>\xf028</fn>",
-            "-c", "#2f343f",
-            "-C", "#2f343f"
+            "-c", "#ababab",
+            "-C", "#ababab"
                                         ] 10
 
         -- network activity monitor (dynamic interface resolution)
