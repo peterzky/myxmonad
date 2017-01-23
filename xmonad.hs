@@ -111,6 +111,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm .|. shiftMask, xK_h      ), namedScratchpadAction myScratchPads "htop")
     , ((modm .|. shiftMask, xK_n      ), namedScratchpadAction myScratchPads "nm")
     , ((modm .|. shiftMask, xK_f      ), spawn "firefox")
+    , ((modm              , xK_w      ), spawn "emacsclient -nc")
 
     -- , ((modm              , xK_z      ), namedScratchpadAction myScratchPads "dict")
 
@@ -220,9 +221,11 @@ myStartupHook =
           <+> setDefaultCursor xC_left_ptr
           <+> spawnOnce "sleep 1;xcape -e 'Control_L=Escape'"
           <+> spawnOnce "goldendict"
-          <+> spawn "fcitx"
-          <+> spawn "urxvtd"
-          -- <+> spawn "xbindkeys"
+          <+> spawnOnce "fcitx"
+          <+> spawnOnce "urxvtd"
+          <+> spawnOnce "sogou-qimpanel"
+          <+> spawnOnce "emacs --daemon"
+          <+> spawnOnce "dunst"
  
 ------------------------------------------------------------------------
 
