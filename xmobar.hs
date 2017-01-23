@@ -1,7 +1,12 @@
 Config { 
 
    -- appearance
-     font =         "xft:Bitstream Vera Sans Mono:size=9,xft:WenQuanYi Micro Hei:size=10"
+     font =         "xft:Bitstream Vera Sans Mono:size=9"
+   , additionalFonts = ["xft:WenQuanYi Micro Hei:size=10"]
+   , alpha = 160 
+   , textOffset = -1
+   , iconOffset = -1
+   , iconRoot = "."
    , bgColor =      "black"
    , fgColor =      "#646464"
    , position =     Top
