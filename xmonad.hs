@@ -180,21 +180,23 @@ myLayout = myTiled ||| myMirror ||| Full
 -- Window rules:
 
 myManageHook = composeAll . concat $
-   [ [manageDocks                                                 ]
-   , [isFullscreen                 --> doFullFloat                ]
-   , [isDialog                     --> doFloat                    ]
-   , [className =? c               --> doFloat | c  <- myCFloats  ]
-   , [title     =? t               --> doFloat | t  <- myTFloats  ]
-   , [resource  =? r               --> doFloat | r  <- myRFloats  ]
-   , [fmap ( pc `isInfixOf`) title --> doFloat | pc <- myPCFloats ]
-   , [namedScratchpadManageHook myScratchPads                     ]
+   [ [manageDocks                                                         ]
+   , [isFullscreen                     --> doFullFloat                    ]
+   , [isDialog                         --> doFloat                        ]
+   , [className =? c                   --> doFloat | c  <- myCFloats      ]
+   , [title     =? t                   --> doFloat | t  <- myTFloats      ]
+   , [resource  =? r                   --> doFloat | r  <- myRFloats      ]
+   , [fmap ( pt `isInfixOf`) title     --> doFloat | pt <- myPTFloats     ]
+   , [fmap ( pc `isInfixOf`) className --> doFloat | pc <- myPCFloats     ]
+   , [namedScratchpadManageHook myScratchPads                             ]
    ]
 
   where
     myCFloats  = ["mpv","Lxappearance","GoldenDict","Pavucontrol"]
     myTFloats  = ["Add Downloads","Library"]
     myRFloats  = ["desktop_window"]
-    myPCFloats = ["DownThemAll!","AutoProxy"]
+    myPTFloats = ["DownThemAll!","AutoProxy","Install user style"]
+    myPCFloats = []
  
 ------------------------------------------------------------------------
 -- Event handling
