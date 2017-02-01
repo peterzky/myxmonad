@@ -19,6 +19,7 @@ import XMonad.Util.NamedScratchpad           -- scratchpad
 import XMonad.Util.WorkspaceCompare     -- provide sortByxineramaRule
 
 import XMonad.Actions.UpdatePointer     -- cursor follow focus
+import XMonad.Actions.WindowGo          -- raise window by className
 
 import XMonad.Layout.IndependentScreens -- multi-head setup provide withScreens
 import XMonad.Layout.Spacing            -- provide Smartspacing 
@@ -114,12 +115,15 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm .|. shiftMask, xK_n      ), namedScratchpadAction myScratchPads "nm")
     , ((modm .|. shiftMask, xK_f      ), spawn "firefox")
     , ((modm              , xK_w      ), spawn "emacsclient -nc")
+    , ((modm .|. shiftMask, xK_u      ), raise (className =? "Nextcloud"))
 
     -- , ((modm              , xK_z      ), namedScratchpadAction myScratchPads "dict")
 
     -- Volume control
     , ((0                 , xK_F12   ) , spawn "pactl set-sink-volume 2 +5%")
     , ((0                 , xK_F11   ) , spawn "pactl set-sink-volume 2 -5%")
+    , ((modm              , xK_F12   ) , spawn "pactl set-sink-volume 3 +5%")
+    , ((modm              , xK_F11   ) , spawn "pactl set-sink-volume 3 -5%")
 
     -- Screenshots
     , ((0                 , xK_Print ) , spawn "scrot -u ~/Sync/Screenshots/Screenshot%Y-%m-%d%H:%M:%S.png")
@@ -192,7 +196,7 @@ myManageHook = composeAll . concat $
    ]
 
   where
-    myCFloats  = ["mpv","Lxappearance","GoldenDict","Pavucontrol"]
+    myCFloats  = ["mpv","Lxappearance","GoldenDict","Pavucontrol","File-roller"]
     myTFloats  = ["Add Downloads","Library"]
     myRFloats  = ["desktop_window"]
     myPTFloats = ["DownThemAll!","AutoProxy","Install user style"]
@@ -231,6 +235,7 @@ myStartupHook =
           <+> spawnOnce "urxvtd"
           <+> spawnOnce "sogou-qimpanel"
           <+> spawnOnce "emacs --daemon"
+          <+> spawnOnce "nextcloud"
           <+> spawnOnce "dunst"
  
 ------------------------------------------------------------------------
