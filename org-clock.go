@@ -47,10 +47,10 @@ func colorize(color string,target string) string{
 
 
 func main() {
-	time, title := parser()
 	if clockP() {
+		time, title := parser()
 		t := colorize("darkgreen",time)
-		l := colorize("#3399FF",title)
+		l := colorize("#D3B53D",title)
 		fmt.Printf("[%s] %s",t,l)
 	}else{
 		fmt.Println("")
