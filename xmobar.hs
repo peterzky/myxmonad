@@ -73,7 +73,7 @@ Config {
                              , "--low"      , "darkgreen"
                              , "--normal"   , "darkorange"
                              , "--high"     , "darkred"
-                             , "--width"    , "2"
+                             , "--width"    , "3"
                              ] 10
 
         -- cpu core temperature monitor

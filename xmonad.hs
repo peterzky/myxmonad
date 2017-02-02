@@ -56,6 +56,9 @@ myScratchPads = [ NS "fileManager" "nautilus"
                 , NS "nm" "xfce4-terminal -T nmtui -x nmtui"
                   (title =? "nmtui")
                   (customFloating $ W.RationalRect (1/3) (1/3) (1/3) (1/3))
+                , NS "term" "xfce4-terminal -T term"
+                  (title =? "term")
+                  (customFloating $ W.RationalRect (1/6) (1/6) (2/3) (2/3))
                 ]
   -- where
   --   spawnFM = "nautilus"
@@ -113,6 +116,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm              , xK_e      ), namedScratchpadAction myScratchPads "music")
     , ((modm .|. shiftMask, xK_h      ), namedScratchpadAction myScratchPads "htop")
     , ((modm .|. shiftMask, xK_n      ), namedScratchpadAction myScratchPads "nm")
+    , ((modm              , xK_F1     ), namedScratchpadAction myScratchPads "term")
     , ((modm .|. shiftMask, xK_f      ), spawn "firefox")
     , ((modm              , xK_w      ), spawn "emacsclient -nc")
     , ((modm .|. shiftMask, xK_u      ), raise (className =? "Nextcloud"))
