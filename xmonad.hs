@@ -47,6 +47,9 @@ systemPromptCmds = [
 myScratchPads = [ NS "fileManager" "nautilus"
                   (className =? "Nautilus")
                   defaultFloating
+                , NS "cloud" "nextcloud"
+                  (className =? "Nextcloud")
+                  defaultFloating
                 , NS "music" "xfce4-terminal -T musicbox -x musicbox"
                   (title =? "musicbox") 
                   (customFloating $ W.RationalRect (1/4) (1/4) (1/2) (1/2))
@@ -114,12 +117,13 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((0                 , xK_Pause  ), xmonadPromptC systemPromptCmds def)
     , ((modm              , xK_f      ), namedScratchpadAction myScratchPads "fileManager")
     , ((modm              , xK_e      ), namedScratchpadAction myScratchPads "music")
+    , ((modm .|. shiftMask, xK_u      ), namedScratchpadAction myScratchPads "cloud")
     , ((modm .|. shiftMask, xK_h      ), namedScratchpadAction myScratchPads "htop")
     , ((modm .|. shiftMask, xK_n      ), namedScratchpadAction myScratchPads "nm")
     , ((modm              , xK_F1     ), namedScratchpadAction myScratchPads "term")
     , ((modm .|. shiftMask, xK_f      ), spawn "firefox")
     , ((modm              , xK_w      ), spawn "emacsclient -nc")
-    , ((modm .|. shiftMask, xK_u      ), raise (className =? "Nextcloud"))
+    -- , ((modm .|. shiftMask, xK_u      ), raise (className =? "Nextcloud"))
 
     -- , ((modm              , xK_z      ), namedScratchpadAction myScratchPads "dict")
 
@@ -234,13 +238,13 @@ myStartupHook =
           <+> spawnOnce "compton -fcC"
           <+> setDefaultCursor xC_left_ptr
           <+> spawnOnce "sleep 1;xcape -e 'Control_L=Escape'"
-          <+> spawnOnce "goldendict"
           <+> spawnOnce "fcitx"
           <+> spawnOnce "urxvtd"
           <+> spawnOnce "sogou-qimpanel"
           <+> spawnOnce "emacs --daemon"
-          <+> spawnOnce "nextcloud"
+          <+> spawnOnce "goldendict"
           <+> spawnOnce "dunst"
+          <+> namedScratchpadAction myScratchPads "cloud"
  
 ------------------------------------------------------------------------
 
