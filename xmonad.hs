@@ -128,14 +128,20 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- , ((modm              , xK_z      ), namedScratchpadAction myScratchPads "dict")
 
     -- Volume control
-    , ((0                 , xK_F12   ) , spawn "pactl set-sink-volume 2 +5%")
-    , ((0                 , xK_F11   ) , spawn "pactl set-sink-volume 2 -5%")
-    , ((modm              , xK_F12   ) , spawn "pactl set-sink-volume 3 +5%")
-    , ((modm              , xK_F11   ) , spawn "pactl set-sink-volume 3 -5%")
+    , ((0                 , xK_F12   )
+      , spawn "pactl set-sink-volume alsa_output.pci-0000_00_1b.0.analog-stereo +2%")
+    , ((0                 , xK_F11   )
+      , spawn "pactl set-sink-volume alsa_output.pci-0000_00_1b.0.analog-stereo -2%")
+    , ((modm              , xK_F12   )
+      , spawn "pactl set-sink-volume alsa_output.usb-Creative_Technology_Ltd_SB_X-Fi_Surround_5.1_Pro_000003XO-00.analog-stereo +2%")
+    , ((modm              , xK_F11   )
+      , spawn "pactl set-sink-volume alsa_output.usb-Creative_Technology_Ltd_SB_X-Fi_Surround_5.1_Pro_000003XO-00.analog-stereo -2%")
 
     -- Screenshots
-    , ((0                 , xK_Print ) , spawn "scrot -u ~/Sync/Screenshots/Screenshot%Y-%m-%d%H:%M:%S.png")
-    , ((modm              , xK_Print ) , spawn "scrot -s ~/Sync/Screenshots/Screenshot%Y-%m-%d%H:%M:%S.png")
+    , ((0                 , xK_Print )
+      , spawn "scrot -u ~/Sync/Screenshots/Screenshot%Y-%m-%d%H:%M:%S.png")
+    , ((modm              , xK_Print )
+      , spawn "scrot -s ~/Sync/Screenshots/Screenshot%Y-%m-%d%H:%M:%S.png")
  
 
     ]
