@@ -129,13 +129,13 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     -- Volume control
     , ((0                 , xK_F12   )
-      , spawn "pactl set-sink-volume alsa_output.pci-0000_00_1b.0.analog-stereo +2%")
+      , spawn "pactl set-sink-volume alsa_output.pci-0000_00_1b.0.analog-stereo +3%")
     , ((0                 , xK_F11   )
-      , spawn "pactl set-sink-volume alsa_output.pci-0000_00_1b.0.analog-stereo -2%")
+      , spawn "pactl set-sink-volume alsa_output.pci-0000_00_1b.0.analog-stereo -3%")
     , ((modm              , xK_F12   )
-      , spawn "pactl set-sink-volume alsa_output.usb-Creative_Technology_Ltd_SB_X-Fi_Surround_5.1_Pro_000003XO-00.analog-stereo +2%")
+      , spawn "pactl set-sink-volume alsa_output.usb-Creative_Technology_Ltd_SB_X-Fi_Surround_5.1_Pro_000003XO-00.analog-stereo +3%")
     , ((modm              , xK_F11   )
-      , spawn "pactl set-sink-volume alsa_output.usb-Creative_Technology_Ltd_SB_X-Fi_Surround_5.1_Pro_000003XO-00.analog-stereo -2%")
+      , spawn "pactl set-sink-volume alsa_output.usb-Creative_Technology_Ltd_SB_X-Fi_Surround_5.1_Pro_000003XO-00.analog-stereo -3%")
 
     -- Screenshots
     , ((0                 , xK_Print )
