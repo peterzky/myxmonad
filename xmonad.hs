@@ -62,6 +62,12 @@ myScratchPads = [ NS "fileManager" "nautilus"
                 , NS "term" "xfce4-terminal -T term"
                   (title =? "term")
                   (customFloating $ W.RationalRect (1/6) (1/6) (2/3) (2/3))
+                , NS "ncmpcpp" "xfce4-terminal -T ncmpcpp -x ncmpcpp"
+                  (title =? "ncmpcpp") 
+                  (customFloating $ W.RationalRect (1/4) (1/4) (1/2) (1/2))
+                , NS "weechat" "xfce4-terminal -T weechat -x weechat"
+                  (title =? "weechat")
+                  (customFloating $ W.RationalRect (1/6) (1/6) (2/3) (2/3))
                 ]
   -- where
   --   spawnFM = "nautilus"
@@ -121,6 +127,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm .|. shiftMask, xK_h      ), namedScratchpadAction myScratchPads "htop")
     , ((modm .|. shiftMask, xK_n      ), namedScratchpadAction myScratchPads "nm")
     , ((modm              , xK_F1     ), namedScratchpadAction myScratchPads "term")
+    , ((modm .|. shiftMask, xK_e      ), namedScratchpadAction myScratchPads "ncmpcpp")
+    , ((modm .|. shiftMask, xK_i      ), namedScratchpadAction myScratchPads "weechat")
     , ((modm .|. shiftMask, xK_f      ), spawn "firefox")
     , ((modm              , xK_w      ), spawn "emacsclient -nc")
     -- , ((modm .|. shiftMask, xK_u      ), raise (className =? "Nextcloud"))
