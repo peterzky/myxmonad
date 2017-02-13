@@ -210,7 +210,7 @@ myManageHook = composeAll . concat $
    ]
 
   where
-    myCFloats  = ["mpv","Lxappearance","GoldenDict","Pavucontrol","File-roller"]
+    myCFloats  = ["mpv","Lxappearance","GoldenDict","Pavucontrol","File-roller","Gimp"]
     myTFloats  = ["Add Downloads","Library"]
     myRFloats  = ["desktop_window"]
     myPTFloats = ["DownThemAll!","AutoProxy","Install user style"]
