@@ -237,18 +237,26 @@ myManageHook = composeAll . concat $
 ------------------------------------------------------------------------
 -- Status bars and logging
 
+xmobarTitleColor :: [Char]
 xmobarTitleColor = "#3399ff"
-xmobarCurrentWorkspaceColor = "#CEFFAC"
+-- xmobarCurrentWorkspaceColor :: [Char]
+-- xmobarCurrentWorkspaceColor = "#CEFFAC"
+myNormalBorderColor :: [Char]
 myNormalBorderColor  = "#7c7c7c"
+
+myFocusedBorderColor :: [Char]
 myFocusedBorderColor = "#ffb6b0"
 
-myLogHook h = dynamicLogWithPP $ xmobarPP
-            {
+myPP h = xmobarPP {
               ppOutput = hPutStrLn h
             , ppTitle = xmobarColor xmobarTitleColor "" . shorten 50
             , ppSort = getSortByXineramaRule
             , ppLayout = xmobarColor "red" ""
-            }
+                  }
+
+myLogHook h0 h1 h2 =
+  let log screen handle = dynamicLogWithPP . namedScratchpadFilterOutWorkspacePP . marshallPP screen . myPP $ handle
+  in log 0 h0 >> log 1 h1 >> log 2 h2
 
 ------------------------------------------------------------------------
 -- Startup hook
@@ -270,7 +278,9 @@ myStartupHook =
 
 
 main = do
-  xmproc <- spawnPipe "xmobar ~/.xmonad/xmobar.hs"
+  h0 <- spawnPipe "xmobar -x 0 ~/.xmonad/xmobar.hs"
+  h1 <- spawnPipe "xmobar -x 1 ~/.xmonad/xmobar.hs"
+  h2 <- spawnPipe "xmobar -x 2 ~/.xmonad/xmobar.hs"
 
   xmonad $ ewmh def {
       -- simple stuff
@@ -291,7 +301,7 @@ main = do
         , handleEventHook    = mempty <+> docksEventHook <+> fullscreenEventHook
         , startupHook        = myStartupHook
         , manageHook         = myManageHook
-        , logHook            = myLogHook xmproc
+        , logHook            = myLogHook h0 h1 h2
                              >> updatePointer (0.9,0.9) (0.9,0.9)
           }
 
