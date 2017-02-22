@@ -17,15 +17,12 @@ import XMonad.Hooks.ManageHelpers
 import XMonad.Util.Cursor
 import XMonad.Util.NamedScratchpad
 import XMonad.Util.Run (spawnPipe)
-
--- import XMonad.Util.SpawnOnce
 import XMonad.Util.WorkspaceCompare
-
+-- import XMonad.Util.SpawnOnce
 
 import XMonad.Actions.UpdatePointer
-
--- import XMonad.Actions.WindowGo
 import XMonad.Actions.CycleWS
+-- import XMonad.Actions.WindowGo
 
 import XMonad.Layout.IndependentScreens
 import XMonad.Layout.Renamed
@@ -81,13 +78,6 @@ myScratchPads =
       (title =? "weechat")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
   ]
-  -- where
-  --   spawnFM = "nautilus"
-  --   findFM  = className =? "Nautilus"
-  --   manageFM = customFloating $ W.RationalRect (1/6) (1/6) (2/3) (2/3)
-  --   spawnMU = "xfce4-terminal -T musicbox -x musicbox"
-  --   findMU = title =? "musicbox"
-  --   manageMU = customFloating $ W.RationalRect (1/6) (1/6) (2/3) (2/3)
 
 myTerminal = "urxvtc"
 
@@ -181,20 +171,20 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
 -- Mouse bindings: default actions bound to mouse events
 --
 myMouseBindings XConfig {XMonad.modMask = modm} =
-  M.fromList $
+  M.fromList
     -- mod-button1, Set the window to floating mode and move by dragging
-  [ ( (modm, button1)
-    , (\w -> focus w >> mouseMoveWindow w >> windows W.shiftMaster))
+    [ ( (modm, button1)
+      , \w -> focus w >> mouseMoveWindow w >> windows W.shiftMaster)
     -- mod-button2, Raise the window to the top of the stack
-  , ((modm, button2), (\w -> focus w >> windows W.shiftMaster))
+    , ((modm, button2), \w -> focus w >> windows W.shiftMaster)
     -- mod-button3, Set the window to floating mode and resize by dragging
-  , ( (modm, button3)
-    , (\w -> focus w >> mouseResizeWindow w >> windows W.shiftMaster))
+    , ( (modm, button3)
+      , \w -> focus w >> mouseResizeWindow w >> windows W.shiftMaster)
     -- you may also bind events to the mouse scroll wheel (button4 and button5)
     -- set mouse side button to float and resize
-  , ((0, 8), (\w -> focus w >> mouseMoveWindow w >> windows W.shiftMaster))
-  , ((0, 9), (\w -> focus w >> mouseResizeWindow w >> windows W.shiftMaster))
-  ]
+    , ((0, 8), \w -> focus w >> mouseMoveWindow w >> windows W.shiftMaster)
+    , ((0, 9), \w -> focus w >> mouseResizeWindow w >> windows W.shiftMaster)
+    ]
 
 ------------------------------------------------------------------------
 -- Layouts:
@@ -236,9 +226,9 @@ myManageHook =
 -- Event handling
 ------------------------------------------------------------------------
 -- Status bars and logging
+-- xmobarCurrentWorkspaceColor = "#CEFFAC"
 xmobarTitleColor = "#3399ff"
 
--- xmobarCurrentWorkspaceColor = "#CEFFAC"
 myNormalBorderColor = "#7c7c7c"
 
 myFocusedBorderColor = "#ffb6b0"
@@ -254,24 +244,21 @@ myPP h =
 myLogHook h0 h1 h2 =
   let bar screen =
         dynamicLogWithPP .
-        namedScratchpadFilterOutWorkspacePP . marshallPP screen . myPP 
-  in bar 0 h0 >> bar 1 h1 >> bar 2 h2
+        namedScratchpadFilterOutWorkspacePP . marshallPP screen . myPP
+  in bar 0 h0 >> bar 1 h1 >> bar 2 h2 >> updatePointer (0.9, 0.9) (0.9, 0.9)
 
 ------------------------------------------------------------------------
 -- Startup hook
 myStartupHook =
   spawn "source ~/.fehbg" <+>
   spawn "compton -fcC" <+>
-  setDefaultCursor xC_left_ptr
-          -- <+> spawn "sleep 1;xcape -e 'Control_L=Escape'"
-   <+>
+  setDefaultCursor xC_left_ptr <+>
   spawn "fcitx" <+>
   spawn "urxvtd" <+>
   spawn "sogou-qimpanel" <+>
   spawn "goldendict" <+>
   spawn "dunst" <+>
-  namedScratchpadAction myScratchPads "cloud" <+>
-  spawn "systemctl --user start emacs.service"
+  namedScratchpadAction myScratchPads "cloud" <+> spawn "emacs --daemon"
 
 ------------------------------------------------------------------------
 main = do
@@ -288,13 +275,11 @@ main = do
       , workspaces = myWorkspaces
       , normalBorderColor = myNormalBorderColor
       , focusedBorderColor = myFocusedBorderColor
-      -- key bindings
       , keys = myKeys
       , mouseBindings = myMouseBindings
-      -- hooks, layouts
-      , layoutHook = avoidStruts  myLayout
+      , layoutHook = avoidStruts myLayout
       , handleEventHook = mempty <+> docksEventHook <+> fullscreenEventHook
       , startupHook = myStartupHook
       , manageHook = myManageHook
-      , logHook = myLogHook h0 h1 h2 >> updatePointer (0.9, 0.9) (0.9, 0.9)
+      , logHook = myLogHook h0 h1 h2
       }
