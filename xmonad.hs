@@ -18,16 +18,20 @@ import XMonad.Util.Cursor
 import XMonad.Util.NamedScratchpad
 import XMonad.Util.Run (spawnPipe)
 import XMonad.Util.WorkspaceCompare
+
 -- import XMonad.Util.SpawnOnce
-
-import XMonad.Actions.UpdatePointer
 import XMonad.Actions.CycleWS
--- import XMonad.Actions.WindowGo
+import XMonad.Actions.UpdatePointer
 
+import XMonad.Layout.BoringWindows
+-- import XMonad.Actions.WindowGo
 import XMonad.Layout.IndependentScreens
 import XMonad.Layout.Renamed
 import XMonad.Layout.Spacing
+import XMonad.Layout.SubLayouts
+import XMonad.Layout.WindowNavigation
 
+-- import XMonad.Layout.Tabbed
 -- import XMonad.Layout.Fullscreen         -- fix fullscreen issue
 -- import           XMonad.Prompt
 -- import           XMonad.Prompt.Shell
@@ -108,8 +112,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_space), setLayout $ XMonad.layoutHook conf)
   , ((modm, xK_n), refresh)
   , ((modm, xK_Tab), toggleWS)
-  , ((modm, xK_j), windows W.focusDown)
-  , ((modm, xK_k), windows W.focusUp)
+  , ((modm, xK_j), focusDown)
+  , ((modm, xK_k), focusUp)
   , ((modm, xK_m), windows W.focusMaster)
   , ((modm, xK_Return), windows W.swapMaster)
   , ((modm .|. shiftMask, xK_j), windows W.swapDown)
@@ -119,6 +123,15 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_t), withFocused $ windows . W.sink)
   , ((modm, xK_comma), sendMessage (IncMasterN 1))
   , ((modm, xK_period), sendMessage (IncMasterN (-1)))
+    -- SubLayouts
+  , ((modm .|. controlMask, xK_h), sendMessage $ pullGroup L)
+  , ((modm .|. controlMask, xK_l), sendMessage $ pullGroup R)
+  , ((modm .|. controlMask, xK_k), sendMessage $ pullGroup U)
+  , ((modm .|. controlMask, xK_j), sendMessage $ pullGroup D)
+  , ((modm .|. controlMask, xK_m), withFocused (sendMessage . MergeAll))
+  , ((modm .|. controlMask, xK_u), withFocused (sendMessage . UnMerge))
+  , ((modm, xK_semicolon), onGroup W.focusUp')
+  -- , ((modm .|. controlMask, xK_aqute), onGroup W.focusDown')
     -- Applications
     -- , ((modm .|. shiftMask, xK_p     ), spawn "gmrun")
     -- , ((modm,               xK_r     ), spawn "urxvtc -e ranger")
@@ -188,11 +201,13 @@ myMouseBindings XConfig {XMonad.modMask = modm} =
 
 ------------------------------------------------------------------------
 -- Layouts:
-myLayout = myTiled ||| myMirror ||| Full
+myLayout =
+  windowNavigation $ subTabbed $ boringWindows $ myTiled ||| myMirror ||| Full
   where
     myTiled =
-      renamed [Replace "Tiled"] $ smartSpacing 2 $ Tall 1 (3 / 100) (1 / 2)
-    myMirror = renamed [Replace "Mirror"] $ Mirror myTiled
+      renamed [XMonad.Layout.Renamed.Replace "Tiled"] $
+      smartSpacing 2 $ Tall 1 (3 / 100) (1 / 2)
+    myMirror = renamed [XMonad.Layout.Renamed.Replace "Mirror"] $ Mirror myTiled
 
 ------------------------------------------------------------------------
 -- Window rules:
