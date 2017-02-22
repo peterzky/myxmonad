@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -fno-warn-missing-signatures -fno-warn-type-defaults #-}
 
 import           XMonad
 
@@ -237,14 +238,10 @@ myManageHook = composeAll . concat $
 ------------------------------------------------------------------------
 -- Status bars and logging
 
-xmobarTitleColor :: [Char]
 xmobarTitleColor = "#3399ff"
--- xmobarCurrentWorkspaceColor :: [Char]
 -- xmobarCurrentWorkspaceColor = "#CEFFAC"
-myNormalBorderColor :: [Char]
 myNormalBorderColor  = "#7c7c7c"
 
-myFocusedBorderColor :: [Char]
 myFocusedBorderColor = "#ffb6b0"
 
 myPP h = xmobarPP {
@@ -255,8 +252,8 @@ myPP h = xmobarPP {
                   }
 
 myLogHook h0 h1 h2 =
-  let log screen handle = dynamicLogWithPP . namedScratchpadFilterOutWorkspacePP . marshallPP screen . myPP $ handle
-  in log 0 h0 >> log 1 h1 >> log 2 h2
+  let bar screen handle = dynamicLogWithPP . namedScratchpadFilterOutWorkspacePP . marshallPP screen . myPP $ handle
+  in bar 0 h0 >> bar 1 h1 >> bar 2 h2
 
 ------------------------------------------------------------------------
 -- Startup hook
@@ -279,8 +276,8 @@ myStartupHook =
 
 main = do
   h0 <- spawnPipe "xmobar -x 0 ~/.xmonad/xmobar.hs"
-  h1 <- spawnPipe "xmobar -x 1 ~/.xmonad/xmobar.hs"
-  h2 <- spawnPipe "xmobar -x 2 ~/.xmonad/xmobar.hs"
+  h1 <- spawnPipe "xmobar -x 1 ~/.xmonad/xmoside.hs"
+  h2 <- spawnPipe "xmobar -x 2 ~/.xmonad/xmoside.hs"
 
   xmonad $ ewmh def {
       -- simple stuff
