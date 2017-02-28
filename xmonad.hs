@@ -22,6 +22,7 @@ import XMonad.Util.WorkspaceCompare
 -- import XMonad.Util.SpawnOnce
 import XMonad.Actions.CycleWS
 import XMonad.Actions.UpdatePointer
+-- import XMonad.Actions.DynamicProjects
 
 import XMonad.Layout.BoringWindows
 -- import XMonad.Actions.WindowGo
@@ -39,6 +40,25 @@ import XMonad.Prompt.XMonad
 
 import qualified Data.Map as M
 import qualified XMonad.StackSet as W
+
+-- myPromptTheme = def
+--   { font = ""
+--   , bgColor = yellow
+--   , position = Top
+
+--   }
+
+-- projects :: [Project]
+-- projects =
+--   [ Project { projectName = "nnimage"
+--             , projectDirectory = "~/golang/src/github.com/peterzky/nnimage"
+--             , projectStartHook = Just $ do spawn "emacsclient -nc"
+--                                            spawn "firefox"}
+--   , Project { projectName = "haskell"
+--             , projectDirectory = "~/playground/"
+--             , projectStartHook = Just $ do spawn "emacsclient -nc"
+--                                            spawn "firefox"}
+--   ]
 
 systemPromptCmds =
   [ ("Shutdown", spawn "sudo systemctl poweroff")
@@ -131,7 +151,10 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. controlMask, xK_m), withFocused (sendMessage . MergeAll))
   , ((modm .|. controlMask, xK_u), withFocused (sendMessage . UnMerge))
   , ((modm, xK_semicolon), onGroup W.focusUp')
-  -- , ((modm .|. controlMask, xK_aqute), onGroup W.focusDown')
+  , ((modm, xK_apostrophe), onGroup W.focusDown')
+    -- Dynamic Projects
+  -- , ((modm, xK_backslash), switchProjectPrompt def)
+  -- , ((modm, xK_slash), shiftToProjectPrompt def)
     -- Applications
     -- , ((modm .|. shiftMask, xK_p     ), spawn "gmrun")
     -- , ((modm,               xK_r     ), spawn "urxvtc -e ranger")
@@ -280,8 +303,9 @@ main = do
   h0 <- spawnPipe "xmobar -x 0 ~/.xmonad/xmobar.hs"
   h1 <- spawnPipe "xmobar -x 1 ~/.xmonad/xmoside.hs"
   h2 <- spawnPipe "xmobar -x 2 ~/.xmonad/xmoside.hs"
-  xmonad $
-    ewmh
+  xmonad
+    -- $ dynamicProjects projects
+    $ ewmh
       def
       { terminal = myTerminal
       , focusFollowsMouse = myFocusFollowsMouse
