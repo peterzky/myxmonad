@@ -224,13 +224,19 @@ myMouseBindings XConfig {XMonad.modMask = modm} =
 
 ------------------------------------------------------------------------
 -- Layouts:
+-- myWin = windowNavigation $ subTabbed $ boringWindows 
+
 myLayout =
-  windowNavigation $ subTabbed $ boringWindows $ myTiled ||| myMirror ||| Full
+   myTiled ||| myMirror ||| myFull
   where
-    myTiled =
-      renamed [XMonad.Layout.Renamed.Replace "Tiled"] $
+    myTiled = renamed [XMonad.Layout.Renamed.Replace "Tiled"] $
+      windowNavigation $ subTabbed $ boringWindows $
       smartSpacing 2 $ Tall 1 (3 / 100) (1 / 2)
-    myMirror = renamed [XMonad.Layout.Renamed.Replace "Mirror"] $ Mirror myTiled
+    myMirror = renamed [XMonad.Layout.Renamed.Replace "Mirror"] $
+       windowNavigation $ subTabbed $ boringWindows $ Mirror myTiled
+
+    myFull = renamed [XMonad.Layout.Renamed.Replace "Full"] $
+      windowNavigation $ subTabbed $ boringWindows  Full
 
 ------------------------------------------------------------------------
 -- Window rules:
@@ -291,6 +297,7 @@ myStartupHook =
   spawn "source ~/.fehbg" <+>
   spawn "compton -fcC" <+>
   setDefaultCursor xC_left_ptr <+>
+  spawn "pactl set-default-sink alsa_output.usb-Harman_Multimedia_JBL_Pebbles_1.0.0-00.analog-stereo" <+>
   spawn "fcitx" <+>
   spawn "urxvtd" <+>
   spawn "sogou-qimpanel" <+>
@@ -318,7 +325,7 @@ main = do
       , mouseBindings = myMouseBindings
       , layoutHook = avoidStruts myLayout
       , handleEventHook = mempty <+> docksEventHook <+> fullscreenEventHook
-      , startupHook = myStartupHook
+      , startupHook = mempty -- myStartupHook
       , manageHook = myManageHook
       , logHook = myLogHook h0 h1 h2
       }
