@@ -16,7 +16,7 @@ Config {
    -- layout
    , sepChar =  "%"   -- delineator between plugin names and straight text
    , alignSep = "}{"  -- separator between left-right alignment
-   , template = "%StdinReader% } {%org% | %multicpu% | %coretemp% | %memory% | %dynnetwork% | %date% | %default:Master% | <fc=#8B0000>%iem%</fc> "
+   , template = "%StdinReader% } {%org% | %multicpu% | %coretemp% | %memory% | %dynnetwork% | %date% | %default:Master% | %iem% "
 
    -- general behavior
    , lowerOnStart =     False    -- send to bottom of window stack on start
@@ -44,7 +44,7 @@ Config {
 
         -- weather monitor
         [ Run StdinReader
-        , Run Com "/home/peterzky/.xmonad/fcitx.sh" [] "iem" 10
+        , Run Com "/home/peterzky/.xmonad/iem" [] "iem" 10
         , Run Com "/home/peterzky/.xmonad/org-clock" [] "org" 60
         , Run Volume "default" "Master" [
                 "-t", "<status> <volume>%",
