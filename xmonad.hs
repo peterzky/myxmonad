@@ -325,7 +325,7 @@ main = do
       , mouseBindings = myMouseBindings
       , layoutHook = avoidStruts myLayout
       , handleEventHook = mempty <+> docksEventHook <+> fullscreenEventHook
-      , startupHook = mempty -- myStartupHook
+      , startupHook =  myStartupHook
       , manageHook = myManageHook
       , logHook = myLogHook h0 h1 h2
       }
