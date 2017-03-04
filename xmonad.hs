@@ -260,6 +260,7 @@ myManageHook =
       , "Pavucontrol"
       , "File-roller"
       , "Gimp"
+      , "VirtualBox"
       ]
     myTFloats = ["Add Downloads", "Library"]
     myRFloats = ["desktop_window"]
@@ -297,7 +298,7 @@ myStartupHook =
   spawn "source ~/.fehbg" <+>
   spawn "compton -fcC" <+>
   setDefaultCursor xC_left_ptr <+>
-  spawn "pactl set-default-sink alsa_output.usb-Harman_Multimedia_JBL_Pebbles_1.0.0-00.analog-stereo" <+>
+  -- setWMName "LG3D" <+> 
   spawn "fcitx" <+>
   spawn "urxvtd" <+>
   spawn "sogou-qimpanel" <+>
@@ -325,7 +326,7 @@ main = do
       , mouseBindings = myMouseBindings
       , layoutHook = avoidStruts myLayout
       , handleEventHook = mempty <+> docksEventHook <+> fullscreenEventHook
-      , startupHook =  myStartupHook
+      , startupHook = myStartupHook
       , manageHook = myManageHook
       , logHook = myLogHook h0 h1 h2
       }
