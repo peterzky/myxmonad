@@ -102,7 +102,7 @@ myScratchPads =
       (title =? "weechat")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
   , NS "ranger"
-       "urxvtc -title rangerfloat -e sudo ranger"
+       "urxvtc -title rangerfloat -e ranger"
       (title =? "rangerfloat")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
   ]
