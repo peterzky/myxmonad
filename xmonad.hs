@@ -188,9 +188,9 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
         "pactl set-sink-volume alsa_output.usb-Creative_Technology_Ltd_SB_X-Fi_Surround_5.1_Pro_000003XO-00.analog-stereo -3%")
     -- Screenshots
   , ( (0, xK_Print)
-    , spawn "scrot -s ~/Sync/Screenshots/Screenshot%Y-%m-%d%H:%M:%S.png")
+    , spawn "scrot -s ~/Nextcloud/Screenshots/Screenshot%Y-%m-%d%H:%M:%S.png")
   , ( (modm, xK_Print)
-    , spawn "scrot -u ~/Sync/Screenshots/Screenshot%Y-%m-%d%H:%M:%S.png")
+    , spawn "scrot -u ~/Nextcloud/Screenshots/Screenshot%Y-%m-%d%H:%M:%S.png")
   ] ++
     -- Workspaces
   [ ((m .|. modm, k), windows $ onCurrentScreen f i)
@@ -261,6 +261,7 @@ myManageHook =
       , "File-roller"
       , "Gimp"
       , "VirtualBox"
+      , "Gpicview"
       ]
     myTFloats = ["Add Downloads", "Library"]
     myRFloats = ["desktop_window"]
