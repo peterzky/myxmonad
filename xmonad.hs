@@ -101,6 +101,10 @@ myScratchPads =
       "xfce4-terminal -T weechat -x weechat"
       (title =? "weechat")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
+  , NS "ranger"
+       "urxvtc -title rangerfloat -e sudo ranger"
+      (title =? "rangerfloat")
+      (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
   ]
 
 myTerminal = "urxvtc"
@@ -128,7 +132,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_space), spawn myLauncher)
   , ((modm, xK_q), kill)
   , ((modm .|. shiftMask, xK_q), io exitSuccess)
-  , ((modm, xK_o), sendMessage NextLayout)
+  , ((modm, xK_grave), sendMessage NextLayout)
   , ((modm .|. shiftMask, xK_space), setLayout $ XMonad.layoutHook conf)
   , ((modm, xK_n), refresh)
   , ((modm, xK_Tab), toggleWS)
@@ -156,20 +160,17 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   -- , ((modm, xK_backslash), switchProjectPrompt def)
   -- , ((modm, xK_slash), shiftToProjectPrompt def)
     -- Applications
-    -- , ((modm .|. shiftMask, xK_p     ), spawn "gmrun")
-    -- , ((modm,               xK_r     ), spawn "urxvtc -e ranger")
   , ( (modm .|. shiftMask, xK_r)
     , spawn "killall xmobar; xmonad --recompile; xmonad --restart")
   , ((0, xK_Pause), xmonadPromptC systemPromptCmds def)
-  , ((modm, xK_f), namedScratchpadAction myScratchPads "fileManager")
+  , ((modm, xK_f), namedScratchpadAction myScratchPads "ranger")
   , ((modm, xK_e), namedScratchpadAction myScratchPads "music")
   , ((modm .|. shiftMask, xK_u), namedScratchpadAction myScratchPads "cloud")
   , ((modm .|. shiftMask, xK_h), namedScratchpadAction myScratchPads "htop")
   , ((modm .|. shiftMask, xK_n), namedScratchpadAction myScratchPads "nm")
-  , ((modm, xK_F1), namedScratchpadAction myScratchPads "term")
   , ((modm .|. shiftMask, xK_e), namedScratchpadAction myScratchPads "ncmpcpp")
   , ((modm .|. shiftMask, xK_i), namedScratchpadAction myScratchPads "weechat")
-  , ((modm .|. shiftMask, xK_f), spawn "firefox")
+  , ((modm .|. shiftMask, xK_f), namedScratchpadAction myScratchPads "fileManager")
   , ((modm, xK_w), spawn "emacsclient -nc")
     -- , ((modm .|. shiftMask, xK_u      ), raise (className =? "Nextcloud"))
     -- , ((modm              , xK_z      ), namedScratchpadAction myScratchPads "dict")
@@ -229,14 +230,14 @@ myMouseBindings XConfig {XMonad.modMask = modm} =
 myLayout =
    myTiled ||| myMirror ||| myFull
   where
-    myTiled = renamed [XMonad.Layout.Renamed.Replace "Tiled"] $
-      windowNavigation $ subTabbed $ boringWindows $
+    myTiled = renamed [XMonad.Layout.Renamed.Replace "Tiled"] .
+      windowNavigation . subTabbed . boringWindows .
       smartSpacing 2 $ Tall 1 (3 / 100) (1 / 2)
-    myMirror = renamed [XMonad.Layout.Renamed.Replace "Mirror"] $
-       windowNavigation $ subTabbed $ boringWindows $ Mirror myTiled
+    myMirror = renamed [XMonad.Layout.Renamed.Replace "Mirror"] .
+       windowNavigation . subTabbed . boringWindows $ Mirror myTiled
 
-    myFull = renamed [XMonad.Layout.Renamed.Replace "Full"] $
-      windowNavigation $ subTabbed $ boringWindows  Full
+    myFull = renamed [XMonad.Layout.Renamed.Replace "Full"] .
+      windowNavigation . subTabbed . boringWindows $ Full
 
 ------------------------------------------------------------------------
 -- Window rules:
@@ -244,6 +245,7 @@ myManageHook =
   composeAll . concat $
   [ [manageDocks]
   , [isFullscreen --> doFullFloat]
+  , [className =? "Nextcloud" --> doShift "NSP"]
   , [isDialog --> doFloat]
   , [className =? c --> doFloat | c <- myCFloats]
   , [title =? t --> doFloat | t <- myTFloats]
