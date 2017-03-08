@@ -32,6 +32,8 @@ import XMonad.Layout.Spacing
 import XMonad.Layout.SubLayouts
 import XMonad.Layout.WindowNavigation
 
+import XMonad.Prompt.XMonad
+
 import qualified Data.Map as M
 import qualified XMonad.StackSet as W
 
