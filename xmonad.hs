@@ -240,7 +240,7 @@ myManageHook =
       ]
     myTFloats = ["Add Downloads", "Library"]
     myRFloats = ["desktop_window"]
-    myPTFloats = ["DownThemAll!", "AutoProxy", "Install user style"]
+    myPTFloats = ["DownThemAll!", "AutoProxy", "Install user style","Ediff"]
     myPCFloats = []
 
 ------------------------------------------------------------------------
