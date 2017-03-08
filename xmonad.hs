@@ -264,6 +264,7 @@ myManageHook =
       , "Gimp"
       , "VirtualBox"
       , "Gpicview"
+      , "octave-gui"
       ]
     myTFloats = ["Add Downloads", "Library"]
     myRFloats = ["desktop_window"]
