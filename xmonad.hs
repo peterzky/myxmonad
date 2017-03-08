@@ -32,33 +32,8 @@ import XMonad.Layout.Spacing
 import XMonad.Layout.SubLayouts
 import XMonad.Layout.WindowNavigation
 
--- import XMonad.Layout.Tabbed
--- import XMonad.Layout.Fullscreen         -- fix fullscreen issue
--- import           XMonad.Prompt
--- import           XMonad.Prompt.Shell
-import XMonad.Prompt.XMonad
-
 import qualified Data.Map as M
 import qualified XMonad.StackSet as W
-
--- myPromptTheme = def
---   { font = ""
---   , bgColor = yellow
---   , position = Top
-
---   }
-
--- projects :: [Project]
--- projects =
---   [ Project { projectName = "nnimage"
---             , projectDirectory = "~/golang/src/github.com/peterzky/nnimage"
---             , projectStartHook = Just $ do spawn "emacsclient -nc"
---                                            spawn "firefox"}
---   , Project { projectName = "haskell"
---             , projectDirectory = "~/playground/"
---             , projectStartHook = Just $ do spawn "emacsclient -nc"
---                                            spawn "firefox"}
---   ]
 
 systemPromptCmds =
   [ ("Shutdown", spawn "sudo systemctl poweroff")
@@ -156,9 +131,6 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. controlMask, xK_u), withFocused (sendMessage . UnMerge))
   , ((modm, xK_semicolon), onGroup W.focusUp')
   , ((modm, xK_apostrophe), onGroup W.focusDown')
-    -- Dynamic Projects
-  -- , ((modm, xK_backslash), switchProjectPrompt def)
-  -- , ((modm, xK_slash), shiftToProjectPrompt def)
     -- Applications
   , ( (modm .|. shiftMask, xK_r)
     , spawn "killall xmobar; xmonad --recompile; xmonad --restart")
@@ -172,8 +144,6 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_i), namedScratchpadAction myScratchPads "weechat")
   , ((modm .|. shiftMask, xK_f), namedScratchpadAction myScratchPads "fileManager")
   , ((modm, xK_w), spawn "emacsclient -nc")
-    -- , ((modm .|. shiftMask, xK_u      ), raise (className =? "Nextcloud"))
-    -- , ((modm              , xK_z      ), namedScratchpadAction myScratchPads "dict")
     -- Volume control
   , ( (0, xK_F12)
     , spawn
@@ -230,14 +200,14 @@ myMouseBindings XConfig {XMonad.modMask = modm} =
 myLayout =
    myTiled ||| myMirror ||| myFull
   where
-    myTiled = renamed [XMonad.Layout.Renamed.Replace "Tiled"] .
-      windowNavigation . subTabbed . boringWindows .
-      smartSpacing 2 $ Tall 1 (3 / 100) (1 / 2)
-    myMirror = renamed [XMonad.Layout.Renamed.Replace "Mirror"] .
-       windowNavigation . subTabbed . boringWindows $ Mirror myTiled
+    myTiled = renamed [XMonad.Layout.Renamed.Replace "Tiled"]
+      . windowNavigation . subTabbed . boringWindows
+      . smartSpacing 2 $ Tall 1 (3 / 100) (1 / 2)
+    myMirror = renamed [XMonad.Layout.Renamed.Replace "Mirror"]
+      . windowNavigation . subTabbed . boringWindows $ Mirror myTiled
 
-    myFull = renamed [XMonad.Layout.Renamed.Replace "Full"] .
-      windowNavigation . subTabbed . boringWindows $ Full
+    myFull = renamed [XMonad.Layout.Renamed.Replace "Full"]
+      . windowNavigation . subTabbed . boringWindows $ Full
 
 ------------------------------------------------------------------------
 -- Window rules:
