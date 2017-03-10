@@ -45,7 +45,7 @@ Config {
         -- weather monitor
         [ Run StdinReader
         , Run Com "/home/peterzky/.xmonad/iem" [] "iem" 10
-        , Run Com "/home/peterzky/.xmonad/org-clock" [] "org" 60
+        , Run Com "/home/peterzky/.xmonad/org-pomodoro" [] "org" 10
         , Run Volume "default" "Master" [
                 "-t", "<status> <volume>%",
             "--",

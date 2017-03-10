@@ -237,6 +237,7 @@ myManageHook =
       , "VirtualBox"
       , "Gpicview"
       , "octave-gui"
+      , "Gnuplot"
       ]
     myTFloats = ["Add Downloads", "Library"]
     myRFloats = ["desktop_window"]
