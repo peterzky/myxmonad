@@ -238,6 +238,7 @@ myManageHook =
       , "Gpicview"
       , "octave-gui"
       , "Gnuplot"
+      , "Wine"
       ]
     myTFloats = ["Add Downloads", "Library"]
     myRFloats = ["desktop_window"]
