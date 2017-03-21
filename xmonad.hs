@@ -159,7 +159,10 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ( (modm, xK_F11)
     , spawn
         "pactl set-sink-volume alsa_output.usb-Creative_Technology_Ltd_SB_X-Fi_Surround_5.1_Pro_000003XO-00.analog-stereo -3%")
-    -- Screenshots
+    -- TTS
+  ,((modm ,xK_v), spawn "/home/peterzky/.xmonad/tts.sh")
+  ,((modm .|. shiftMask, xK_v), spawn "killall aplay")
+   -- Screenshots
   , ( (0, xK_Print)
     , spawn "scrot -s ~/Nextcloud/Screenshots/Screenshot%Y-%m-%d%H:%M:%S.png")
   , ( (modm, xK_Print)
