@@ -139,7 +139,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((0, xK_Pause), xmonadPromptC systemPromptCmds def)
   , ((modm, xK_f), namedScratchpadAction myScratchPads "ranger")
   , ((modm, xK_e), namedScratchpadAction myScratchPads "music")
-  , ((modm .|. shiftMask, xK_u), namedScratchpadAction myScratchPads "cloud")
+  -- , ((modm .|. shiftMask, xK_u), namedScratchpadAction myScratchPads "cloud")
   , ((modm .|. shiftMask, xK_h), namedScratchpadAction myScratchPads "htop")
   , ((modm .|. shiftMask, xK_n), namedScratchpadAction myScratchPads "nm")
   , ((modm .|. shiftMask, xK_e), namedScratchpadAction myScratchPads "ncmpcpp")
