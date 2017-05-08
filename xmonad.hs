@@ -286,7 +286,7 @@ myStartupHook =
   spawn "sogou-qimpanel" <+>
   spawn "goldendict" <+>
   spawn "dunst" <+>
-  namedScratchpadAction myScratchPads "cloud" <+> spawn "emacs --daemon"
+  spawn "emacs --daemon"
 
 ------------------------------------------------------------------------
 main = do
