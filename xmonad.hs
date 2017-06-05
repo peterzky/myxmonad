@@ -224,12 +224,14 @@ myManageHook =
   , [isDialog --> doFloat]
   , [className =? c --> doFloat | c <- myCFloats]
   , [title =? t --> doFloat | t <- myTFloats]
+  , [role =? t --> doFloat | t <- myRole]
   , [resource =? r --> doFloat | r <- myRFloats]
   , [fmap (pt `isInfixOf`) title --> doFloat | pt <- myPTFloats]
   , [fmap (pc `isInfixOf`) className --> doFloat | pc <- myPCFloats]
   , [namedScratchpadManageHook myScratchPads]
   ]
   where
+    role = stringProperty "WM_WINDOW_ROLE"
     myCFloats =
       [ "mpv"
       , "Lxappearance"
@@ -248,6 +250,7 @@ myManageHook =
     myRFloats = ["desktop_window"]
     myPTFloats = ["DownThemAll!", "AutoProxy", "Install user style","Ediff"]
     myPCFloats = []
+    myRole = ["pop-up"]
 
 ------------------------------------------------------------------------
 -- Event handling
