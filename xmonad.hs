@@ -146,6 +146,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_i), namedScratchpadAction myScratchPads "weechat")
   , ((modm .|. shiftMask, xK_f), namedScratchpadAction myScratchPads "fileManager")
   , ((modm, xK_w), spawn "emacsclient -nc")
+  , ((modm, xK_c), spawn "conkeror")
     -- Volume control
   , ( (0, xK_F12)
     , spawn
@@ -160,8 +161,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
     , spawn
         "pactl set-sink-volume alsa_output.usb-Creative_Technology_Ltd_SB_X-Fi_Surround_5.1_Pro_000003XO-00.analog-stereo -3%")
     -- TTS
-  ,((modm ,xK_v), spawn "/home/peterzky/.xmonad/tts.sh")
-  ,((modm .|. shiftMask, xK_v), spawn "killall aplay")
+  -- ,((modm ,xK_v), spawn "/home/peterzky/.xmonad/tts.sh")
+  -- ,((modm .|. shiftMask, xK_v), spawn "killall aplay")
    -- Screenshots
   , ( (0, xK_Print)
     , spawn "scrot -s ~/Nextcloud/Screenshots/Screenshot%Y-%m-%d%H:%M:%S.png")
@@ -200,7 +201,7 @@ myMouseBindings XConfig {XMonad.modMask = modm} =
 
 ------------------------------------------------------------------------
 -- Layouts:
--- myWin = windowNavigation $ subTabbed $ boringWindows 
+-- myWin = windowNavigation $ subTabbed $ boringWindows
 
 myLayout =
    myTiled ||| myMirror ||| myFull
@@ -246,7 +247,7 @@ myManageHook =
       , "Wine"
       , "Zeal"
       ]
-    myTFloats = ["Add Downloads", "Library"]
+    myTFloats = ["Add Downloads", "Library","emacs-capture"]
     myRFloats = ["desktop_window"]
     myPTFloats = ["DownThemAll!", "AutoProxy", "Install user style","Ediff"]
     myPCFloats = []
@@ -283,7 +284,7 @@ myStartupHook =
   spawn "source ~/.fehbg" <+>
   spawn "compton -fcC" <+>
   setDefaultCursor xC_left_ptr <+>
-  -- setWMName "LG3D" <+> 
+  -- setWMName "LG3D" <+>
   spawn "fcitx" <+>
   spawn "urxvtd" <+>
   spawn "sogou-qimpanel" <+>
