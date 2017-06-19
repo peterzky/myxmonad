@@ -49,6 +49,11 @@ myScratchPads =
   [ NS "fileManager" "nautilus" (className =? "Nautilus") defaultFloating
   , NS "cloud" "nextcloud" (className =? "Nextcloud") defaultFloating
   , NS
+      "org"
+      "emacsclient -c -F '((name . \"org-agenda\"))' -e '(progn (org-todo-list)(delete-other-windows))'"
+      (title =? "org-agenda")
+      (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
+  , NS
       "music"
       "xfce4-terminal -T musicbox -x musicbox"
       (title =? "musicbox")
@@ -145,6 +150,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_e), namedScratchpadAction myScratchPads "ncmpcpp")
   , ((modm .|. shiftMask, xK_i), namedScratchpadAction myScratchPads "weechat")
   , ((modm .|. shiftMask, xK_f), namedScratchpadAction myScratchPads "fileManager")
+  , ((modm, xK_z), namedScratchpadAction myScratchPads "org")
   , ((modm, xK_w), spawn "emacsclient -nc")
   , ((modm, xK_c), spawn "conkeror")
     -- Volume control
