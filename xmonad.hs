@@ -8,6 +8,7 @@ import System.IO
 
 import Data.List
 
+import XMonad.Config.Xfce
 -- import Data.Monoid
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops
@@ -46,41 +47,43 @@ systemPromptCmds =
   ]
 
 myScratchPads =
-  [ NS "fileManager" "nautilus" (className =? "Nautilus") defaultFloating
+  [ NS "fileManager" "thunar" (className =? "Thunar")
+    (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
+  , NS "pavucontrol" "pavucontrol" (className =? "Pavucontrol") defaultFloating
   , NS "cloud" "nextcloud" (className =? "Nextcloud") defaultFloating
-  , NS
-      "org"
-      "emacsclient -c -F '((name . \"org-agenda\"))' -e '(progn (org-todo-list)(delete-other-windows))'"
-      (title =? "org-agenda")
-      (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
+  , NS "mpv" "" (className =? "mpv") defaultFloating
+  , NS "org"
+       "emacsclient -c -F '((name . \"org-agenda\"))' -e '(progn (org-todo-list)(delete-other-windows))'"
+       (title =? "org-agenda")
+       (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
   , NS
       "music"
-      "xfce4-terminal -T musicbox -x musicbox"
+      "urxvtc -title musicbox -e musicbox"
       (title =? "musicbox")
       (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
   , NS
       "htop"
-      "xfce4-terminal -T htop -x htop"
+      "urxvtc -title htop -e htop"
       (title =? "htop")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
   , NS
       "nm"
-      "xfce4-terminal -T nmtui -x nmtui"
+      "urxvtc -title nmtui -e nmtui"
       (title =? "nmtui")
       (customFloating $ W.RationalRect (1 / 3) (1 / 3) (1 / 3) (1 / 3))
   , NS
       "term"
-      "xfce4-terminal -T term"
+      "urxvtc -title term"
       (title =? "term")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
   , NS
       "ncmpcpp"
-      "xfce4-terminal -T ncmpcpp -x ncmpcpp"
+      "urxvtc -title ncmpcpp -e ncmpcpp"
       (title =? "ncmpcpp")
       (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
   , NS
       "weechat"
-      "xfce4-terminal -T weechat -x weechat"
+      "urxvtc -title weechat -e weechat"
       (title =? "weechat")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
   , NS "ranger"
@@ -100,7 +103,7 @@ myModMask = mod4Mask
 myWorkspaces = withScreens 3 ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 myLauncher =
-  "rofi -run-command \"/bin/zsh -i -c '{cmd}'\" -hide-scrollbar -font \"Bitstream Vera Sans Mono 12\" -show run"
+  "rofi -show run"
 
 -- Border colors for unfocused and focused windows, respectively.
 --
@@ -150,9 +153,10 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_e), namedScratchpadAction myScratchPads "ncmpcpp")
   , ((modm .|. shiftMask, xK_i), namedScratchpadAction myScratchPads "weechat")
   , ((modm .|. shiftMask, xK_f), namedScratchpadAction myScratchPads "fileManager")
-  , ((modm, xK_z), namedScratchpadAction myScratchPads "org")
   , ((modm, xK_w), spawn "emacsclient -nc")
-  , ((modm, xK_c), spawn "conkeror")
+  , ((modm, xK_z), namedScratchpadAction myScratchPads "org")
+  , ((modm, xK_v), namedScratchpadAction myScratchPads "mpv")
+  , ((modm, xK_b), namedScratchpadAction myScratchPads "pavucontrol")
     -- Volume control
   , ( (0, xK_F12)
     , spawn
@@ -182,7 +186,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   ] ++
     -- Monitors
   [ ((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
-  | (key, sc) <- zip [xK_s, xK_a, xK_d] [0 ..]
+  | (key, sc) <- zip [xK_s, xK_d, xK_a] [0 ..]
   , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]
   ]
 
@@ -227,9 +231,10 @@ myManageHook =
   composeAll . concat $
   [ [manageDocks]
   , [isFullscreen --> doFullFloat]
+  , [className =? "Xfce4-notifyd" --> doIgnore]
   , [className =? "Nextcloud" --> doShift "NSP"]
-  , [isDialog --> doFloat]
-  , [className =? c --> doFloat | c <- myCFloats]
+  , [isDialog --> doCenterFloat]
+  , [className =? c --> doCenterFloat | c <- myCFloats]
   , [title =? t --> doFloat | t <- myTFloats]
   , [role =? t --> doFloat | t <- myRole]
   , [resource =? r --> doFloat | r <- myRFloats]
@@ -287,16 +292,11 @@ myLogHook h0 h1 h2 =
 ------------------------------------------------------------------------
 -- Startup hook
 myStartupHook =
-  spawn "source ~/.fehbg" <+>
-  spawn "compton -fcC" <+>
-  setDefaultCursor xC_left_ptr <+>
   -- setWMName "LG3D" <+>
-  spawn "fcitx" <+>
+  spawn "compton -fcC" <+>
   spawn "urxvtd" <+>
-  spawn "sogou-qimpanel" <+>
-  spawn "goldendict" <+>
-  spawn "dunst" <+>
-  spawn "emacs --daemon"
+  spawn "emacs --daemon" <+>
+  spawn "source ~/.fehbg"
 
 ------------------------------------------------------------------------
 main = do
@@ -319,6 +319,6 @@ main = do
       , layoutHook = avoidStruts myLayout
       , handleEventHook = mempty <+> docksEventHook <+> fullscreenEventHook
       , startupHook = myStartupHook
-      , manageHook = myManageHook
+      , manageHook = myManageHook <+> manageHook xfceConfig
       , logHook = myLogHook h0 h1 h2
       }

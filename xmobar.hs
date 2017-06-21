@@ -1,9 +1,9 @@
-Config { 
+Config {
 
    -- appearance
      font =         "xft:Bitstream Vera Sans Mono:size=9,WenQuanYi Micro Hei:size=10"
    , additionalFonts = ["xft:FontAwesome:size=10"]
-   , alpha = 160 
+   , alpha = 160
    , textOffset = -1
    , iconOffset = -1
    , iconRoot = "."
@@ -40,13 +40,13 @@ Config {
    --   The --template option controls how the plugin is displayed. Text
    --   color can be set by enclosing in <fc></fc> tags. For more details
    --   see http://projects.haskell.org/xmobar/#system-monitor-plugins.
-   , commands = 
+   , commands =
 
         -- weather monitor
         [ Run StdinReader
         -- , Run Mail [( "inbox", "~/.mail/qq/Inbox")] "mail"
         , Run Com "/home/peterzky/.xmonad/iem" [] "iem" 10
-        , Run Com "/home/peterzky/.xmonad/org-pomodoro" [] "org" 10
+        , Run Com "/home/peterzky/.xmonad/org-clock" [] "org" 10
         , Run Volume "default" "Master" [
                 "-t", "<status> <volume>%",
             "--",
@@ -85,7 +85,7 @@ Config {
                              , "--normal"   , "darkorange"
                              , "--high"     , "darkred"
                              ] 50
-                          
+
         -- memory usage monitor
         , Run Memory         [ "--template" ,"Mem: <usedratio>%"
                              , "--Low"      , "20"        -- units: %
@@ -113,7 +113,7 @@ Config {
                                        , "-i"	, "<fc=#006000>Charged</fc>"
                              ] 50
 
-        -- time and date indicator 
+        -- time and date indicator
         --   (%F = y-m-d date, %a = day of week, %T = h:m:s time)
         , Run Date           "<fc=#ABABAB>%F (%a) %T</fc>" "date" 10
 
