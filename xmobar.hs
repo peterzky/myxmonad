@@ -3,7 +3,7 @@ Config {
    -- appearance
      font =         "xft:Bitstream Vera Sans Mono:size=9,WenQuanYi Micro Hei:size=10"
    , additionalFonts = ["xft:FontAwesome:size=10"]
-   , alpha = 160
+   , alpha = 204
    , textOffset = -1
    , iconOffset = -1
    , iconRoot = "."
@@ -46,7 +46,7 @@ Config {
         [ Run StdinReader
         -- , Run Mail [( "inbox", "~/.mail/qq/Inbox")] "mail"
         , Run Com "/home/peterzky/.xmonad/iem" [] "iem" 10
-        , Run Com "/home/peterzky/.xmonad/org-clock" [] "org" 10
+        , Run Com "/home/peterzky/.xmonad/org-pomodoro" [] "org" 10
         , Run Volume "default" "Master" [
                 "-t", "<status> <volume>%",
             "--",

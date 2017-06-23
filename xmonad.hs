@@ -154,9 +154,10 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_i), namedScratchpadAction myScratchPads "weechat")
   , ((modm .|. shiftMask, xK_f), namedScratchpadAction myScratchPads "fileManager")
   , ((modm, xK_w), spawn "emacsclient -nc")
+  , ((modm, xK_c), spawn "conkeror")
   , ((modm, xK_z), namedScratchpadAction myScratchPads "org")
-  , ((modm, xK_v), namedScratchpadAction myScratchPads "mpv")
-  , ((modm, xK_b), namedScratchpadAction myScratchPads "pavucontrol")
+  , ((modm .|. shiftMask, xK_v), namedScratchpadAction myScratchPads "mpv")
+  , ((modm, xK_v), namedScratchpadAction myScratchPads "pavucontrol")
     -- Volume control
   , ( (0, xK_F12)
     , spawn
@@ -257,6 +258,7 @@ myManageHook =
       , "Gnuplot"
       , "Wine"
       , "Zeal"
+      , "obs"
       ]
     myTFloats = ["Add Downloads", "Library","emacs-capture"]
     myRFloats = ["desktop_window"]
@@ -293,7 +295,7 @@ myLogHook h0 h1 h2 =
 -- Startup hook
 myStartupHook =
   -- setWMName "LG3D" <+>
-  spawn "compton -fcC" <+>
+  spawn "compton -cCzG -t-3 -l-5 -r4 --config /dev/null --backend xrender --unredir-if-possible" <+>
   spawn "urxvtd" <+>
   spawn "emacs --daemon" <+>
   spawn "source ~/.fehbg"
