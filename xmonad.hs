@@ -259,6 +259,8 @@ myManageHook =
       , "Wine"
       , "Zeal"
       , "obs"
+      , "Thunderbird"
+      , "Octave"
       ]
     myTFloats = ["Add Downloads", "Library","emacs-capture"]
     myRFloats = ["desktop_window"]

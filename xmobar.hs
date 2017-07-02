@@ -45,8 +45,8 @@ Config {
         -- weather monitor
         [ Run StdinReader
         -- , Run Mail [( "inbox", "~/.mail/qq/Inbox")] "mail"
-        , Run Com "/home/peterzky/.xmonad/iem" [] "iem" 10
-        , Run Com "/home/peterzky/.xmonad/org-pomodoro" [] "org" 10
+        , Run Com "iem" [] "iem" 10
+        , Run Com "org-pomodoro" [] "org" 10
         , Run Volume "default" "Master" [
                 "-t", "<status> <volume>%",
             "--",
