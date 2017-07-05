@@ -1,5 +1,4 @@
 {-# OPTIONS_GHC-fno-warn-missing-signatures -fno-warn-type-defaults #-}
-
 import           XMonad
 
 import           System.Exit
