@@ -9,22 +9,29 @@ import System.IO
 import Data.List
 
 import XMonad.Config.Xfce
+-- import Data.Monoid
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
 
 import XMonad.Util.Cursor
-import XMonad.Util.WorkspaceCompare
 import XMonad.Util.NamedScratchpad
 import XMonad.Util.Run (spawnPipe)
+import XMonad.Util.WorkspaceCompare
 
+-- import XMonad.Util.SpawnOnce
 import XMonad.Actions.CycleWS
 import XMonad.Actions.UpdatePointer
+-- import XMonad.Actions.DynamicProjects
 
+import XMonad.Layout.BoringWindows
+-- import XMonad.Actions.WindowGo
 import XMonad.Layout.IndependentScreens
 import XMonad.Layout.Renamed
 import XMonad.Layout.Spacing
+import XMonad.Layout.SubLayouts
+import XMonad.Layout.WindowNavigation
 import XMonad.Layout.NoBorders
 
 import XMonad.Prompt.XMonad
@@ -32,6 +39,13 @@ import XMonad.Prompt.XMonad
 import qualified Data.Map as M
 import qualified XMonad.StackSet as W
 
+systemPromptCmds =
+  [ ("Shutdown", spawn "sudo systemctl poweroff")
+  , ("Reboot", spawn "sudo systemctl reboot")
+  , ("Exit", io exitSuccess)
+  , ("Hibernate", spawn "sudo systemctl hibernate")
+  , ("Restart", restart "xmonad" True)
+  ]
 
 myScratchPads =
   [ NS "fileManager" "thunar" (className =? "Thunar")
@@ -85,19 +99,18 @@ myFocusFollowsMouse = True
 
 myBorderWidth = 3
 
-xmobarTitleColor = "#3399ff"
-
-myNormalBorderColor = "#000000"
-
-myFocusedBorderColor = "#90C695"
-
-
 myModMask = mod4Mask
 
 myWorkspaces = withScreens 3 ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
-myLauncher = "rofi -show run"
+myLauncher =
+  "rofi -show run"
 
+-- Border colors for unfocused and focused windows, respectively.
+--
+------------------------------------------------------------------------
+-- Key bindings. Add, modify or remove key bindings here.
+--
 myKeys conf@XConfig {XMonad.modMask = modm} =
   M.fromList $
      -- Basic
@@ -109,8 +122,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_space), setLayout $ XMonad.layoutHook conf)
   , ((modm, xK_n), refresh)
   , ((modm, xK_Tab), toggleWS)
-  , ((modm, xK_j), windows W.focusDown)
-  , ((modm, xK_k), windows W.focusUp)
+  , ((modm, xK_j), focusDown)
+  , ((modm, xK_k), focusUp)
   , ((modm, xK_m), windows W.focusMaster)
   , ((modm, xK_Return), windows W.swapMaster)
   , ((modm .|. shiftMask, xK_j), windows W.swapDown)
@@ -120,11 +133,22 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_t), withFocused $ windows . W.sink)
   , ((modm, xK_comma), sendMessage (IncMasterN 1))
   , ((modm, xK_period), sendMessage (IncMasterN (-1)))
+    -- SubLayouts
+  , ((modm .|. controlMask, xK_h), sendMessage $ pullGroup L)
+  , ((modm .|. controlMask, xK_l), sendMessage $ pullGroup R)
+  , ((modm .|. controlMask, xK_k), sendMessage $ pullGroup U)
+  , ((modm .|. controlMask, xK_j), sendMessage $ pullGroup D)
+  , ((modm .|. controlMask, xK_m), withFocused (sendMessage . MergeAll))
+  , ((modm .|. controlMask, xK_u), withFocused (sendMessage . UnMerge))
+  , ((modm, xK_semicolon), onGroup W.focusUp')
+  , ((modm, xK_apostrophe), onGroup W.focusDown')
     -- Applications
   , ( (modm .|. shiftMask, xK_r)
     , spawn "killall xmobar; xmonad --recompile; xmonad --restart")
+  , ((0, xK_Pause), xmonadPromptC systemPromptCmds def)
   , ((modm, xK_f), namedScratchpadAction myScratchPads "ranger")
   , ((modm, xK_e), namedScratchpadAction myScratchPads "music")
+  -- , ((modm .|. shiftMask, xK_u), namedScratchpadAction myScratchPads "cloud")
   , ((modm .|. shiftMask, xK_h), namedScratchpadAction myScratchPads "htop")
   , ((modm .|. shiftMask, xK_n), namedScratchpadAction myScratchPads "nm")
   , ((modm .|. shiftMask, xK_e), namedScratchpadAction myScratchPads "ncmpcpp")
@@ -148,6 +172,9 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ( (modm, xK_F11)
     , spawn
         "pactl set-sink-volume alsa_output.usb-Creative_Technology_Ltd_SB_X-Fi_Surround_5.1_Pro_000003XO-00.analog-stereo -3%")
+    -- TTS
+  -- ,((modm ,xK_v), spawn "/home/peterzky/.xmonad/tts.sh")
+  -- ,((modm .|. shiftMask, xK_v), spawn "killall aplay")
    -- Screenshots
   , ( (0, xK_Print)
     , spawn "scrot -s ~/Nextcloud/Screenshots/Screenshot%Y-%m-%d%H:%M:%S.png")
@@ -165,6 +192,9 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]
   ]
 
+------------------------------------------------------------------------
+-- Mouse bindings: default actions bound to mouse events
+--
 myMouseBindings XConfig {XMonad.modMask = modm} =
   M.fromList
     -- mod-button1, Set the window to floating mode and move by dragging
@@ -181,6 +211,10 @@ myMouseBindings XConfig {XMonad.modMask = modm} =
     , ((0, 9), \w -> focus w >> mouseResizeWindow w >> windows W.shiftMaster)
     ]
 
+------------------------------------------------------------------------
+-- Layouts:
+-- myWin = windowNavigation $ subTabbed $ boringWindows
+
 myLayout =
    myTiled ||| myMirror ||| myFull
   where
@@ -192,6 +226,8 @@ myLayout =
     myFull = renamed [XMonad.Layout.Renamed.Replace "F"]
        $ Full
 
+------------------------------------------------------------------------
+-- Window rules:
 myManageHook =
   composeAll . concat $
   [ [manageDocks]
@@ -232,7 +268,17 @@ myManageHook =
     myPCFloats = []
     myRole = ["pop-up"]
 
+------------------------------------------------------------------------
+-- Event handling
+------------------------------------------------------------------------
+-- Status bars and logging
 -- xmobarCurrentWorkspaceColor = "#CEFFAC"
+xmobarTitleColor = "#3399ff"
+
+-- myNormalBorderColor = "#7c7c7c"
+myNormalBorderColor = "#000000"
+
+myFocusedBorderColor = "#CEFFAC"
 
 myPP h =
   xmobarPP
