@@ -1,37 +1,44 @@
-{-# OPTIONS_GHC
-  -fno-warn-missing-signatures -fno-warn-type-defaults #-}
+{-# OPTIONS_GHC-fno-warn-missing-signatures -fno-warn-type-defaults #-}
 
-import XMonad
+import           XMonad
 
-import System.Exit
-import System.IO
+import           System.Exit
+import           System.IO
 
-import Data.List
+import           Data.List
 
-import XMonad.Config.Xfce
-import XMonad.Hooks.DynamicLog
-import XMonad.Hooks.EwmhDesktops
-import XMonad.Hooks.ManageDocks
-import XMonad.Hooks.ManageHelpers
+import           XMonad.Config.Xfce
+import           XMonad.Hooks.DynamicLog
+import           XMonad.Hooks.EwmhDesktops
+import           XMonad.Hooks.ManageDocks
+import           XMonad.Hooks.ManageHelpers
 
-import XMonad.Util.Cursor
-import XMonad.Util.WorkspaceCompare
-import XMonad.Util.NamedScratchpad
-import XMonad.Util.Run (spawnPipe)
+import           XMonad.Util.Cursor
+import           XMonad.Util.NamedScratchpad
+import           XMonad.Util.Run                  (spawnPipe)
+import           XMonad.Util.WorkspaceCompare
 
-import XMonad.Actions.CycleWS
-import XMonad.Actions.UpdatePointer
+import           XMonad.Actions.CycleWS
+import           XMonad.Actions.UpdatePointer
 
-import XMonad.Layout.IndependentScreens
-import XMonad.Layout.Renamed
-import XMonad.Layout.Spacing
-import XMonad.Layout.NoBorders
+import           XMonad.Layout.IndependentScreens
+import           XMonad.Layout.NoBorders
+import           XMonad.Layout.Renamed
+import           XMonad.Layout.Spacing
 
-import XMonad.Prompt.XMonad
+import           XMonad.Prompt.XMonad
 
-import qualified Data.Map as M
-import qualified XMonad.StackSet as W
+import qualified Data.Map                         as M
+import qualified XMonad.StackSet                  as W
 
+
+systemPromptCmds =
+  [ ("Shutdown", spawn "sudo systemctl poweroff")
+  , ("Reboot", spawn "sudo systemctl reboot")
+  , ("Exit", io exitSuccess)
+  , ("Hibernate", spawn "sudo systemctl hibernate")
+  , ("Restart", restart "xmonad" True)
+  ]
 
 myScratchPads =
   [ NS "fileManager" "thunar" (className =? "Thunar")
@@ -43,33 +50,27 @@ myScratchPads =
        "emacsclient -c -F '((name . \"org-agenda\"))' -e '(progn (org-todo-list)(delete-other-windows))'"
        (title =? "org-agenda")
        (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
-  , NS
-      "music"
+  , NS "music"
       "urxvtc -title musicbox -e musicbox"
       (title =? "musicbox")
       (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
-  , NS
-      "htop"
+  , NS "htop"
       "urxvtc -title htop -e htop"
       (title =? "htop")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
-  , NS
-      "nm"
+  , NS "nm"
       "urxvtc -title nmtui -e nmtui"
       (title =? "nmtui")
       (customFloating $ W.RationalRect (1 / 3) (1 / 3) (1 / 3) (1 / 3))
-  , NS
-      "term"
+  , NS "term"
       "urxvtc -title term"
       (title =? "term")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
-  , NS
-      "ncmpcpp"
+  , NS "ncmpcpp"
       "urxvtc -title ncmpcpp -e ncmpcpp"
       (title =? "ncmpcpp")
       (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
-  , NS
-      "weechat"
+  , NS "weechat"
       "urxvtc -title weechat -e weechat"
       (title =? "weechat")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
@@ -83,7 +84,7 @@ myTerminal = "urxvtc"
 
 myFocusFollowsMouse = True
 
-myBorderWidth = 3
+myBorderWidth = 2
 
 xmobarTitleColor = "#3399ff"
 
@@ -91,6 +92,9 @@ myNormalBorderColor = "#000000"
 
 myFocusedBorderColor = "#90C695"
 
+mySpeaker = "alsa_output.usb-Harman_Multimedia_JBL_Pebbles_1.0.0-00.analog-stereo"
+
+myHeadset = "alsa_output.usb-Creative_Technology_Ltd_SB_X-Fi_Surround_5.1_Pro_000003XO-00.analog-stereo"
 
 myModMask = mod4Mask
 
@@ -136,23 +140,18 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_v), namedScratchpadAction myScratchPads "mpv")
   , ((modm, xK_v), namedScratchpadAction myScratchPads "pavucontrol")
     -- Volume control
-  , ( (0, xK_F12)
-    , spawn
-        "pactl set-sink-volume alsa_output.usb-Harman_Multimedia_JBL_Pebbles_1.0.0-00.analog-stereo +3%")
-  , ( (0, xK_F11)
-    , spawn
-        "pactl set-sink-volume alsa_output.usb-Harman_Multimedia_JBL_Pebbles_1.0.0-00.analog-stereo -3%")
-  , ( (modm, xK_F12)
-    , spawn
-        "pactl set-sink-volume alsa_output.usb-Creative_Technology_Ltd_SB_X-Fi_Surround_5.1_Pro_000003XO-00.analog-stereo +3%")
-  , ( (modm, xK_F11)
-    , spawn
-        "pactl set-sink-volume alsa_output.usb-Creative_Technology_Ltd_SB_X-Fi_Surround_5.1_Pro_000003XO-00.analog-stereo -3%")
+  , ((0, xK_F12), spawn $ "pactl set-sink-volume " ++ mySpeaker ++ " +3%")
+  , ((0, xK_F11) , spawn $ "pactl set-sink-volume " ++ mySpeaker ++ " -3%")
+  , ((modm, xK_F12), spawn $ "pactl set-sink-volume " ++ myHeadset ++ " +3%")
+  , ((modm, xK_F11), spawn $ "pactl set-sink-volume " ++ myHeadset ++ " -3%")
    -- Screenshots
   , ( (0, xK_Print)
     , spawn "scrot -s ~/Nextcloud/Screenshots/Screenshot%Y-%m-%d%H:%M:%S.png")
   , ( (modm, xK_Print)
     , spawn "scrot -u ~/Nextcloud/Screenshots/Screenshot%Y-%m-%d%H:%M:%S.png")
+   -- System Prompt
+   , ((0, xK_Pause), xmonadPromptC systemPromptCmds def)
+
   ] ++
     -- Workspaces
   [ ((m .|. modm, k), windows $ onCurrentScreen f i)
@@ -231,8 +230,6 @@ myManageHook =
     myPTFloats = ["DownThemAll!", "AutoProxy", "Install user style","Ediff"]
     myPCFloats = []
     myRole = ["pop-up"]
-
--- xmobarCurrentWorkspaceColor = "#CEFFAC"
 
 myPP h =
   xmobarPP
