@@ -32,6 +32,7 @@ import XMonad.Layout.Renamed
 import XMonad.Layout.Spacing
 import XMonad.Layout.SubLayouts
 import XMonad.Layout.WindowNavigation
+import XMonad.Layout.NoBorders
 
 import XMonad.Prompt.XMonad
 
@@ -96,7 +97,7 @@ myTerminal = "urxvtc"
 
 myFocusFollowsMouse = True
 
-myBorderWidth = 0
+myBorderWidth = 3
 
 myModMask = mod4Mask
 
@@ -182,8 +183,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   ] ++
     -- Workspaces
   [ ((m .|. modm, k), windows $ onCurrentScreen f i)
-  | (i, k) <- zip (workspaces' conf) [xK_1 .. xK_9]
-  , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]
+       | (i, k) <- zip (workspaces' conf) [xK_1 .. xK_9]
+       , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]
   ] ++
     -- Monitors
   [ ((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
@@ -217,13 +218,13 @@ myMouseBindings XConfig {XMonad.modMask = modm} =
 myLayout =
    myTiled ||| myMirror ||| myFull
   where
-    myTiled = renamed [XMonad.Layout.Renamed.Replace "Tiled"]
+    myTiled = renamed [XMonad.Layout.Renamed.Replace "T"]
       . windowNavigation . subTabbed . boringWindows
       . smartSpacing 2 $ Tall 1 (3 / 100) (1 / 2)
-    myMirror = renamed [XMonad.Layout.Renamed.Replace "Mirror"]
+    myMirror = renamed [XMonad.Layout.Renamed.Replace "M"]
       . windowNavigation . subTabbed . boringWindows $ Mirror myTiled
 
-    myFull = renamed [XMonad.Layout.Renamed.Replace "Full"]
+    myFull = renamed [XMonad.Layout.Renamed.Replace "F"]
       . windowNavigation . subTabbed . boringWindows $ Full
 
 ------------------------------------------------------------------------
@@ -275,9 +276,10 @@ myManageHook =
 -- xmobarCurrentWorkspaceColor = "#CEFFAC"
 xmobarTitleColor = "#3399ff"
 
-myNormalBorderColor = "#7c7c7c"
+-- myNormalBorderColor = "#7c7c7c"
+myNormalBorderColor = "#000000"
 
-myFocusedBorderColor = "#ffb6b0"
+myFocusedBorderColor = "#CEFFAC"
 
 myPP h =
   xmobarPP
@@ -297,7 +299,7 @@ myLogHook h0 h1 h2 =
 -- Startup hook
 myStartupHook =
   -- setWMName "LG3D" <+>
-  spawn "compton -cCzG -t-3 -l-5 -r4 --config /dev/null --backend xrender --unredir-if-possible" <+>
+  spawn "compton -fcC -t-3 -l-5 -r4 --config /dev/null --backend xrender --unredir-if-possible" <+>
   spawn "urxvtd" <+>
   spawn "emacs --daemon" <+>
   spawn "source ~/.fehbg"
@@ -320,7 +322,7 @@ main = do
       , focusedBorderColor = myFocusedBorderColor
       , keys = myKeys
       , mouseBindings = myMouseBindings
-      , layoutHook = avoidStruts myLayout
+      , layoutHook = avoidStruts $ smartBorders $ myLayout
       , handleEventHook = mempty <+> docksEventHook <+> fullscreenEventHook
       , startupHook = myStartupHook
       , manageHook = myManageHook <+> manageHook xfceConfig
