@@ -18,6 +18,7 @@ import           XMonad.Util.Run                  (spawnPipe)
 import           XMonad.Util.WorkspaceCompare
 
 import           XMonad.Actions.CycleWS
+import           XMonad.Actions.DynamicProjects
 import           XMonad.Actions.UpdatePointer
 
 import           XMonad.Layout.IndependentScreens
@@ -30,6 +31,13 @@ import           XMonad.Prompt.XMonad
 import qualified Data.Map                         as M
 import qualified XMonad.StackSet                  as W
 
+projects =
+  [ Project { projectName = "haskell"
+            , projectDirectory = "~/"
+            , projectStartHook = Just $ do spawn "emt ~/playground/haskell/hello.hs"
+                                           spawn "zathura ~/Nextcloud/books/Christopher Allen, Julie Moronuki-Haskell Programming from first principles (2016).pdf"
+            }
+  ]
 
 systemPromptCmds =
   [ ("Shutdown", spawn "sudo systemctl poweroff")
@@ -49,32 +57,25 @@ myScratchPads =
        "emacsclient -c -F '((name . \"org-agenda\"))' -e '(progn (org-todo-list)(delete-other-windows))'"
        (title =? "org-agenda")
        (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
-  , NS "music"
-      "urxvtc -title musicbox -e musicbox"
+  , NS "music" "urxvtc -title musicbox -e musicbox"
       (title =? "musicbox")
       (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
-  , NS "htop"
-      "urxvtc -title htop -e htop"
+  , NS "htop" "urxvtc -title htop -e htop"
       (title =? "htop")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
-  , NS "nm"
-      "urxvtc -title nmtui -e nmtui"
+  , NS "nm" "urxvtc -title nmtui -e nmtui"
       (title =? "nmtui")
       (customFloating $ W.RationalRect (1 / 3) (1 / 3) (1 / 3) (1 / 3))
-  , NS "term"
-      "urxvtc -title term"
+  , NS "term" "urxvtc -title term"
       (title =? "term")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
-  , NS "ncmpcpp"
-      "urxvtc -title ncmpcpp -e ncmpcpp"
+  , NS "ncmpcpp" "urxvtc -title ncmpcpp -e ncmpcpp"
       (title =? "ncmpcpp")
       (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
-  , NS "weechat"
-      "urxvtc -title weechat -e weechat"
+  , NS "weechat" "urxvtc -title weechat -e weechat"
       (title =? "weechat")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
-  , NS "ranger"
-       "urxvtc -title rangerfloat -e ranger"
+  , NS "ranger" "urxvtc -title rangerfloat -e ranger"
       (title =? "rangerfloat")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
   ]
@@ -124,8 +125,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_comma), sendMessage (IncMasterN 1))
   , ((modm, xK_period), sendMessage (IncMasterN (-1)))
     -- Applications
-  , ( (modm .|. shiftMask, xK_r)
-    , spawn "killall xmobar; xmonad --recompile; xmonad --restart")
+  , ((modm .|. shiftMask, xK_r) , spawn "killall xmobar; xmonad --recompile; xmonad --restart")
   , ((modm, xK_f), namedScratchpadAction myScratchPads "ranger")
   , ((modm, xK_e), namedScratchpadAction myScratchPads "music")
   , ((modm .|. shiftMask, xK_h), namedScratchpadAction myScratchPads "htop")
@@ -144,12 +144,11 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_F12), spawn $ "pactl set-sink-volume " ++ myHeadset ++ " +3%")
   , ((modm, xK_F11), spawn $ "pactl set-sink-volume " ++ myHeadset ++ " -3%")
    -- Screenshots
-  , ( (0, xK_Print)
-    , spawn "scrot -s ~/Nextcloud/Screenshots/Screenshot%Y-%m-%d%H:%M:%S.png")
-  , ( (modm, xK_Print)
-    , spawn "scrot -u ~/Nextcloud/Screenshots/Screenshot%Y-%m-%d%H:%M:%S.png")
+  , ((0, xK_Print), spawn "scrot -s ~/Nextcloud/Screenshots/Screenshot%Y-%m-%d%H:%M:%S.png")
+  , ((modm, xK_Print), spawn "scrot -u ~/Nextcloud/Screenshots/Screenshot%Y-%m-%d%H:%M:%S.png")
    -- System Prompt
-   , ((0, xK_Pause), xmonadPromptC systemPromptCmds def)
+   ,((0, xK_Pause), xmonadPromptC systemPromptCmds def)
+   -- ,((modm, xK_slash), shiftToProjectPrompt)
 
   ] ++
     -- Workspaces
@@ -223,6 +222,7 @@ myManageHook =
       , "obs"
       , "Thunderbird"
       , "Octave"
+      , "feh"
       ]
     myTFloats = ["Add Downloads", "Library","emacs-capture"]
     myRFloats = ["desktop_window"]
@@ -244,8 +244,6 @@ myLogHook h0 h1 h2 =
         namedScratchpadFilterOutWorkspacePP . marshallPP screen . myPP
   in bar 0 h0 >> bar 1 h1 >> bar 2 h2 >> updatePointer (0.9, 0.9) (0.9, 0.9)
 
-------------------------------------------------------------------------
--- Startup hook
 myStartupHook =
   -- setWMName "LG3D" <+>
   spawn "compton -fcC -t-3 -l-5 -r4 --config /dev/null --backend xrender --unredir-if-possible" <+>
@@ -253,7 +251,6 @@ myStartupHook =
   spawn "emacs --daemon" <+>
   spawn "source ~/.fehbg"
 
-------------------------------------------------------------------------
 main = do
   h0 <- spawnPipe "xmobar -x 0 ~/.xmonad/xmobar.hs"
   h1 <- spawnPipe "xmobar -x 1 ~/.xmonad/xmoside.hs"
