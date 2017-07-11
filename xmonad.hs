@@ -75,6 +75,9 @@ myScratchPads =
   , NS "weechat" "urxvtc -title weechat -e weechat"
       (title =? "weechat")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
+  , NS "mutt" "urxvtc -title mutt -e mutt"
+      (title =? "mutt")
+      (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
   , NS "ranger" "urxvtc -title rangerfloat -e ranger"
       (title =? "rangerfloat")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
@@ -131,7 +134,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_h), namedScratchpadAction myScratchPads "htop")
   , ((modm .|. shiftMask, xK_n), namedScratchpadAction myScratchPads "nm")
   , ((modm .|. shiftMask, xK_e), namedScratchpadAction myScratchPads "ncmpcpp")
-  , ((modm .|. shiftMask, xK_i), namedScratchpadAction myScratchPads "weechat")
+  , ((modm .|. shiftMask, xK_i), namedScratchpadAction myScratchPads "mutt")
   , ((modm .|. shiftMask, xK_f), namedScratchpadAction myScratchPads "fileManager")
   , ((modm, xK_w), spawn "emacsclient -nc")
   , ((modm, xK_c), spawn "conkeror")
@@ -246,19 +249,16 @@ myLogHook h0 h1 h2 =
 
 myStartupHook =
   -- setWMName "LG3D" <+>
-  spawn "compton -fcC -t-3 -l-5 -r4 --config /dev/null --backend xrender --unredir-if-possible" <+>
-  spawn "urxvtd" <+>
-  spawn "emacs --daemon" <+>
+  -- spawn "compton -fcC -t-3 -l-5 -r4 --config /dev/null --backend xrender --unredir-if-possible" <+>
+  -- spawn "urxvtd" <+>
+  -- spawn "emacs --daemon" <+>
   spawn "source ~/.fehbg"
 
 main = do
   h0 <- spawnPipe "xmobar -x 0 ~/.xmonad/xmobar.hs"
   h1 <- spawnPipe "xmobar -x 1 ~/.xmonad/xmoside.hs"
   h2 <- spawnPipe "xmobar -x 2 ~/.xmonad/xmoside.hs"
-  xmonad
-    -- $ dynamicProjects projects
-    $ ewmh
-      def
+  xmonad $ ewmh def
       { terminal = myTerminal
       , focusFollowsMouse = myFocusFollowsMouse
       , borderWidth = myBorderWidth
