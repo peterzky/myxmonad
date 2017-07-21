@@ -68,7 +68,7 @@ Config {
                              ] 10
 
         -- cpu activity monitor
-        , Run MultiCpu       [ "--template" , "<fn=1>\xf108</fn><total0>%"
+        , Run MultiCpu       [ "--template" , "<fn=1>\xf108</fn> <total0>%"
                              , "--Low"      , "50"         -- units: %
                              , "--High"     , "85"         -- units: %
                              , "--low"      , "darkgreen"
@@ -78,7 +78,7 @@ Config {
                              ] 10
 
         -- cpu core temperature monitor
-        , Run CoreTemp       [ "--template" , "<fn=1>\xf2c8</fn><core0>°C"
+        , Run CoreTemp       [ "--template" , "<fn=1>\xf2c8</fn> <core0>°C"
                              , "--Low"      , "70"        -- units: °C
                              , "--High"     , "80"        -- units: °C
                              , "--low"      , "darkgreen"
@@ -87,7 +87,7 @@ Config {
                              ] 50
 
         -- memory usage monitor
-        , Run Memory         [ "--template" ,"<fn=1>\xf233</fn><usedratio>%"
+        , Run Memory         [ "--template" ,"<fn=1>\xf233</fn> <usedratio>%"
                              , "--Low"      , "20"        -- units: %
                              , "--High"     , "90"        -- units: %
                              , "--low"      , "darkgreen"
