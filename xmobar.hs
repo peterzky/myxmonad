@@ -16,7 +16,7 @@ Config {
    -- layout
    , sepChar =  "%"   -- delineator between plugin names and straight text
    , alignSep = "}{"  -- separator between left-right alignment
-   , template = "%StdinReader% } {%org% %multicpu% %coretemp% %memory% %dynnetwork% %date% %default:Master% %iem% "
+   , template = "%StdinReader% } {%timer% %org% %multicpu% %coretemp% %memory% %dynnetwork% %date% %default:Master% %iem% "
 
    -- general behavior
    , lowerOnStart =     False    -- send to bottom of window stack on start
@@ -47,6 +47,7 @@ Config {
         -- , Run Mail [( "inbox", "~/.mail/qq/Inbox")] "mail"
         , Run Com "iem" [] "iem" 10
         , Run Com "org-pomodoro" [] "org" 10
+        , Run Com "timer-client" [] "timer" 10
         , Run Volume "default" "Master" [
                 "-t", "<status> <volume>%",
             "--",
