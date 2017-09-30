@@ -54,7 +54,7 @@ myScratchPads =
   , NS "cloud" "nextcloud" (className =? "Nextcloud") defaultFloating
   , NS "mpv" "" (className =? "mpv") defaultFloating
   , NS "org"
-       "emacsclient -c -F '((name . \"org-agenda\"))' -e '(progn (org-todo-list)(delete-other-windows))'"
+       "emacsclient -c -F '((name . \"org-agenda\") (alpha . (85 . 85)))' -e '(progn (org-todo-list)(delete-other-windows))'"
        (title =? "org-agenda")
        (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
   , NS "music" "urxvtc -title musicbox -e musicbox"
@@ -89,7 +89,7 @@ myFocusFollowsMouse = True
 
 myBorderWidth = 2
 
-xmobarTitleColor = "#3399ff"
+xmobarTitleColor = "#ababab"
 
 myNormalBorderColor = "#000000"
 
@@ -236,9 +236,10 @@ myManageHook =
 myPP h =
   xmobarPP
   { ppOutput = hPutStrLn h
+  , ppSep = "  "
   , ppTitle = xmobarColor xmobarTitleColor "" . shorten 50
   , ppSort = getSortByXineramaRule
-  , ppLayout = xmobarColor "red" ""
+  , ppLayout = xmobarColor "#CEFFAC" ""
   }
 
 myLogHook h0 h1 h2 =
