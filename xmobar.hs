@@ -25,26 +25,8 @@ Config {
    , overrideRedirect = True    -- set the Override Redirect flag (Xlib)
    , pickBroadest =     False   -- choose widest display (multi-monitor)
    , persistent =       True    -- enable/disable hiding (True = disabled)
-
-   -- plugins
-   --   Numbers can be automatically colored according to their value. xmobar
-   --   decides color based on a three-tier/two-cutoff system, controlled by
-   --   command options:
-   --     --Low sets the low cutoff
-   --     --High sets the high cutoff
-   --
-   --     --low sets the color below --Low cutoff
-   --     --normal sets the color between --Low and --High cutoffs
-   --     --High sets the color above --High cutoff
-   --
-   --   The --template option controls how the plugin is displayed. Text
-   --   color can be set by enclosing in <fc></fc> tags. For more details
-   --   see http://projects.haskell.org/xmobar/#system-monitor-plugins.
    , commands =
-
-        -- weather monitor
         [ Run StdinReader
-        -- , Run Mail [( "inbox", "~/.mail/qq/Inbox")] "mail"
         , Run Com "iem" [] "iem" 10
         , Run Com "org-pomodoro" [] "org" 10
         , Run Com "timer-client" [] "timer" 10
@@ -61,9 +43,9 @@ Config {
         , Run DynNetwork     [ "--template" , "<fn=1>\xf1eb</fn> <tx> <rx>"
                              , "--Low"      , "1000"       -- units: B/s
                              , "--High"     , "5000"       -- units: B/s
-                             , "--low"      , "darkgreen"
-                             , "--normal"   , "darkorange"
-                             , "--high"     , "darkred"
+                             , "--low"      , "#87d37c"
+                             , "--normal"   , "#f4b350"
+                             , "--high"     , "#ec644b"
                              , "--suffix"   , "On"
                              , "--width"    , "6"
                              ] 10
@@ -72,9 +54,9 @@ Config {
         , Run MultiCpu       [ "--template" , "<fn=1>\xf108</fn> <total0>%"
                              , "--Low"      , "50"         -- units: %
                              , "--High"     , "85"         -- units: %
-                             , "--low"      , "darkgreen"
-                             , "--normal"   , "darkorange"
-                             , "--high"     , "darkred"
+                             , "--low"      , "#87d37c"
+                             , "--normal"   , "#f4b350"
+                             , "--high"     , "#ec644b"
                              , "--width"    , "3"
                              ] 10
 
@@ -82,18 +64,18 @@ Config {
         , Run CoreTemp       [ "--template" , "<fn=1>\xf2c8</fn> <core0>°C"
                              , "--Low"      , "70"        -- units: °C
                              , "--High"     , "80"        -- units: °C
-                             , "--low"      , "darkgreen"
-                             , "--normal"   , "darkorange"
-                             , "--high"     , "darkred"
+                             , "--low"      , "#87d37c"
+                             , "--normal"   , "#f4b350"
+                             , "--high"     , "#ec644b"
                              ] 50
 
         -- memory usage monitor
         , Run Memory         [ "--template" ,"<fn=1>\xf233</fn> <usedratio>%"
                              , "--Low"      , "20"        -- units: %
                              , "--High"     , "90"        -- units: %
-                             , "--low"      , "darkgreen"
-                             , "--normal"   , "darkorange"
-                             , "--high"     , "darkred"
+                             , "--low"      , "#87d37c"
+                             , "--normal"   , "#f4b350"
+                             , "--high"     , "#ec644b"
                              , "--width"    , "2"
                              ] 10
 
@@ -101,9 +83,9 @@ Config {
         , Run Battery        [ "--template" , "Batt: <acstatus>"
                              , "--Low"      , "10"        -- units: %
                              , "--High"     , "80"        -- units: %
-                             , "--low"      , "darkred"
-                             , "--normal"   , "darkorange"
-                             , "--high"     , "darkgreen"
+                             , "--low"      , "#ec644b"
+                             , "--normal"   , "#f4b350"
+                             , "--high"     , "#87d37c"
 
                              , "--" -- battery specific options
                                        -- discharging status
@@ -118,9 +100,5 @@ Config {
         --   (%F = y-m-d date, %a = day of week, %T = h:m:s time)
         , Run Date           "<fn=1>\xf073</fn> %F(%a) <fn=1>\xf017</fn> %T" "date" 10
 
-        -- keyboard layout indicator
-        -- , Run Kbd            [ ("us(dvorak)" , "<fc=#00008B>DV</fc>")
-        --                      , ("us"         , "<fc=#8B0000>US</fc>")
-        --                      ]
         ]
    }

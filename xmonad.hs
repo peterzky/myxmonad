@@ -11,6 +11,7 @@ import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.EwmhDesktops
 import           XMonad.Hooks.ManageDocks
 import           XMonad.Hooks.ManageHelpers
+import           XMonad.Hooks.SetWMName
 
 import           XMonad.Util.Cursor
 import           XMonad.Util.NamedScratchpad
@@ -249,7 +250,7 @@ myLogHook h0 h1 h2 =
   in bar 0 h0 >> bar 1 h1 >> bar 2 h2 >> updatePointer (0.9, 0.9) (0.9, 0.9)
 
 myStartupHook =
-  -- setWMName "LG3D" <+>
+  setWMName "LG3D" <+>
   -- spawn "compton -fcC -t-3 -l-5 -r4 --config /dev/null --backend xrender --unredir-if-possible" <+>
   -- spawn "urxvtd" <+>
   -- spawn "emacs --daemon" <+>
