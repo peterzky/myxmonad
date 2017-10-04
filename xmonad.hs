@@ -162,7 +162,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   ] ++
     -- Monitors
   [ ((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
-  | (key, sc) <- zip [xK_s, xK_d, xK_a] [0 ..]
+  | (key, sc) <- zip [xK_s, xK_a, xK_d] [0 ..]
   , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]
   ]
 
