@@ -67,6 +67,9 @@ myScratchPads =
   , NS "nm" "urxvtc -title nmtui -e nmtui"
       (title =? "nmtui")
       (customFloating $ W.RationalRect (1 / 3) (1 / 3) (1 / 3) (1 / 3))
+  , NS "pamix" "urxvtc -title pamix -e pamix"
+      (title =? "pamix")
+      (customFloating $ W.RationalRect (1 / 3) (1 / 3) (1 / 3) (1 / 3))
   , NS "term" "urxvtc -title term"
       (title =? "term")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
@@ -141,7 +144,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_c), spawn "conkeror")
   , ((modm, xK_z), namedScratchpadAction myScratchPads "org")
   , ((modm .|. shiftMask, xK_v), namedScratchpadAction myScratchPads "mpv")
-  , ((modm, xK_v), namedScratchpadAction myScratchPads "pavucontrol")
+  , ((modm, xK_v), namedScratchpadAction myScratchPads "pamix")
     -- Volume control
   , ((0, xK_F12), spawn $ "pactl set-sink-volume " ++ mySpeaker ++ " +3%")
   , ((0, xK_F11) , spawn $ "pactl set-sink-volume " ++ mySpeaker ++ " -3%")
