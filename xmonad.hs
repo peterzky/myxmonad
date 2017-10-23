@@ -105,7 +105,7 @@ myHeadset = "alsa_output.usb-Creative_Technology_Ltd_SB_X-Fi_Surround_5.1_Pro_00
 
 myModMask = mod4Mask
 
-myWorkspaces = withScreens 3 ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+-- myWorkspaces = withScreens nScreens (map show [1..9])
 
 myLauncher = "rofi -show run"
 
@@ -261,6 +261,7 @@ myStartupHook =
   spawn "source ~/.fehbg"
 
 main = do
+  nScreens <- countScreens
   h0 <- spawnPipe "xmobar -x 0 ~/.xmonad/xmobar.hs"
   h1 <- spawnPipe "xmobar -x 1 ~/.xmonad/xmoside.hs"
   h2 <- spawnPipe "xmobar -x 2 ~/.xmonad/xmoside.hs"
@@ -269,7 +270,7 @@ main = do
       , focusFollowsMouse = myFocusFollowsMouse
       , borderWidth = myBorderWidth
       , modMask = myModMask
-      , workspaces = myWorkspaces
+      , workspaces = withScreens nScreens (map show [1..9])
       , normalBorderColor = myNormalBorderColor
       , focusedBorderColor = myFocusedBorderColor
       , keys = myKeys
