@@ -227,6 +227,7 @@ myManageHook =
       , "Thunderbird"
       , "Octave"
       , "feh"
+      , "Anki"
       ]
     myTFloats = ["Add Downloads", "Library","emacs-capture"]
     myRFloats = ["desktop_window"]
