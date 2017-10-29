@@ -141,7 +141,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_i), namedScratchpadAction myScratchPads "mutt")
   , ((modm .|. shiftMask, xK_f), namedScratchpadAction myScratchPads "fileManager")
   , ((modm, xK_w), spawn "emacsclient -nc")
-  , ((modm, xK_c), spawn "conkeror")
+  , ((modm, xK_c), spawn "tts -sel")
   , ((modm, xK_z), namedScratchpadAction myScratchPads "org")
   , ((modm .|. shiftMask, xK_v), namedScratchpadAction myScratchPads "mpv")
   , ((modm, xK_v), namedScratchpadAction myScratchPads "pamix")
