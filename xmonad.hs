@@ -1,33 +1,34 @@
 {-# OPTIONS_GHC-fno-warn-missing-signatures -fno-warn-type-defaults #-}
-import           XMonad
+import XMonad
 
-import           System.Exit
-import           System.IO
+import System.Exit
+import System.IO
 
-import           Data.List
+import Data.List
 
-import           XMonad.Config.Xfce
-import           XMonad.Hooks.DynamicLog
-import           XMonad.Hooks.EwmhDesktops
-import           XMonad.Hooks.ManageDocks
-import           XMonad.Hooks.ManageHelpers
-import           XMonad.Hooks.SetWMName
+import XMonad.Config.Xfce
+import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.EwmhDesktops
+import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.ManageHelpers
+import XMonad.Hooks.SetWMName
 
-import           XMonad.Util.Cursor
-import           XMonad.Util.NamedScratchpad
-import           XMonad.Util.Run                  (spawnPipe)
-import           XMonad.Util.WorkspaceCompare
+import XMonad.Util.Cursor
+import XMonad.Util.NamedScratchpad
+import XMonad.Util.Run                  (spawnPipe)
+import XMonad.Util.WorkspaceCompare
 
-import           XMonad.Actions.CycleWS
-import           XMonad.Actions.DynamicProjects
-import           XMonad.Actions.UpdatePointer
+import XMonad.Actions.CycleWS
+import XMonad.Actions.DynamicProjects
+import XMonad.Actions.UpdatePointer
+import XMonad.Actions.Submap
 
-import           XMonad.Layout.IndependentScreens
-import           XMonad.Layout.NoBorders
-import           XMonad.Layout.Renamed
-import           XMonad.Layout.Spacing
+import XMonad.Layout.IndependentScreens
+import XMonad.Layout.NoBorders
+import XMonad.Layout.Renamed
+import XMonad.Layout.Spacing
 
-import           XMonad.Prompt.XMonad
+import XMonad.Prompt.XMonad
 
 import qualified Data.Map                         as M
 import qualified XMonad.StackSet                  as W
@@ -51,57 +52,46 @@ systemPromptCmds =
 myScratchPads =
   [ NS "fileManager" "thunar" (className =? "Thunar")
     (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
-  , NS "pavucontrol" "pavucontrol" (className =? "Pavucontrol") defaultFloating
-  , NS "cloud" "nextcloud" (className =? "Nextcloud") defaultFloating
   , NS "mpv" "" (className =? "mpv") defaultFloating
-  , NS "org"
-       "emacsclient -c -F '((name . \"org-agenda\") (alpha . (85 . 85)))' -e '(progn (org-todo-list)(delete-other-windows))'"
-       (title =? "org-agenda")
-       (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
-  , NS "music" "urxvtc -title musicbox -e musicbox"
-      (title =? "musicbox")
+  , NS "music" "appimage-run $HOME/Sync/appimg/ieaseMusic.AppImage"
+      (className =? "ieaseMusic")
       (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
+  , NS "rambox" "appimage-run $HOME/Sync/appimg/Rambox.AppImage"
+      (className =? "Rambox")
+      (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
   , NS "htop" "urxvtc -title htop -e htop"
       (title =? "htop")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
   , NS "nm" "urxvtc -title nmtui -e nmtui"
       (title =? "nmtui")
       (customFloating $ W.RationalRect (1 / 3) (1 / 3) (1 / 3) (1 / 3))
-  , NS "pamix" "urxvtc -title pamix -e pamix"
+  , NS "pamix" "urxvtc -title pamix -e ncpamixer"
       (title =? "pamix")
       (customFloating $ W.RationalRect (1 / 3) (1 / 3) (1 / 3) (1 / 3))
-  , NS "term" "urxvtc -title term"
-      (title =? "term")
-      (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
-  , NS "ncmpcpp" "urxvtc -title ncmpcpp -e ncmpcpp"
-      (title =? "ncmpcpp")
-      (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
-  , NS "weechat" "urxvtc -title weechat -e weechat"
-      (title =? "weechat")
-      (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
-  , NS "mutt" "urxvtc -title mutt -e mutt"
-      (title =? "mutt")
-      (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
   , NS "ranger" "urxvtc -title rangerfloat -e ranger"
       (title =? "rangerfloat")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
+  , NS "org"
+       "emacsclient -c -F '((name . \"org-agenda\") (alpha . (85 . 85)))' -e '(progn (org-todo-list)(delete-other-windows))'"
+       (title =? "org-agenda")
+       (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
+  , NS "dropdown"
+    " urxvtc -title dropdown -e zsh -c 'tmux has -t dropdown && exec tmux attach-session -d -t dropdown || exec tmux new-session -s dropdown'"
+      (title =? "dropdown")
+      (customFloating $ W.RationalRect 0 0 1 (1 / 2))
   ]
 
 myTerminal = "urxvtc"
 
 myFocusFollowsMouse = True
 
-myBorderWidth = 2
+myBorderWidth = 3
 
 xmobarTitleColor = "#ababab"
 
 myNormalBorderColor = "#000000"
 
 myFocusedBorderColor = "#90C695"
-
-mySpeaker = "alsa_output.usb-Harman_Multimedia_JBL_Pebbles_1.0.0-00.analog-stereo"
-
-myHeadset = "alsa_output.usb-Creative_Technology_Ltd_SB_X-Fi_Surround_5.1_Pro_000003XO-00.analog-stereo"
 
 myModMask = mod4Mask
 
@@ -113,7 +103,6 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   M.fromList $
      -- Basic
   [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
-  , ((modm, xK_space), spawn myLauncher)
   , ((modm, xK_q), kill)
   , ((modm .|. shiftMask, xK_q), io exitSuccess)
   , ((modm, xK_grave), sendMessage NextLayout)
@@ -131,28 +120,30 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_t), withFocused $ windows . W.sink)
   , ((modm, xK_comma), sendMessage (IncMasterN 1))
   , ((modm, xK_period), sendMessage (IncMasterN (-1)))
+  , ((modm, xK_r), spawn "rofi -show run")
+    -- Submap
+  , ((modm, xK_e), submap . M.fromList $
+      [ ((0, xK_e), spawn "emacsclient -nc")
+      , ((modm, xK_e), spawn "emacsclient -nc")
+      , ((0, xK_f), spawn "firefox")
+      , ((0, xK_h), namedScratchpadAction myScratchPads "htop")
+      , ((0, xK_n), namedScratchpadAction myScratchPads "nm")
+      , ((0, xK_v), namedScratchpadAction myScratchPads "pamix")
+      , ((0, xK_a), namedScratchpadAction myScratchPads "music")
+      ])
     -- Applications
   , ((modm .|. shiftMask, xK_r) , spawn "killall xmobar; xmonad --recompile; xmonad --restart")
   , ((modm, xK_f), namedScratchpadAction myScratchPads "ranger")
-  , ((modm, xK_e), namedScratchpadAction myScratchPads "music")
-  , ((modm .|. shiftMask, xK_h), namedScratchpadAction myScratchPads "htop")
-  , ((modm .|. shiftMask, xK_n), namedScratchpadAction myScratchPads "nm")
-  , ((modm .|. shiftMask, xK_e), namedScratchpadAction myScratchPads "ncmpcpp")
-  , ((modm .|. shiftMask, xK_i), namedScratchpadAction myScratchPads "mutt")
-  , ((modm .|. shiftMask, xK_f), namedScratchpadAction myScratchPads "fileManager")
-  , ((modm, xK_w), spawn "emacsclient -nc")
-  , ((modm, xK_c), spawn "tts -sel")
+  , ((modm, xK_i), namedScratchpadAction myScratchPads "rambox")
+  , ((modm, xK_space), namedScratchpadAction myScratchPads "dropdown")
   , ((modm, xK_z), namedScratchpadAction myScratchPads "org")
   , ((modm .|. shiftMask, xK_v), namedScratchpadAction myScratchPads "mpv")
-  , ((modm, xK_v), namedScratchpadAction myScratchPads "pamix")
     -- Volume control
-  , ((0, xK_F12), spawn $ "pactl set-sink-volume " ++ mySpeaker ++ " +3%")
-  , ((0, xK_F11) , spawn $ "pactl set-sink-volume " ++ mySpeaker ++ " -3%")
-  , ((modm, xK_F12), spawn $ "pactl set-sink-volume " ++ myHeadset ++ " +3%")
-  , ((modm, xK_F11), spawn $ "pactl set-sink-volume " ++ myHeadset ++ " -3%")
+  , ((0, 0x1008FF13), spawn "pactl set-sink-volume @DEFAULT_SINK@ +2%")
+  , ((0, 0x1008FF11), spawn "pactl set-sink-volume @DEFAULT_SINK@ -2%")
+  , ((0, 0x1008FF12), spawn "pactl set-sink-mute @DEFAULT_SINK@ toggle")
    -- Screenshots
-  , ((0, xK_Print), spawn "scrot -s ~/Nextcloud/Screenshots/Screenshot%Y-%m-%d%H:%M:%S.png")
-  , ((modm, xK_Print), spawn "scrot -u ~/Nextcloud/Screenshots/Screenshot%Y-%m-%d%H:%M:%S.png")
+  , ((0, xK_Print), spawn "$HOME/.config/bspwm/scripts/ScreenShot.sh")
    -- System Prompt
    ,((0, xK_Pause), xmonadPromptC systemPromptCmds def)
    -- ,((modm, xK_slash), shiftToProjectPrompt)
@@ -172,12 +163,12 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
 myMouseBindings XConfig {XMonad.modMask = modm} =
   M.fromList
     -- mod-button1, Set the window to floating mode and move by dragging
-    [ ( (modm, button1)
+    [ ((modm, button1)
       , \w -> focus w >> mouseMoveWindow w >> windows W.shiftMaster)
     -- mod-button2, Raise the window to the top of the stack
     , ((modm, button2), \w -> focus w >> windows W.shiftMaster)
     -- mod-button3, Set the window to floating mode and resize by dragging
-    , ( (modm, button3)
+    , ((modm, button3)
       , \w -> focus w >> mouseResizeWindow w >> windows W.shiftMaster)
     -- you may also bind events to the mouse scroll wheel (button4 and button5)
     -- set mouse side button to float and resize
@@ -255,10 +246,8 @@ myLogHook h0 h1 h2 =
 
 myStartupHook =
   setWMName "LG3D" <+>
-  -- spawn "compton -fcC -t-3 -l-5 -r4 --config /dev/null --backend xrender --unredir-if-possible" <+>
-  -- spawn "urxvtd" <+>
-  -- spawn "emacs --daemon" <+>
-  spawn "source ~/.fehbg"
+  spawn "source $HOME/.fehbg" <+>
+  spawn "$HOME/.xmonad/startup.sh"
 
 main = do
   nScreens <- countScreens
