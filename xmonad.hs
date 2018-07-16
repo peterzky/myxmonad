@@ -142,6 +142,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((0, 0x1008FF13), spawn "pactl set-sink-volume @DEFAULT_SINK@ +2%")
   , ((0, 0x1008FF11), spawn "pactl set-sink-volume @DEFAULT_SINK@ -2%")
   , ((0, 0x1008FF12), spawn "pactl set-sink-mute @DEFAULT_SINK@ toggle")
+  , ((modm, xK_Home), spawn "~/.config/bspwm/scripts/AudioSwitch.sh speaker")
+  , ((modm, xK_End), spawn "~/.config/bspwm/scripts/AudioSwitch.sh headphone")
    -- Screenshots
   , ((0, xK_Print), spawn "$HOME/.config/bspwm/scripts/ScreenShot.sh")
    -- System Prompt

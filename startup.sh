@@ -22,4 +22,4 @@ fi
 check_process "compton" "compton -b"
 check_process "urxvtd" "urxvtd"
 check_process "emacs" "emacs --daemon"
-check_process "xkeysnail" "sudo xkeysnail $HOME/.config/xkeysnail//config.py"
+check_process "xkeysnail" "sudo xkeysnail -q $HOME/.config/xkeysnail//config.py"
