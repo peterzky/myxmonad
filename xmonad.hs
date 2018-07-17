@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC-fno-warn-missing-signatures -fno-warn-type-defaults #-}
-import XMonad
+import XMonad hiding ((|||))
 
 import System.Exit
 import System.IO
@@ -37,8 +37,8 @@ import XMonad.Layout.WindowArranger
 import XMonad.Layout.DecorationMadness
 import XMonad.Layout.Reflect
 import XMonad.Layout.MultiToggle
-
-import XMonad.Layout.ExcludeBorders
+import XMonad.Layout.LayoutCombinators ((|||))
+import XMonad.Actions.CycleSelectedLayouts
 
 import XMonad.Prompt
 import XMonad.Prompt.XMonad
@@ -113,7 +113,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
   , ((modm, xK_q), kill)
   , ((modm .|. shiftMask, xK_q), io exitSuccess)
-  , ((modm, xK_grave), sendMessage NextLayout)
+  -- , ((modm, xK_grave), sendMessage NextLayout)
+  , ((modm, xK_grave), cycleThroughLayouts ["T","M","L"])
   , ((modm .|. shiftMask, xK_space), setLayout $ XMonad.layoutHook conf)
   , ((modm, xK_n), refresh)
   , ((modm, xK_Tab), toggleWS)

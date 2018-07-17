@@ -16,7 +16,7 @@ Config {
    -- layout
    , sepChar =  "%"   -- delineator between plugin names and straight text
    , alignSep = "}{"  -- separator between left-right alignment
-   , template = "%StdinReader% } { %multicpu% %coretemp% %memory% %dynnetwork% %date% %default:Master% "
+   , template = "%StdinReader% } {%org% %multicpu% %coretemp% %memory% %dynnetwork% %date% %default:Master% "
 
    -- general behavior
    , lowerOnStart =     False    -- send to bottom of window stack on start
@@ -28,7 +28,7 @@ Config {
    , commands =
         [ Run StdinReader
         , Run Com "iem" [] "iem" 10
-        , Run Com "org-pomodoro" [] "org" 10
+        , Run Com "emacsclient" ["-e","(polybar-clock)"] "org" 20
         , Run Com "timer-client" [] "timer" 10
         , Run Volume "default" "Master" [
                 "-t", "<status> <volume>%",
