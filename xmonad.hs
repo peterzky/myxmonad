@@ -131,11 +131,15 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_r), spawn "rofi -show run")
   , ((modm, xK_b), withFocused toggleBorder)
   , ((modm, xK_x), sendMessage $ Toggle REFLECTX)
-    -- Float Keys
-  , ((modm, xK_Left), withFocused $ keysMoveWindow (-20, 0))
-  , ((modm, xK_Right), withFocused $ keysMoveWindow (20, 0))
-  , ((modm, xK_Up), withFocused $ keysMoveWindow (0, -20))
-  , ((modm, xK_Down), withFocused $ keysMoveWindow (0, 20))
+    -- SimpleFloat Layout Keys
+  , ((modm, xK_Left ), sendMessage (MoveLeft      20))
+  , ((modm, xK_Right), sendMessage (MoveRight     20))
+  , ((modm, xK_Down ), sendMessage (MoveDown      20))
+  , ((modm, xK_Up   ), sendMessage (MoveUp        20))
+  , ((modm .|. shiftMask, xK_Left ), sendMessage (DecreaseLeft 20))
+  , ((modm .|. shiftMask, xK_Right), sendMessage (IncreaseRight 20))
+  , ((modm .|. shiftMask, xK_Down ), sendMessage (IncreaseDown  20))
+  , ((modm .|. shiftMask, xK_Up   ), sendMessage (DecreaseUp  20))
     -- Submap
   , ((modm, xK_e), submap . M.fromList $
       [ ((0, xK_e), spawn "emacsclient -nc")
@@ -224,8 +228,6 @@ myManageHook =
   composeAll . concat $
   [ [manageDocks]
   , [isFullscreen --> doFullFloat]
-  , [className =? "Xfce4-notifyd" --> doIgnore]
-  , [className =? "Nextcloud" --> doShift "NSP"]
   , [isDialog --> doCenterFloat]
   , [className =? c --> doCenterFloat | c <- myCFloats]
   , [title =? t --> doFloat | t <- myTFloats]
@@ -240,8 +242,6 @@ myManageHook =
     myCFloats =
       [ "mpv"
       , "Lxappearance"
-      , "GoldenDict"
-      , "Pavucontrol"
       , "File-roller"
       , "Gimp"
       , "VirtualBox"
