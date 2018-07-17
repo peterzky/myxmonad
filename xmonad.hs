@@ -35,6 +35,8 @@ import XMonad.Layout.Spacing
 import XMonad.Layout.SimpleFloat
 import XMonad.Layout.WindowArranger
 import XMonad.Layout.DecorationMadness
+import XMonad.Layout.Reflect
+import XMonad.Layout.MultiToggle
 
 import XMonad.Layout.ExcludeBorders
 
@@ -45,7 +47,7 @@ import qualified Data.Map                         as M
 import qualified XMonad.StackSet                  as W
 
 myPromptTheme = def
-  { position = Top
+  { position = Bottom
   }
 
 
@@ -128,6 +130,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_period), sendMessage (IncMasterN (-1)))
   , ((modm, xK_r), spawn "rofi -show run")
   , ((modm, xK_b), withFocused toggleBorder)
+  , ((modm, xK_x), sendMessage $ Toggle REFLECTX)
     -- Float Keys
   , ((modm, xK_Left), withFocused $ keysMoveWindow (-20, 0))
   , ((modm, xK_Right), withFocused $ keysMoveWindow (20, 0))
@@ -144,7 +147,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       , ((0, xK_a), namedScratchpadAction myScratchPads "music")
       ])
     -- Applications
-  , ((modm .|. shiftMask, xK_r) , spawn "killall xmobar; xmonad --recompile; xmonad --restart")
+  , ((modm .|. shiftMask, xK_r) , spawn "pkill xmobar; xmonad --recompile; xmonad --restart")
   , ((modm, xK_f), namedScratchpadAction myScratchPads "ranger")
   , ((modm, xK_i), namedScratchpadAction myScratchPads "rambox")
   , ((modm, xK_space), namedScratchpadAction myScratchPads "dropdown")
@@ -205,7 +208,9 @@ myLayout =
    myTiled ||| myMirror ||| myFull ||| myFloat
   where
     myTiled = renamed [XMonad.Layout.Renamed.Replace "T"]
-      . smartSpacing 2 $ Tall 1 (3 / 100) (1 / 2)
+      . smartSpacing 2
+      $ mkToggle (single REFLECTX)
+      $ Tall 1 (3 / 100) (1 / 2)
     myMirror = renamed [XMonad.Layout.Renamed.Replace "M"]
        $ Mirror myTiled
 
