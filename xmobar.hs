@@ -31,12 +31,12 @@ Config {
         , Run Com "emacsclient" ["-e","(polybar-clock)"] "org" 20
         , Run Com "timer-client" [] "timer" 10
         , Run Volume "default" "Master" [
-                "-t", "<status> <volume>%",
-            "--",
-            "-o", "<fn=1>\xf026</fn>",
-            "-O", "<fn=1>\xf028</fn>",
-            "-c", "#ababab",
-            "-C", "#ababab"
+                "-t", "<action=`pactl set-sink-volume @DEFAULT_SINK@ -2%` button=5><action=`pactl set-sink-volume @DEFAULT_SINK@ +2%` button=4><action=`pactl set-sink-mute @DEFAULT_SINK@ toggle` button=1><status> <volume>%</action></action></action>",
+                "--",
+                "-o", "<fn=1>\xf026</fn>",
+                "-O", "<fn=1>\xf028</fn>",
+                "-c", "#ababab",
+                "-C", "#ababab"
                                         ] 10
 
         -- network activity monitor (dynamic interface resolution)
