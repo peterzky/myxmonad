@@ -18,11 +18,14 @@ import XMonad.Util.Cursor
 import XMonad.Util.NamedScratchpad
 import XMonad.Util.Run                  (spawnPipe)
 import XMonad.Util.WorkspaceCompare
+import XMonad.Util.Font
 
 import XMonad.Actions.CycleWS
 import XMonad.Actions.DynamicProjects
 import XMonad.Actions.UpdatePointer
 import XMonad.Actions.Submap
+import XMonad.Actions.NoBorders
+import XMonad.Actions.FloatKeys
 
 import XMonad.Layout.IndependentScreens
 import XMonad.Layout.NoBorders
@@ -33,18 +36,18 @@ import XMonad.Layout.SimpleFloat
 import XMonad.Layout.WindowArranger
 import XMonad.Layout.DecorationMadness
 
+import XMonad.Layout.ExcludeBorders
+
+import XMonad.Prompt
 import XMonad.Prompt.XMonad
 
 import qualified Data.Map                         as M
 import qualified XMonad.StackSet                  as W
 
-projects =
-  [ Project { projectName = "haskell"
-            , projectDirectory = "~/"
-            , projectStartHook = Just $ do spawn "emt ~/playground/haskell/hello.hs"
-                                           spawn "zathura ~/Nextcloud/books/Christopher Allen, Julie Moronuki-Haskell Programming from first principles (2016).pdf"
-            }
-  ]
+myPromptTheme = def
+  { position = Top
+  }
+
 
 systemPromptCmds =
   [ ("Shutdown", spawn "sudo systemctl poweroff")
@@ -83,7 +86,7 @@ myScratchPads =
   , NS "dropdown"
     " urxvtc -title dropdown -e zsh -c 'tmux has -t dropdown && exec tmux attach-session -d -t dropdown || exec tmux new-session -s dropdown'"
       (title =? "dropdown")
-      (customFloating $ W.RationalRect 0 0 1 (1 / 2))
+      (customFloating $ W.RationalRect 0 0.02 1 0.5)
   ]
 
 myTerminal = "urxvtc"
@@ -124,6 +127,12 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_comma), sendMessage (IncMasterN 1))
   , ((modm, xK_period), sendMessage (IncMasterN (-1)))
   , ((modm, xK_r), spawn "rofi -show run")
+  , ((modm, xK_b), withFocused toggleBorder)
+    -- Float Keys
+  , ((modm, xK_Left), withFocused $ keysMoveWindow (-20, 0))
+  , ((modm, xK_Right), withFocused $ keysMoveWindow (20, 0))
+  , ((modm, xK_Up), withFocused $ keysMoveWindow (0, -20))
+  , ((modm, xK_Down), withFocused $ keysMoveWindow (0, 20))
     -- Submap
   , ((modm, xK_e), submap . M.fromList $
       [ ((0, xK_e), spawn "emacsclient -nc")
@@ -150,7 +159,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
    -- Screenshots
   , ((0, xK_Print), spawn "$HOME/.config/bspwm/scripts/ScreenShot.sh")
    -- System Prompt
-   ,((0, xK_Pause), xmonadPromptC systemPromptCmds def)
+   ,((0, xK_Pause), xmonadPromptC systemPromptCmds myPromptTheme)
    -- ,((modm, xK_slash), shiftToProjectPrompt)
 
   ] ++
@@ -188,7 +197,7 @@ myTheme = def
     , inactiveBorderColor = "#111111"
     , activeTextColor     = "black"
     , inactiveTextColor   = "#d5d3a7"
-    , fontName            = "xft:Hack:size=12"
+    , fontName            = "xft:Sarasa UI SC:size=10"
     , decoHeight          = 16
     }
 
@@ -257,6 +266,7 @@ myPP h =
   , ppLayout = xmobarColor "#CEFFAC" ""
   }
 
+
 myLogHook h0 h1 h2 =
   let bar screen =
         dynamicLogWithPP .
@@ -284,8 +294,8 @@ main = do
       , keys = myKeys
       , mouseBindings = myMouseBindings
       , layoutHook = smartBorders $ avoidStruts $ myLayout
-      , handleEventHook = mempty <+> docksEventHook <+> fullscreenEventHook
+      , handleEventHook = mempty <+> fullscreenEventHook <+> docksEventHook
       , startupHook = myStartupHook
-      , manageHook = myManageHook <+> manageHook xfceConfig
+      , manageHook =  myManageHook
       , logHook = myLogHook h0 h1 h2
       }

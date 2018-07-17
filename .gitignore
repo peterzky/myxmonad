@@ -9,3 +9,5 @@ iem
 /xmonad.errors
 /xmonad.hi
 /xmonad.o
+*.hi
+*.o
