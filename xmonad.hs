@@ -13,6 +13,7 @@ import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.SetWMName
 
+import XMonad.Util.SpawnOnce
 import XMonad.Util.Cursor
 import XMonad.Util.NamedScratchpad
 import XMonad.Util.Run                  (spawnPipe)
@@ -25,8 +26,12 @@ import XMonad.Actions.Submap
 
 import XMonad.Layout.IndependentScreens
 import XMonad.Layout.NoBorders
+import XMonad.Layout.Tabbed
 import XMonad.Layout.Renamed
 import XMonad.Layout.Spacing
+import XMonad.Layout.SimpleFloat
+import XMonad.Layout.WindowArranger
+import XMonad.Layout.DecorationMadness
 
 import XMonad.Prompt.XMonad
 
@@ -96,8 +101,6 @@ myFocusedBorderColor = "#90C695"
 myModMask = mod4Mask
 
 -- myWorkspaces = withScreens nScreens (map show [1..9])
-
-myLauncher = "rofi -show run"
 
 myKeys conf@XConfig {XMonad.modMask = modm} =
   M.fromList $
@@ -178,8 +181,19 @@ myMouseBindings XConfig {XMonad.modMask = modm} =
     , ((0, 9), \w -> focus w >> mouseResizeWindow w >> windows W.shiftMaster)
     ]
 
+myTheme = def
+   {  activeColor         = "#aecf96"
+    , inactiveColor       = "#111111"
+    , activeBorderColor   = "#aecf96"
+    , inactiveBorderColor = "#111111"
+    , activeTextColor     = "black"
+    , inactiveTextColor   = "#d5d3a7"
+    , fontName            = "xft:Hack:size=12"
+    , decoHeight          = 16
+    }
+
 myLayout =
-   myTiled ||| myMirror ||| myFull
+   myTiled ||| myMirror ||| myFull ||| myFloat
   where
     myTiled = renamed [XMonad.Layout.Renamed.Replace "T"]
       . smartSpacing 2 $ Tall 1 (3 / 100) (1 / 2)
@@ -188,6 +202,9 @@ myLayout =
 
     myFull = renamed [XMonad.Layout.Renamed.Replace "F"]
        $ Full
+
+    myFloat = renamed [XMonad.Layout.Renamed.Replace "L"]
+       $ floatSimple shrinkText myTheme
 
 myManageHook =
   composeAll . concat $
