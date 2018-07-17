@@ -279,10 +279,10 @@ myLogHook h0 h1 h2 =
         namedScratchpadFilterOutWorkspacePP . marshallPP screen . myPP
   in bar 0 h0 >> bar 1 h1 >> bar 2 h2 >> updatePointer (0.9, 0.9) (0.9, 0.9)
 
-myStartupHook =
-  setWMName "LG3D" <+>
-  spawn "source $HOME/.fehbg" <+>
-  spawn "$HOME/.xmonad/startup.sh"
+myStartupHook = setWMName "LG3D"
+  <+> setDefaultCursor xC_left_ptr
+  <+> spawn "source $HOME/.fehbg"
+  <+> spawn "$HOME/.xmonad/startup.sh"
 
 main = do
   nScreens <- countScreens
