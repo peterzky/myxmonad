@@ -53,8 +53,8 @@ myPromptTheme = def
 
 
 systemPromptCmds =
-  [ ("Shutdown", spawn "sudo systemctl poweroff")
-  , ("Reboot", spawn "sudo systemctl reboot")
+  [ ("Shutdown", spawn "$HOME/.bin/shutdown.sh poweroff")
+  , ("Reboot", spawn "s$HOME/.bin/shutdown.sh reboot")
   , ("Exit", io exitSuccess)
   , ("Hibernate", spawn "sudo systemctl hibernate")
   , ("Restart", restart "xmonad" True)
@@ -285,7 +285,7 @@ myPP h =
   , ppOrder = \(ws:m:t:e) -> [ws,m] ++ e ++ [t]
   , ppSort = getSortByXineramaRule
   , ppLayout = xmobarColor "#CEFFAC" ""
-  , ppExtras = [willHookNextPP "float" $ xmobarColor "green" ""
+  , ppExtras = [ willHookNextPP "float" $ xmobarColor "green" ""
                , willHookAllNewPP "sink" $ xmobarColor "red" ""
                , willHookAllNewPP "float" $ xmobarColor "green" ""]
   }
@@ -324,7 +324,7 @@ main = do
       , keys = myKeys
       , mouseBindings = myMouseBindings
       , layoutHook =  myLayout
-      , handleEventHook = mempty <+> fullscreenEventHook <+> docksEventHook
+      , handleEventHook = fullscreenEventHook <+> docksEventHook <+> handleEventHook def
       , startupHook = myStartupHook
       , manageHook = myToggleHook <+> myManageHook
       , logHook = myLogHook h0 h1 h2
