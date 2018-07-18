@@ -52,6 +52,9 @@ import qualified XMonad.StackSet                  as W
 
 myPromptTheme = def
   { position = Bottom
+  , font = "xft:Sarasa UI SC:size=9"
+  , height = 20
+  , bgColor = "black"
   }
 
 
