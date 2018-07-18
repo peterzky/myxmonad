@@ -6,26 +6,25 @@ import System.IO
 
 import Data.List
 
-import XMonad.Config.Xfce
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.SetWMName
+import XMonad.Hooks.ToggleHook
 
-import XMonad.Util.SpawnOnce
 import XMonad.Util.Cursor
 import XMonad.Util.NamedScratchpad
-import XMonad.Util.Run                  (spawnPipe)
+import XMonad.Util.Run (spawnPipe)
 import XMonad.Util.WorkspaceCompare
 import XMonad.Util.Font
 
 import XMonad.Actions.CycleWS
-import XMonad.Actions.DynamicProjects
 import XMonad.Actions.UpdatePointer
 import XMonad.Actions.Submap
 import XMonad.Actions.NoBorders
 import XMonad.Actions.FloatKeys
+import XMonad.Actions.CycleSelectedLayouts
 
 import XMonad.Layout.IndependentScreens
 import XMonad.Layout.NoBorders
@@ -37,8 +36,10 @@ import XMonad.Layout.WindowArranger
 import XMonad.Layout.DecorationMadness
 import XMonad.Layout.Reflect
 import XMonad.Layout.MultiToggle
+import XMonad.Layout.MultiToggle.Instances
 import XMonad.Layout.LayoutCombinators ((|||))
-import XMonad.Actions.CycleSelectedLayouts
+-- import XMonad.Layout.Grid
+import XMonad.Layout.HintedGrid
 
 import XMonad.Prompt
 import XMonad.Prompt.XMonad
@@ -113,8 +114,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
   , ((modm, xK_q), kill)
   , ((modm .|. shiftMask, xK_q), io exitSuccess)
-  -- , ((modm, xK_grave), sendMessage NextLayout)
-  , ((modm, xK_grave), cycleThroughLayouts ["T","M","L"])
+  , ((modm .|. shiftMask, xK_grave), cycleThroughLayouts myOffLayout)
+  , ((modm, xK_grave), cycleThroughLayouts myMainLayout)
   , ((modm .|. shiftMask, xK_space), setLayout $ XMonad.layoutHook conf)
   , ((modm, xK_n), refresh)
   , ((modm, xK_Tab), toggleWS)
@@ -132,7 +133,12 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_r), spawn "rofi -show run")
   , ((modm, xK_b), withFocused toggleBorder)
   , ((modm, xK_x), sendMessage $ Toggle REFLECTX)
-    -- SimpleFloat Layout Keys
+  , ((modm .|. shiftMask, xK_f), sendMessage $ Toggle FULL)
+  -- Manage Hooks
+  , ((modm .|. controlMask, xK_t), toggleHookAllNew "sink" >> runLogHook)
+  , ((modm .|. controlMask, xK_f), toggleHookAllNew "float" >> runLogHook)
+  , ((modm, xK_w), toggleHookNext "float" >> runLogHook)
+  -- SimpleFloat Layout Keys
   , ((modm, xK_Left ), sendMessage (MoveLeft      20))
   , ((modm, xK_Right), sendMessage (MoveRight     20))
   , ((modm, xK_Down ), sendMessage (MoveDown      20))
@@ -141,7 +147,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_Right), sendMessage (IncreaseRight 20))
   , ((modm .|. shiftMask, xK_Down ), sendMessage (IncreaseDown  20))
   , ((modm .|. shiftMask, xK_Up   ), sendMessage (DecreaseUp  20))
-    -- Submap
+  -- Submap
   , ((modm, xK_e), submap . M.fromList $
       [ ((0, xK_e), spawn "emacsclient -nc")
       , ((modm, xK_e), spawn "emacsclient -nc")
@@ -151,7 +157,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       , ((0, xK_v), namedScratchpadAction myScratchPads "pamix")
       , ((0, xK_a), namedScratchpadAction myScratchPads "music")
       ])
-    -- Applications
+   -- Applications
   , ((modm .|. shiftMask, xK_r) , spawn "pkill xmobar; xmonad --recompile; xmonad --restart")
   , ((modm, xK_f), namedScratchpadAction myScratchPads "ranger")
   , ((modm, xK_i), namedScratchpadAction myScratchPads "rambox")
@@ -209,21 +215,29 @@ myTheme = def
     , decoHeight          = 16
     }
 
-myLayout =
-   myTiled ||| myMirror ||| myFull ||| myFloat
+myMainLayout = ["T", "L"]
+
+myOffLayout = ["Grid","M"]
+
+myLayout = id
+   . smartBorders
+   . avoidStruts
+   . mkToggle (single FULL)
+   $ myTiled ||| myMirror |||  myFloat ||| myGrid
   where
     myTiled = renamed [XMonad.Layout.Renamed.Replace "T"]
-      . smartSpacing 2
+      . smartSpacing 3
       $ mkToggle (single REFLECTX)
       $ Tall 1 (3 / 100) (1 / 2)
-    myMirror = renamed [XMonad.Layout.Renamed.Replace "M"]
-       $ Mirror myTiled
 
-    myFull = renamed [XMonad.Layout.Renamed.Replace "F"]
-       $ Full
+    myMirror = renamed [XMonad.Layout.Renamed.Replace "M"]
+      $ Mirror myTiled
 
     myFloat = renamed [XMonad.Layout.Renamed.Replace "L"]
-       $ floatSimple shrinkText myTheme
+      $ floatSimple shrinkText myTheme
+
+    myGrid = renamed [XMonad.Layout.Renamed.Replace "Grid"]
+      $ Grid False
 
 myManageHook =
   composeAll . concat $
@@ -268,8 +282,12 @@ myPP h =
   { ppOutput = hPutStrLn h
   , ppSep = "  "
   , ppTitle = xmobarColor xmobarTitleColor "" . shorten 50
+  , ppOrder = \(ws:m:t:e) -> [ws,m] ++ e ++ [t]
   , ppSort = getSortByXineramaRule
   , ppLayout = xmobarColor "#CEFFAC" ""
+  , ppExtras = [willHookNextPP "float" $ xmobarColor "green" ""
+               , willHookAllNewPP "sink" $ xmobarColor "red" ""
+               , willHookAllNewPP "float" $ xmobarColor "green" ""]
   }
 
 
@@ -283,6 +301,12 @@ myStartupHook = setWMName "LG3D"
   <+> setDefaultCursor xC_left_ptr
   <+> spawn "source $HOME/.fehbg"
   <+> spawn "$HOME/.xmonad/startup.sh"
+
+myToggleHook = toggleHook "float" doFloat
+               <+> toggleHook "sink" doSink
+
+doSink :: ManageHook
+doSink = ask >>= \w -> liftX (reveal w) >> doF (W.sink w)
 
 main = do
   nScreens <- countScreens
@@ -299,9 +323,9 @@ main = do
       , focusedBorderColor = myFocusedBorderColor
       , keys = myKeys
       , mouseBindings = myMouseBindings
-      , layoutHook = smartBorders $ avoidStruts $ myLayout
+      , layoutHook =  myLayout
       , handleEventHook = mempty <+> fullscreenEventHook <+> docksEventHook
       , startupHook = myStartupHook
-      , manageHook =  myManageHook
+      , manageHook = myToggleHook <+> myManageHook
       , logHook = myLogHook h0 h1 h2
       }
