@@ -1,25 +1,11 @@
 {-# OPTIONS_GHC-fno-warn-missing-signatures -fno-warn-type-defaults #-}
 import XMonad hiding ((|||))
-
 import System.Exit
 import System.IO
-import Control.Monad (when, join)
 
+import Control.Monad (when, join)
 import Data.Maybe (maybeToList)
 import Data.List
-
-import XMonad.Hooks.DynamicLog
-import XMonad.Hooks.EwmhDesktops
-import XMonad.Hooks.ManageDocks
-import XMonad.Hooks.ManageHelpers
-import XMonad.Hooks.SetWMName
-import XMonad.Hooks.ToggleHook
-
-import XMonad.Util.Cursor
-import XMonad.Util.NamedScratchpad
-import XMonad.Util.Run (spawnPipe)
-import XMonad.Util.WorkspaceCompare
-import XMonad.Util.Font
 
 import XMonad.Actions.CycleWS
 import XMonad.Actions.UpdatePointer
@@ -27,6 +13,15 @@ import XMonad.Actions.Submap
 import XMonad.Actions.NoBorders
 import XMonad.Actions.FloatKeys
 import XMonad.Actions.CycleSelectedLayouts
+import XMonad.Actions.WithAll
+import XMonad.Actions.Promote
+
+import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.EwmhDesktops
+import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.ManageHelpers
+import XMonad.Hooks.SetWMName
+import XMonad.Hooks.ToggleHook
 
 import XMonad.Layout.IndependentScreens
 import XMonad.Layout.NoBorders
@@ -40,14 +35,20 @@ import XMonad.Layout.Reflect
 import XMonad.Layout.MultiToggle
 import XMonad.Layout.MultiToggle.Instances
 import XMonad.Layout.LayoutCombinators ((|||))
--- import XMonad.Layout.Grid
 import XMonad.Layout.HintedGrid
 
 import XMonad.Prompt
 import XMonad.Prompt.XMonad
 
+import XMonad.Util.Cursor
+import XMonad.Util.NamedScratchpad
+import XMonad.Util.Run (spawnPipe)
+import XMonad.Util.WorkspaceCompare
+import XMonad.Util.Font
+
 import qualified Data.Map                         as M
 import qualified XMonad.StackSet                  as W
+
 
 myPromptTheme = def
   { position = Bottom
@@ -115,7 +116,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
      -- Basic
   [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
   , ((modm, xK_q), kill)
-  , ((modm .|. shiftMask, xK_q), io exitSuccess)
+  , ((modm, xK_BackSpace), killAll)
+  , ((modm .|. shiftMask, xK_e), io exitSuccess)
   , ((modm .|. shiftMask, xK_grave), cycleThroughLayouts myOffLayout)
   , ((modm, xK_grave), cycleThroughLayouts myMainLayout)
   , ((modm .|. shiftMask, xK_space), setLayout $ XMonad.layoutHook conf)
@@ -124,7 +126,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_j), windows W.focusDown)
   , ((modm, xK_k), windows W.focusUp)
   , ((modm, xK_m), windows W.focusMaster)
-  , ((modm, xK_Return), windows W.swapMaster)
+  , ((modm, xK_Return), promote)
   , ((modm .|. shiftMask, xK_j), windows W.swapDown)
   , ((modm .|. shiftMask, xK_k), windows W.swapUp)
   , ((modm, xK_h), sendMessage Shrink)
@@ -141,6 +143,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. controlMask, xK_t), toggleHookAllNew "sink" >> runLogHook)
   , ((modm .|. controlMask, xK_f), toggleHookAllNew "float" >> runLogHook)
   , ((modm, xK_w), toggleHookNext "float" >> runLogHook)
+  , ((modm .|. shiftMask, xK_t), sinkAll)
   -- SimpleFloat Layout Keys
   , ((modm, xK_Left ), sendMessage (MoveLeft      20))
   , ((modm, xK_Right), sendMessage (MoveRight     20))
@@ -167,7 +170,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_space), namedScratchpadAction myScratchPads "dropdown")
   , ((modm, xK_z), namedScratchpadAction myScratchPads "org")
   , ((modm .|. shiftMask, xK_v), namedScratchpadAction myScratchPads "mpv")
-    -- Volume control
+   -- Volume control
   , ((0, 0x1008FF13), spawn "pactl set-sink-volume @DEFAULT_SINK@ +2%")
   , ((0, 0x1008FF11), spawn "pactl set-sink-volume @DEFAULT_SINK@ -2%")
   , ((0, 0x1008FF12), spawn "pactl set-sink-mute @DEFAULT_SINK@ toggle")
