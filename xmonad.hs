@@ -136,6 +136,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_b), withFocused toggleBorder)
   , ((modm, xK_x), sendMessage $ Toggle REFLECTX)
   , ((modm .|. shiftMask, xK_f), sendMessage $ Toggle FULL)
+  , ((modm, xK_v), sendMessage ToggleStruts)
   -- Manage Hooks
   , ((modm .|. controlMask, xK_t), toggleHookAllNew "sink" >> runLogHook)
   , ((modm .|. controlMask, xK_f), toggleHookAllNew "float" >> runLogHook)

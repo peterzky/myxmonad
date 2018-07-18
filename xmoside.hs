@@ -1,9 +1,9 @@
-Config { 
+Config {
 
    -- appearance
      font =         "xft:Bitstream Vera Sans Mono:size=9,WenQuanYi Micro Hei:size=10"
    , additionalFonts = ["xft:FontAwesome:size=10"]
-   , alpha = 160 
+   , alpha = 160
    , textOffset = -1
    , iconOffset = -1
    , iconRoot = "."
@@ -19,7 +19,7 @@ Config {
    , template = "%StdinReader% } {"
 
    -- general behavior
-   , lowerOnStart =     False    -- send to bottom of window stack on start
+   , lowerOnStart =     True    -- send to bottom of window stack on start
    , hideOnStart =      False   -- start with window unmapped (hidden)
    , allDesktops =      True    -- show on all desktops
    , overrideRedirect = True    -- set the Override Redirect flag (Xlib)
@@ -40,7 +40,7 @@ Config {
    --   The --template option controls how the plugin is displayed. Text
    --   color can be set by enclosing in <fc></fc> tags. For more details
    --   see http://projects.haskell.org/xmobar/#system-monitor-plugins.
-   , commands = 
+   , commands =
 
         -- weather monitor
         [ Run StdinReader
