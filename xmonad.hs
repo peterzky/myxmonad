@@ -3,7 +3,9 @@ import XMonad hiding ((|||))
 
 import System.Exit
 import System.IO
+import Control.Monad (when, join)
 
+import Data.Maybe (maybeToList)
 import Data.List
 
 import XMonad.Hooks.DynamicLog
@@ -54,7 +56,7 @@ myPromptTheme = def
 
 systemPromptCmds =
   [ ("Shutdown", spawn "$HOME/.bin/shutdown.sh poweroff")
-  , ("Reboot", spawn "s$HOME/.bin/shutdown.sh reboot")
+  , ("Reboot", spawn "$HOME/.bin/shutdown.sh reboot")
   , ("Exit", io exitSuccess)
   , ("Hibernate", spawn "sudo systemctl hibernate")
   , ("Restart", restart "xmonad" True)
@@ -297,10 +299,28 @@ myLogHook h0 h1 h2 =
         namedScratchpadFilterOutWorkspacePP . marshallPP screen . myPP
   in bar 0 h0 >> bar 1 h1 >> bar 2 h2 >> updatePointer (0.9, 0.9) (0.9, 0.9)
 
+-- fix firefox fullscreen
+addNETSupported :: Atom -> X ()
+addNETSupported x   = withDisplay $ \dpy -> do
+    r               <- asks theRoot
+    a_NET_SUPPORTED <- getAtom "_NET_SUPPORTED"
+    a               <- getAtom "ATOM"
+    liftIO $ do
+       sup <- (join . maybeToList) <$> getWindowProperty32 dpy a_NET_SUPPORTED r
+       when (fromIntegral x `notElem` sup) $
+         changeProperty32 dpy r a_NET_SUPPORTED a propModeAppend [fromIntegral x]
+
+addEWMHFullscreen :: X ()
+addEWMHFullscreen   = do
+    wms <- getAtom "_NET_WM_STATE"
+    wfs <- getAtom "_NET_WM_STATE_FULLSCREEN"
+    mapM_ addNETSupported [wms, wfs]
+
 myStartupHook = setWMName "LG3D"
   <+> setDefaultCursor xC_left_ptr
   <+> spawn "source $HOME/.fehbg"
   <+> spawn "$HOME/.xmonad/startup.sh"
+  >> addEWMHFullscreen
 
 myToggleHook = toggleHook "float" doFloat
                <+> toggleHook "sink" doSink
@@ -324,7 +344,7 @@ main = do
       , keys = myKeys
       , mouseBindings = myMouseBindings
       , layoutHook =  myLayout
-      , handleEventHook = fullscreenEventHook <+> docksEventHook <+> handleEventHook def
+      , handleEventHook = handleEventHook def <+> fullscreenEventHook <+> docksEventHook
       , startupHook = myStartupHook
       , manageHook = myToggleHook <+> myManageHook
       , logHook = myLogHook h0 h1 h2
