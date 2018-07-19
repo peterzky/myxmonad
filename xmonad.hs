@@ -127,9 +127,10 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
   , ((modm, xK_q), kill1)
   , ((modm, xK_BackSpace), killAll)
+  , ((modm .|. controlMask, xK_s), sinkAll)
   , ((modm .|. shiftMask, xK_e), io exitSuccess)
-  , ((modm .|. shiftMask, xK_grave), cycleThroughLayouts myOffLayout)
-  , ((modm, xK_grave), cycleThroughLayouts myMainLayout)
+  , ((modm, xK_grave), cycleThroughLayouts myOffLayout)
+  , ((modm, xK_w), cycleThroughLayouts myMainLayout)
   , ((modm .|. shiftMask, xK_space), setLayout $ XMonad.layoutHook conf)
   , ((modm, xK_n), refresh)
   , ((modm, xK_Tab), toggleWS)
@@ -152,8 +153,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   -- Manage Hooks
   , ((modm .|. controlMask, xK_t), toggleHookAllNew "sink" >> runLogHook)
   , ((modm .|. controlMask, xK_f), toggleHookAllNew "float" >> runLogHook)
-  , ((modm, xK_w), toggleHookNext "float" >> runLogHook)
-  , ((modm, xK_backslash), toggleHookNext "sink" >> runLogHook)
+  , ((modm, xK_backslash), toggleHookNext "float" >> runLogHook)
   , ((modm .|. shiftMask, xK_t), sinkAll)
   -- SimpleFloat Layout Keys
   , ((modm, xK_Left ), sendMessage (MoveLeft      20))
@@ -232,9 +232,9 @@ myTheme = def
     , decoHeight          = 16
     }
 
-myMainLayout = ["T", "M", "L"]
+myMainLayout = ["T",  "L"]
 
-myOffLayout = ["Grid", "Pane", "Cross", "Accordion"]
+myOffLayout = ["M", "Grid", "Pane", "Cross", "Accordion"]
 
 -- TODO: toggle simplefloat layout
 
@@ -242,7 +242,7 @@ myLayout = id
    . smartBorders
    . mkToggle (single FULL)
    . avoidStruts
-   $ myTiled ||| myMirror |||  myFloat ||| myGrid ||| Accordion ||| myCross ||| myPane ||| myTab
+   $ myTiled ||| myFloat ||| myMirror  ||| myGrid ||| Accordion ||| myCross ||| myPane ||| myTab
   where
     myTiled = renamed [Replace "T"]
       . smartSpacing 4
@@ -256,6 +256,7 @@ myLayout = id
       $ floatSimple shrinkText myTheme
 
     myGrid = renamed [Replace "Grid"]
+      $ mkToggle (single REFLECTX)
       $ Grid False
 
     myCross = renamed [Replace "Cross"]
