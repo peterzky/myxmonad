@@ -153,6 +153,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. controlMask, xK_t), toggleHookAllNew "sink" >> runLogHook)
   , ((modm .|. controlMask, xK_f), toggleHookAllNew "float" >> runLogHook)
   , ((modm, xK_w), toggleHookNext "float" >> runLogHook)
+  , ((modm, xK_backslash), toggleHookNext "sink" >> runLogHook)
   , ((modm .|. shiftMask, xK_t), sinkAll)
   -- SimpleFloat Layout Keys
   , ((modm, xK_Left ), sendMessage (MoveLeft      20))
@@ -315,6 +316,7 @@ myPP h =
   , ppSort = getSortByXineramaRule
   , ppLayout = xmobarColor "#CEFFAC" ""
   , ppExtras = [ willHookNextPP "float" $ xmobarColor "green" ""
+               , willHookNextPP "sink" $ xmobarColor "red" ""
                , willHookAllNewPP "sink" $ xmobarColor "red" ""
                , willHookAllNewPP "float" $ xmobarColor "green" ""]
   }
