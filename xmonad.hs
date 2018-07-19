@@ -230,8 +230,8 @@ myOffLayout = ["Grid","M"]
 
 myLayout = id
    . smartBorders
-   . avoidStruts
    . mkToggle (single FULL)
+   . avoidStruts
    $ myTiled ||| myMirror |||  myFloat ||| myGrid
   where
     myTiled = renamed [XMonad.Layout.Renamed.Replace "T"]
