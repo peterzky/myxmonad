@@ -23,6 +23,7 @@ import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.SetWMName
 import XMonad.Hooks.ToggleHook
+-- TODO: urgency hook
 
 import XMonad.Layout.IndependentScreens
 import XMonad.Layout.NoBorders
