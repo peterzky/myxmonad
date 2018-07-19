@@ -13,8 +13,9 @@ import XMonad.Actions.Submap
 import XMonad.Actions.NoBorders
 import XMonad.Actions.FloatKeys
 import XMonad.Actions.CycleSelectedLayouts
-import XMonad.Actions.WithAll
+import XMonad.Actions.WithAll hiding (killAll)
 import XMonad.Actions.Promote
+import XMonad.Actions.CopyWindow
 
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops
@@ -36,6 +37,10 @@ import XMonad.Layout.MultiToggle
 import XMonad.Layout.MultiToggle.Instances
 import XMonad.Layout.LayoutCombinators ((|||))
 import XMonad.Layout.HintedGrid
+import XMonad.Layout.Accordion
+import XMonad.Layout.Cross
+import XMonad.Layout.DragPane
+import XMonad.Layout.Tabbed
 
 import XMonad.Prompt
 import XMonad.Prompt.XMonad
@@ -71,8 +76,8 @@ myScratchPads =
     (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
   , NS "mpv" "" (className =? "mpv") defaultFloating
   , NS "music" "appimage-run $HOME/Sync/appimg/ieaseMusic.AppImage"
-      (className =? "ieaseMusic")
-      (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
+      (className =? "ieaseMusic") nonFloating
+      -- (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
   , NS "rambox" "appimage-run $HOME/Sync/appimg/Rambox.AppImage"
       (className =? "Rambox")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
@@ -114,11 +119,13 @@ myModMask = mod4Mask
 
 -- myWorkspaces = withScreens nScreens (map show [1..9])
 
+killAll = withAll (\w -> do (focus w) >> kill1)
+
 myKeys conf@XConfig {XMonad.modMask = modm} =
   M.fromList $
      -- Basic
   [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
-  , ((modm, xK_q), kill)
+  , ((modm, xK_q), kill1)
   , ((modm, xK_BackSpace), killAll)
   , ((modm .|. shiftMask, xK_e), io exitSuccess)
   , ((modm .|. shiftMask, xK_grave), cycleThroughLayouts myOffLayout)
@@ -189,7 +196,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
     -- Workspaces
   [ ((m .|. modm, k), windows $ onCurrentScreen f i)
        | (i, k) <- zip (workspaces' conf) [xK_1 .. xK_9]
-       , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]
+       , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask), (copy, controlMask)]
   ] ++
     -- Monitors
   [ ((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
@@ -224,29 +231,42 @@ myTheme = def
     , decoHeight          = 16
     }
 
-myMainLayout = ["T", "L"]
+myMainLayout = ["T", "M", "L"]
 
-myOffLayout = ["Grid","M"]
+myOffLayout = ["Grid", "Pane", "Cross", "Accordion"]
+
+-- TODO: toggle simplefloat layout
 
 myLayout = id
    . smartBorders
    . mkToggle (single FULL)
    . avoidStruts
-   $ myTiled ||| myMirror |||  myFloat ||| myGrid
+   $ myTiled ||| myMirror |||  myFloat ||| myGrid ||| Accordion ||| myCross ||| myPane ||| myTab
   where
-    myTiled = renamed [XMonad.Layout.Renamed.Replace "T"]
-      . smartSpacing 3
+    myTiled = renamed [Replace "T"]
+      . smartSpacing 4
       $ mkToggle (single REFLECTX)
       $ Tall 1 (3 / 100) (1 / 2)
 
-    myMirror = renamed [XMonad.Layout.Renamed.Replace "M"]
+    myMirror = renamed [Replace "M"]
       $ Mirror myTiled
 
-    myFloat = renamed [XMonad.Layout.Renamed.Replace "L"]
+    myFloat = renamed [Replace "L"]
       $ floatSimple shrinkText myTheme
 
-    myGrid = renamed [XMonad.Layout.Renamed.Replace "Grid"]
+    myGrid = renamed [Replace "Grid"]
       $ Grid False
+
+    myCross = renamed [Replace "Cross"]
+      . smartSpacing 4
+      $ simpleCross
+
+    myPane = renamed [Replace "Pane"]
+      . smartSpacing 4
+      $ dragPane Horizontal 0.5 0.1
+
+    myTab = renamed [Replace "Tab"]
+      $ tabbed shrinkText myTheme
 
 myManageHook =
   composeAll . concat $
