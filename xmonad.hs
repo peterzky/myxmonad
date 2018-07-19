@@ -45,6 +45,7 @@ import XMonad.Layout.OneBig
 
 import XMonad.Prompt
 import XMonad.Prompt.XMonad
+import XMonad.Prompt.Layout
 
 import XMonad.Util.Cursor
 import XMonad.Util.NamedScratchpad
@@ -147,7 +148,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   -- Layout Management
   , ((modm, xK_grave), cycleThroughLayouts myOffLayout)
   , ((modm, xK_w), sendMessage $ JumpToLayout "L")
-  -- , ((modm .|. shiftMask, xK_space), setLayout $ XMonad.layoutHook conf)
+  , ((modm .|. shiftMask, xK_grave), layoutPrompt myPromptTheme)
   , ((modm .|. shiftMask, xK_space), sendMessage $ JumpToLayout "T")
   , ((modm, xK_b), withFocused toggleBorder)
   , ((modm, xK_x), sendMessage $ Toggle REFLECTX)
