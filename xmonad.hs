@@ -35,12 +35,12 @@ import XMonad.Layout.DecorationMadness
 import XMonad.Layout.Reflect
 import XMonad.Layout.MultiToggle
 import XMonad.Layout.MultiToggle.Instances
-import XMonad.Layout.LayoutCombinators ((|||))
+import XMonad.Layout.LayoutCombinators
 import XMonad.Layout.HintedGrid
-import XMonad.Layout.Accordion
 import XMonad.Layout.Cross
-import XMonad.Layout.DragPane
+import XMonad.Layout.TwoPane
 import XMonad.Layout.Tabbed
+import XMonad.Layout.OneBig
 
 import XMonad.Prompt
 import XMonad.Prompt.XMonad
@@ -129,10 +129,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_BackSpace), killAll)
   , ((modm .|. controlMask, xK_s), sinkAll)
   , ((modm .|. shiftMask, xK_e), io exitSuccess)
-  , ((modm, xK_grave), cycleThroughLayouts myOffLayout)
-  , ((modm, xK_w), cycleThroughLayouts myMainLayout)
-  , ((modm .|. shiftMask, xK_space), setLayout $ XMonad.layoutHook conf)
   , ((modm, xK_n), refresh)
+  , ((modm, xK_r), spawn "rofi -show run")
   , ((modm, xK_Tab), toggleWS)
   , ((modm, xK_j), windows W.focusDown)
   , ((modm, xK_k), windows W.focusUp)
@@ -145,7 +143,11 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_t), withFocused $ windows . W.sink)
   , ((modm, xK_comma), sendMessage (IncMasterN 1))
   , ((modm, xK_period), sendMessage (IncMasterN (-1)))
-  , ((modm, xK_r), spawn "rofi -show run")
+  -- Layout Management
+  , ((modm, xK_grave), cycleThroughLayouts myOffLayout)
+  , ((modm, xK_w), sendMessage $ JumpToLayout "L")
+  -- , ((modm .|. shiftMask, xK_space), setLayout $ XMonad.layoutHook conf)
+  , ((modm .|. shiftMask, xK_space), sendMessage $ JumpToLayout "T")
   , ((modm, xK_b), withFocused toggleBorder)
   , ((modm, xK_x), sendMessage $ Toggle REFLECTX)
   , ((modm .|. shiftMask, xK_f), sendMessage $ Toggle FULL)
@@ -232,17 +234,17 @@ myTheme = def
     , decoHeight          = 16
     }
 
-myMainLayout = ["T",  "L"]
+-- myMainLayout = ["T",  "L"]
 
-myOffLayout = ["M", "Grid", "Pane", "Cross", "Accordion"]
+myOffLayout = [ "Grid", "Cross", "M", "Pane", "Big"]
 
--- TODO: toggle simplefloat layout
 
 myLayout = id
    . smartBorders
    . mkToggle (single FULL)
    . avoidStruts
-   $ myTiled ||| myFloat ||| myMirror  ||| myGrid ||| Accordion ||| myCross ||| myPane ||| myTab
+   $ myTiled ||| myFloat ||| myMirror  ||| myGrid
+   ||| myCross ||| myPane ||| myTab ||| myBig
   where
     myTiled = renamed [Replace "T"]
       . smartSpacing 4
@@ -260,15 +262,19 @@ myLayout = id
       $ Grid False
 
     myCross = renamed [Replace "Cross"]
-      . smartSpacing 4
+      . noBorders
       $ simpleCross
 
     myPane = renamed [Replace "Pane"]
       . smartSpacing 4
-      $ dragPane Horizontal 0.5 0.1
+      $ TwoPane (3/100) (1/2)
 
     myTab = renamed [Replace "Tab"]
       $ tabbed shrinkText myTheme
+
+    myBig = renamed [Replace "Big"]
+      . smartSpacing 4
+      $ OneBig (3/4) (3/4)
 
 myManageHook =
   composeAll . concat $
