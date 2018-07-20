@@ -297,10 +297,10 @@ myLayout = id
    . smartBorders
    . mkToggle (single FULL)
    . avoidStruts
-   $ onWorkspace "WRK" ( myPane ||| myTiled ||| myMirror )
-   $ onWorkspace "WEB" ( myBig ||| myCross ||| myTab )
+   $ onWorkspace "WRK" (myPane ||| myTiled ||| myMirror)
+   $ onWorkspace "WEB" (myTab  ||| myCross ||| myBig)
    $ onWorkspace "VOD" myGrid
-   $ onWorkspace "MSG" ( myFloat ||| myCross ||| myGrid )
+   $ onWorkspace "MSG" (myFloat ||| myCross ||| myGrid)
    $ myTiled |||  myMirror  ||| myGrid ||| myCross
    ||| myPane ||| myTab ||| myBig ||| myFloat
 
