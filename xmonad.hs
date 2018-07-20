@@ -66,6 +66,11 @@ myProjects =
                 spawn "appimage-run ~/Sync/appimg/ieaseMusic.AppImage"
                 spawn "appimage-run ~/Sync/appimg/wewechat.AppImage"
             }
+  , ProJect { projectName = "WEB"
+            , projectDirectory = "~/Downloads"
+            , projectStartHook = Just $ do
+                spawn "firefox"
+            }
   , Project { projectName = "ML"
             , projectDirectory = "~/project/yolo"
             , projectStartHook = Just $ do
