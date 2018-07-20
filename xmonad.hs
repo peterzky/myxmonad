@@ -11,11 +11,11 @@ import XMonad.Actions.CycleWS
 import XMonad.Actions.UpdatePointer
 import XMonad.Actions.Submap
 import XMonad.Actions.NoBorders
-import XMonad.Actions.FloatKeys
-import XMonad.Actions.CycleSelectedLayouts
 import XMonad.Actions.WithAll hiding (killAll)
 import XMonad.Actions.Promote
 import XMonad.Actions.CopyWindow
+import XMonad.Actions.PerWorkspaceKeys
+import XMonad.Actions.DynamicProjects
 
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops
@@ -55,6 +55,24 @@ import XMonad.Util.Font
 
 import qualified Data.Map                         as M
 import qualified XMonad.StackSet                  as W
+
+
+-- myProjects =
+--   [ Project { projectName = "MSG"
+--             , projectDirectory = "~/"
+--             , projectStartHook = Just $ do
+--                 spawn "appimage-run ~/Sync/appimg/ieaseMusic.AppImage"
+--                 spawn "appimage-run ~/Sync/appimg/wewechat.AppImage"
+--             }
+--   , Project { projectName = "ML"
+--             , projectDirectory = "~/"
+--             , projectStartHook = Nothing}
+--   , Project { projectName = "ORG"
+--             , projectDirectory = "~/Sync/org"
+--             , projectStartHook = Just $ do
+--                 spawn "emacsclienc -nc -e '(progn (org-todo-list)(delete-other-windows))'"
+--             }
+--   ]
 
 
 myPromptTheme = def
@@ -119,15 +137,16 @@ myFocusedBorderColor = "#90C695"
 
 myModMask = mod4Mask
 
-myWorkspaces = ["1:GEN","2:WEB","3:WRK","4:ORG","5:MSG","6:VOD"]
+myOrgCmd = "emacsclient -nc"
+
+myWorkspaces = ["GEN","WEB","WRK","ORG","MSG","VOD"]
 
 killAll = withAll (\w -> do (focus w) >> kill1)
 
 myKeys conf@XConfig {XMonad.modMask = modm} =
   M.fromList $
      -- Basic
-  [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
-  , ((modm, xK_q), kill1)
+  [ ((modm, xK_q), kill1)
   , ((modm, xK_BackSpace), killAll)
   , ((modm .|. controlMask, xK_s), sinkAll)
   , ((modm .|. shiftMask, xK_e), io exitSuccess)
@@ -145,9 +164,16 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_t), withFocused $ windows . W.sink)
   , ((modm, xK_comma), sendMessage (IncMasterN 1))
   , ((modm, xK_period), sendMessage (IncMasterN (-1)))
+  -- Workspace Bindings
+  -- , ((modm, xK_p), switchProjectPrompt myPromptTheme)
+  -- , ((modm .|. shiftMask, xK_p), shiftToProjectPrompt myPromptTheme)
+  , ((modm .|. shiftMask, xK_Return), bindOn [("WEB", spawn "firefox")
+                                        ,("ORG", spawn myOrgCmd)
+                                        ,("", spawn "urxvtc")])
   -- Layout Management
-  , ((modm, xK_grave), cycleThroughLayouts myOffLayout)
-  , ((modm, xK_w), sendMessage $ JumpToLayout "L")
+  -- , ((modm, xK_grave), cycleThroughLayouts myOffLayout)
+  , ((modm, xK_grave), sendMessage NextLayout)
+  -- , ((modm, xK_w), sendMessage $ JumpToLayout "L")
   , ((modm .|. shiftMask, xK_grave), layoutPrompt myPromptTheme)
   , ((modm .|. shiftMask, xK_space), sendMessage $ JumpToLayout "T")
   , ((modm, xK_b), withFocused toggleBorder)
@@ -195,7 +221,6 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((0, xK_Print), spawn "$HOME/.bin/ScreenShot.sh")
    -- System Prompt
    ,((0, xK_Pause), xmonadPromptC systemPromptCmds myPromptTheme)
-   -- ,((modm, xK_slash), shiftToProjectPrompt)
 
   ] ++
     -- Workspaces
@@ -268,20 +293,16 @@ myBig = renamed [Replace "Big"]
     . smartSpacing 4
     $ OneBig (3/4) (3/4)
 
-
-myOffLayout = [ "Grid", "Cross", "M", "Pane", "Big"]
-
-
 myLayout = id
    . smartBorders
    . mkToggle (single FULL)
    . avoidStruts
-   $ onWorkspace "3:WRK" myPane
-   $ onWorkspace "2:WEB" myBig
-   $ onWorkspace "6:VOD" myGrid
-   $ onWorkspace "5:MSG" myFloat
-   $ myTiled ||| myFloat ||| myMirror  ||| myGrid
-   ||| myCross ||| myPane ||| myTab ||| myBig
+   $ onWorkspace "WRK" ( myPane ||| myTiled ||| myMirror )
+   $ onWorkspace "WEB" ( myBig ||| myCross ||| myTab )
+   $ onWorkspace "VOD" myGrid
+   $ onWorkspace "MSG" ( myFloat ||| myCross ||| myGrid )
+   $ myTiled |||  myMirror  ||| myGrid ||| myCross
+   ||| myPane ||| myTab ||| myBig ||| myFloat
 
 myManageHook =
   composeAll . concat $
@@ -375,7 +396,9 @@ main = do
   h0 <- spawnPipe "xmobar -x 0 ~/.xmonad/xmobar.hs"
   -- h1 <- spawnPipe "xmobar -x 1 ~/.xmonad/xmoside.hs"
   -- h2 <- spawnPipe "xmobar -x 2 ~/.xmonad/xmoside.hs"
-  xmonad $ ewmh def
+  xmonad
+    -- $ dynamicProjects myProjects
+    $ ewmh def
       { terminal = myTerminal
       , focusFollowsMouse = myFocusFollowsMouse
       , borderWidth = myBorderWidth
