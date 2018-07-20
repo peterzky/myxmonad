@@ -20,6 +20,7 @@ else
     echo "laptop..."
 fi
 
+check_process "unclutter" "unclutter -b"
 check_process "compton" "compton -b"
 check_process "urxvtd" "urxvtd -f"
 check_process "emacs" "emacs --daemon "

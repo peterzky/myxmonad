@@ -108,13 +108,6 @@ systemPromptCmds =
 myScratchPads =
   [ NS "fileManager" "thunar" (className =? "Thunar")
     (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
-  , NS "mpv" "" (className =? "mpv") defaultFloating
-  , NS "music" "appimage-run $HOME/Sync/appimg/ieaseMusic.AppImage"
-      (className =? "ieaseMusic") nonFloating
-      -- (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
-  , NS "rambox" "appimage-run $HOME/Sync/appimg/Rambox.AppImage"
-      (className =? "Rambox")
-      (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
   , NS "htop" "urxvtc -title htop -e htop"
       (title =? "htop")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
@@ -223,10 +216,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
    -- Applications
   , ((modm .|. shiftMask, xK_r) , spawn "pkill xmobar; xmonad --recompile; xmonad --restart")
   , ((modm, xK_f), namedScratchpadAction myScratchPads "ranger")
-  , ((modm, xK_i), namedScratchpadAction myScratchPads "rambox")
   , ((modm, xK_space), namedScratchpadAction myScratchPads "dropdown")
   , ((modm, xK_z), namedScratchpadAction myScratchPads "org")
-  , ((modm .|. shiftMask, xK_v), namedScratchpadAction myScratchPads "mpv")
    -- Volume control
   , ((0, 0x1008FF13), spawn "pactl set-sink-volume @DEFAULT_SINK@ +2%")
   , ((0, 0x1008FF11), spawn "pactl set-sink-volume @DEFAULT_SINK@ -2%")
