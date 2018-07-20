@@ -25,7 +25,7 @@ import XMonad.Hooks.SetWMName
 import XMonad.Hooks.ToggleHook
 -- TODO: urgency hook
 
-import XMonad.Layout.IndependentScreens
+-- import XMonad.Layout.IndependentScreens
 import XMonad.Layout.NoBorders
 import XMonad.Layout.Tabbed
 import XMonad.Layout.Renamed
@@ -119,7 +119,7 @@ myFocusedBorderColor = "#90C695"
 
 myModMask = mod4Mask
 
--- myWorkspaces = withScreens nScreens (map show [1..9])
+myWorkspaces = ["1:GEN","2:WEB","3:WRK","4:ORG","5:MSG","6:VOD"]
 
 killAll = withAll (\w -> do (focus w) >> kill1)
 
@@ -199,8 +199,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
 
   ] ++
     -- Workspaces
-  [ ((m .|. modm, k), windows $ onCurrentScreen f i)
-       | (i, k) <- zip (workspaces' conf) [xK_1 .. xK_9]
+  [ ((m .|. modm, k), windows $ f i)
+       | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
        , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask), (copy, controlMask)]
   ] ++
     -- Monitors
@@ -305,6 +305,7 @@ myManageHook =
       , "Wine"
       , "Zeal"
       , "obs"
+      , "Xmessage"
       , "Thunderbird"
       , "Octave"
       , "feh"
@@ -330,12 +331,10 @@ myPP h =
                , willHookAllNewPP "float" $ xmobarColor "green" ""]
   }
 
+myLogHook hh = dynamicLogWithPP
+  . namedScratchpadFilterOutWorkspacePP
+  $ myPP hh -- >> updatePointer (0.9, 0.9) (0.9, 0.9)
 
-myLogHook h0 h1 h2 =
-  let bar screen =
-        dynamicLogWithPP .
-        namedScratchpadFilterOutWorkspacePP . marshallPP screen . myPP
-  in bar 0 h0 >> bar 1 h1 >> bar 2 h2 >> updatePointer (0.9, 0.9) (0.9, 0.9)
 
 -- fix firefox fullscreen
 addNETSupported :: Atom -> X ()
@@ -367,16 +366,16 @@ doSink :: ManageHook
 doSink = ask >>= \w -> liftX (reveal w) >> doF (W.sink w)
 
 main = do
-  nScreens <- countScreens
+  -- nScreens <- countScreens
   h0 <- spawnPipe "xmobar -x 0 ~/.xmonad/xmobar.hs"
-  h1 <- spawnPipe "xmobar -x 1 ~/.xmonad/xmoside.hs"
-  h2 <- spawnPipe "xmobar -x 2 ~/.xmonad/xmoside.hs"
+  -- h1 <- spawnPipe "xmobar -x 1 ~/.xmonad/xmoside.hs"
+  -- h2 <- spawnPipe "xmobar -x 2 ~/.xmonad/xmoside.hs"
   xmonad $ ewmh def
       { terminal = myTerminal
       , focusFollowsMouse = myFocusFollowsMouse
       , borderWidth = myBorderWidth
       , modMask = myModMask
-      , workspaces = withScreens nScreens (map show [1..9])
+      , workspaces = myWorkspaces
       , normalBorderColor = myNormalBorderColor
       , focusedBorderColor = myFocusedBorderColor
       , keys = myKeys
@@ -385,5 +384,5 @@ main = do
       , handleEventHook = handleEventHook def <+> fullscreenEventHook <+> docksEventHook
       , startupHook = myStartupHook
       , manageHook = myToggleHook <+> myManageHook
-      , logHook = myLogHook h0 h1 h2
+      , logHook = myLogHook h0
       }
