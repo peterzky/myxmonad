@@ -16,6 +16,7 @@ import XMonad.Actions.Promote
 import XMonad.Actions.CopyWindow
 import XMonad.Actions.PerWorkspaceKeys
 import XMonad.Actions.DynamicProjects
+import XMonad.Actions.DynamicWorkspaces
 
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops
@@ -42,6 +43,7 @@ import XMonad.Layout.TwoPane
 import XMonad.Layout.Tabbed
 import XMonad.Layout.OneBig
 import XMonad.Layout.PerWorkspace
+import XMonad.Layout.Drawer
 
 import XMonad.Prompt
 import XMonad.Prompt.XMonad
@@ -49,7 +51,7 @@ import XMonad.Prompt.Layout
 
 import XMonad.Util.Cursor
 import XMonad.Util.NamedScratchpad
-import XMonad.Util.Run (spawnPipe)
+import XMonad.Util.Run
 import XMonad.Util.WorkspaceCompare
 import XMonad.Util.Font
 
@@ -57,22 +59,29 @@ import qualified Data.Map                         as M
 import qualified XMonad.StackSet                  as W
 
 
--- myProjects =
---   [ Project { projectName = "MSG"
---             , projectDirectory = "~/"
---             , projectStartHook = Just $ do
---                 spawn "appimage-run ~/Sync/appimg/ieaseMusic.AppImage"
---                 spawn "appimage-run ~/Sync/appimg/wewechat.AppImage"
---             }
---   , Project { projectName = "ML"
---             , projectDirectory = "~/"
---             , projectStartHook = Nothing}
---   , Project { projectName = "ORG"
---             , projectDirectory = "~/Sync/org"
---             , projectStartHook = Just $ do
---                 spawn "emacsclienc -nc -e '(progn (org-todo-list)(delete-other-windows))'"
---             }
---   ]
+myProjects =
+  [ Project { projectName = "MSG"
+            , projectDirectory = "~/"
+            , projectStartHook = Just $ do
+                spawn "appimage-run ~/Sync/appimg/ieaseMusic.AppImage"
+                spawn "appimage-run ~/Sync/appimg/wewechat.AppImage"
+            }
+  , Project { projectName = "ML"
+            , projectDirectory = "~/project/yolo"
+            , projectStartHook = Just $ do
+                runInTerm "-title nixos-env-fun" "load-env-ml emacs --eval \"(call-interactively 'ein:jupyter-server-start)\""
+            }
+  , Project { projectName = "ORG"
+            , projectDirectory = "~/Sync/org"
+            , projectStartHook = Just $ do
+                spawn "emacsclient -nc -e '(progn (org-todo-list)(delete-other-windows))'"
+            }
+  , Project { projectName = "WRK"
+            , projectDirectory = "~/"
+            , projectStartHook = Just $ do
+                spawn "emacsclient -nc"
+            }
+  ]
 
 
 myPromptTheme = def
@@ -165,15 +174,17 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_comma), sendMessage (IncMasterN 1))
   , ((modm, xK_period), sendMessage (IncMasterN (-1)))
   -- Workspace Bindings
-  -- , ((modm, xK_p), switchProjectPrompt myPromptTheme)
-  -- , ((modm .|. shiftMask, xK_p), shiftToProjectPrompt myPromptTheme)
+  , ((modm, xK_p), switchProjectPrompt myPromptTheme)
+  , ((modm .|. shiftMask, xK_p), shiftToProjectPrompt myPromptTheme)
   , ((modm .|. shiftMask, xK_Return), bindOn [("WEB", spawn "firefox")
                                         ,("ORG", spawn myOrgCmd)
                                         ,("", spawn "urxvtc")])
+  , ((modm, xK_w), selectWorkspace myPromptTheme)
+  , ((modm .|. shiftMask, xK_w), withWorkspace myPromptTheme (windows . W.shift))
+  , ((modm .|. controlMask, xK_w), withWorkspace myPromptTheme (windows . copy))
+  , ((modm .|. shiftMask, xK_BackSpace), removeWorkspace)
   -- Layout Management
-  -- , ((modm, xK_grave), cycleThroughLayouts myOffLayout)
   , ((modm, xK_grave), sendMessage NextLayout)
-  -- , ((modm, xK_w), sendMessage $ JumpToLayout "L")
   , ((modm .|. shiftMask, xK_grave), layoutPrompt myPromptTheme)
   , ((modm .|. shiftMask, xK_space), sendMessage $ JumpToLayout "T")
   , ((modm, xK_b), withFocused toggleBorder)
@@ -224,10 +235,12 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
 
   ] ++
     -- Workspaces
-  [ ((m .|. modm, k), windows $ f i)
-       | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
-       , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask), (copy, controlMask)]
-  ] ++
+  zip (zip (repeat (modm)) [xK_1..xK_9]) (map (withNthWorkspace W.greedyView) [0..])
+    ++
+  zip (zip (repeat (modm .|. shiftMask)) [xK_1..xK_9]) (map (withNthWorkspace W.shift) [0..])
+    ++
+  zip (zip (repeat (modm .|. controlMask)) [xK_1..xK_9]) (map (withNthWorkspace copy) [0..])
+    ++
     -- Monitors
   [ ((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
   | (key, sc) <- zip [xK_s, xK_a, xK_d] [0 ..]
@@ -265,7 +278,9 @@ myTheme = def
 myTiled = renamed [Replace "T"]
     . smartSpacing 4
     $ mkToggle (single REFLECTX)
-    $ Tall 1 (3 / 100) (1 / 2)
+    $ drawer `onBottom` (Tall 1 (3 / 100) (1 / 2))
+    where
+      drawer = simpleDrawer 0 0.3 (Title "nixos-env-fun")
 
 myMirror = renamed [Replace "M"]
     $ Mirror myTiled
@@ -397,8 +412,8 @@ main = do
   -- h1 <- spawnPipe "xmobar -x 1 ~/.xmonad/xmoside.hs"
   -- h2 <- spawnPipe "xmobar -x 2 ~/.xmonad/xmoside.hs"
   xmonad
-    -- $ dynamicProjects myProjects
-    $ ewmh def
+    $ ewmh
+    $ dynamicProjects myProjects def
       { terminal = myTerminal
       , focusFollowsMouse = myFocusFollowsMouse
       , borderWidth = myBorderWidth
