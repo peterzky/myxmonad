@@ -25,7 +25,6 @@ import XMonad.Hooks.SetWMName
 import XMonad.Hooks.ToggleHook
 -- TODO: urgency hook
 
--- import XMonad.Layout.IndependentScreens
 import XMonad.Layout.NoBorders
 import XMonad.Layout.Tabbed
 import XMonad.Layout.Renamed
@@ -42,6 +41,7 @@ import XMonad.Layout.Cross
 import XMonad.Layout.TwoPane
 import XMonad.Layout.Tabbed
 import XMonad.Layout.OneBig
+import XMonad.Layout.PerWorkspace
 
 import XMonad.Prompt
 import XMonad.Prompt.XMonad
@@ -236,7 +236,38 @@ myTheme = def
     , decoHeight          = 16
     }
 
--- myMainLayout = ["T",  "L"]
+-- Layouts
+myTiled = renamed [Replace "T"]
+    . smartSpacing 4
+    $ mkToggle (single REFLECTX)
+    $ Tall 1 (3 / 100) (1 / 2)
+
+myMirror = renamed [Replace "M"]
+    $ Mirror myTiled
+
+myFloat = renamed [Replace "L"]
+    $ floatSimple shrinkText myTheme
+
+myGrid = renamed [Replace "Grid"]
+    $ mkToggle (single REFLECTX)
+    $ Grid False
+
+myCross = renamed [Replace "Cross"]
+    . noBorders
+    $ simpleCross
+
+myPane = renamed [Replace "Pane"]
+    . smartSpacing 4
+    $ mkToggle (single REFLECTX)
+    $ TwoPane (3/100) (1/2)
+
+myTab = renamed [Replace "Tab"]
+    $ tabbed shrinkText myTheme
+
+myBig = renamed [Replace "Big"]
+    . smartSpacing 4
+    $ OneBig (3/4) (3/4)
+
 
 myOffLayout = [ "Grid", "Cross", "M", "Pane", "Big"]
 
@@ -245,38 +276,12 @@ myLayout = id
    . smartBorders
    . mkToggle (single FULL)
    . avoidStruts
+   $ onWorkspace "3:WRK" myPane
+   $ onWorkspace "2:WEB" myBig
+   $ onWorkspace "6:VOD" myGrid
+   $ onWorkspace "5:MSG" myFloat
    $ myTiled ||| myFloat ||| myMirror  ||| myGrid
    ||| myCross ||| myPane ||| myTab ||| myBig
-  where
-    myTiled = renamed [Replace "T"]
-      . smartSpacing 4
-      $ mkToggle (single REFLECTX)
-      $ Tall 1 (3 / 100) (1 / 2)
-
-    myMirror = renamed [Replace "M"]
-      $ Mirror myTiled
-
-    myFloat = renamed [Replace "L"]
-      $ floatSimple shrinkText myTheme
-
-    myGrid = renamed [Replace "Grid"]
-      $ mkToggle (single REFLECTX)
-      $ Grid False
-
-    myCross = renamed [Replace "Cross"]
-      . noBorders
-      $ simpleCross
-
-    myPane = renamed [Replace "Pane"]
-      . smartSpacing 4
-      $ TwoPane (3/100) (1/2)
-
-    myTab = renamed [Replace "Tab"]
-      $ tabbed shrinkText myTheme
-
-    myBig = renamed [Replace "Big"]
-      . smartSpacing 4
-      $ OneBig (3/4) (3/4)
 
 myManageHook =
   composeAll . concat $
