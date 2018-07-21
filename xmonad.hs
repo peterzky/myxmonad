@@ -26,6 +26,7 @@ import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.SetWMName
 import XMonad.Hooks.ToggleHook
 import XMonad.Hooks.UrgencyHook
+import XMonad.Hooks.DynamicBars
 
 import XMonad.Layout.NoBorders
 import XMonad.Layout.Tabbed
@@ -45,7 +46,6 @@ import XMonad.Layout.Tabbed
 import XMonad.Layout.OneBig
 import XMonad.Layout.PerWorkspace
 import XMonad.Layout.Drawer
-import XMonad.Layout.IndependentScreens (countScreens)
 
 import XMonad.Prompt
 import XMonad.Prompt.XMonad
@@ -188,7 +188,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_grave), layoutPrompt myPromptTheme)
   , ((modm .|. shiftMask, xK_space), sendMessage $ JumpToLayout "T")
   , ((modm, xK_b), withFocused toggleBorder)
-  , ((modm, xK_x), sendMessage $ Toggle REFLECTX)
+  , ((modm, xK_y), sendMessage $ Toggle REFLECTX)
   , ((modm .|. shiftMask, xK_f), sendMessage $ Toggle FULL)
   , ((modm, xK_v), sendMessage ToggleStruts)
   -- Manage Hooks
@@ -357,13 +357,15 @@ myManageHook =
     myPCFloats = []
     myRole = ["pop-up"]
 
-myPP h =
+-- xmobar
+myPP  =
+  namedScratchpadFilterOutWorkspacePP $
   xmobarPP
-  { ppOutput = hPutStrLn h
-  , ppSep = "  "
+  {
+    ppSep = "  "
   , ppTitle = xmobarColor xmobarTitleColor "" . shorten 50
   , ppOrder = \(ws:m:t:e) -> [ws,m] ++ e ++ [t]
-  , ppSort = getSortByXineramaRule
+  , ppSort = getSortByXineramaPhysicalRule
   , ppLayout = xmobarColor "#CEFFAC" ""
   , ppExtras = [ willHookNextPP "float" $ xmobarColor "green" ""
                , willHookNextPP "sink" $ xmobarColor "red" ""
@@ -371,10 +373,13 @@ myPP h =
                , willHookAllNewPP "float" $ xmobarColor "green" ""]
   }
 
-myLogHook hh = dynamicLogWithPP
-  . namedScratchpadFilterOutWorkspacePP
-  $ myPP hh -- >> updatePointer (0.9, 0.9) (0.9, 0.9)
+myLogHook = multiPP myPP myPP
+  >> updatePointer (0.9, 0.9) (0.9, 0.9)
 
+barCreate (S 0) = spawnPipe $ "xmobar -x 0 ~/.xmonad/xmobar.hs"
+barCreate (S sid) = spawnPipe $ "xmobar -x " ++ show sid ++ " ~/.xmonad/xmoside.hs"
+
+barDestroy = return ()
 
 -- fix firefox fullscreen
 addNETSupported :: Atom -> X ()
@@ -394,10 +399,11 @@ addEWMHFullscreen   = do
     mapM_ addNETSupported [wms, wfs]
 
 myStartupHook = setWMName "LG3D"
+  <+> addEWMHFullscreen
   <+> setDefaultCursor xC_left_ptr
   <+> spawn "source $HOME/.fehbg"
   <+> spawn "$HOME/.xmonad/startup.sh"
-  >> addEWMHFullscreen
+  <+> dynStatusBarStartup barCreate barDestroy
 
 myToggleHook = toggleHook "float" doFloat
                <+> toggleHook "sink" doSink
@@ -405,11 +411,12 @@ myToggleHook = toggleHook "float" doFloat
 doSink :: ManageHook
 doSink = ask >>= \w -> liftX (reveal w) >> doF (W.sink w)
 
+myEventHook = handleEventHook def
+          <+> fullscreenEventHook
+          <+> docksEventHook
+          <+> dynStatusBarEventHook barCreate barDestroy
+
 main = do
-  -- nScreens <- countScreens
-  h0 <- spawnPipe "xmobar -x 0 ~/.xmonad/xmobar.hs"
-  -- h1 <- spawnPipe "xmobar -x 1 ~/.xmonad/xmoside.hs"
-  -- h2 <- spawnPipe "xmobar -x 2 ~/.xmonad/xmoside.hs"
   xmonad
     $ ewmh
     $ dynamicProjects myProjects
@@ -425,8 +432,8 @@ main = do
       , keys = myKeys
       , mouseBindings = myMouseBindings
       , layoutHook =  myLayout
-      , handleEventHook = handleEventHook def <+> fullscreenEventHook <+> docksEventHook
+      , handleEventHook = myEventHook
       , startupHook = myStartupHook
       , manageHook = myToggleHook <+> myManageHook
-      , logHook = myLogHook h0
+      , logHook = myLogHook
       }
