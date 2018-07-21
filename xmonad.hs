@@ -363,6 +363,7 @@ myPP  =
   xmobarPP
   {
     ppSep = "  "
+  , ppWsSep = "  "
   , ppTitle = xmobarColor xmobarTitleColor "" . shorten 50
   , ppOrder = \(ws:m:t:e) -> [ws,m] ++ e ++ [t]
   , ppSort = getSortByXineramaPhysicalRule

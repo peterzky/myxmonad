@@ -1,7 +1,7 @@
 Config {
 
    -- appearance
-     font =         "xft:Bitstream Vera Sans Mono:size=9,WenQuanYi Micro Hei:size=10"
+     font =         "xft:Sarasa UI SC:size=10"
    , additionalFonts = ["xft:FontAwesome:size=10"]
    , alpha = 160
    , textOffset = -1

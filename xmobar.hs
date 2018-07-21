@@ -1,7 +1,7 @@
 Config {
 
    -- appearance
-     font =         "xft:Bitstream Vera Sans Mono:size=9,WenQuanYi Micro Hei:size=10"
+     font =         "xft:Sarasa UI SC:size=10"
    , additionalFonts = ["xft:FontAwesome:size=10"]
    , alpha = 204
    , textOffset = -1
@@ -16,7 +16,7 @@ Config {
    -- layout
    , sepChar =  "%"   -- delineator between plugin names and straight text
    , alignSep = "}{"  -- separator between left-right alignment
-   , template = "%StdinReader% } {%org% %multicpu% %coretemp% %memory% %dynnetwork% %date% %default:Master% "
+   , template = "%StdinReader% } {%org%   %dynnetwork%   %disku%   %multicpu%   %coretemp%   %memory%   %date%   %default:Master% "
 
    -- general behavior
    , lowerOnStart =     True    -- send to bottom of window stack on start
@@ -38,6 +38,9 @@ Config {
                 "-c", "#ababab",
                 "-C", "#ababab"
                                         ] 10
+        , Run DiskU [("/", "<fn=1>\xf0a0</fn>  <used>/<size>")]
+         ["-L", "20", "-H", "50", "-m", "1", "-p", "3"]
+         20
 
         -- network activity monitor (dynamic interface resolution)
         , Run DynNetwork     [ "--template" , "<fn=1>\xf1eb</fn> <tx> <rx>"
@@ -47,17 +50,17 @@ Config {
                              , "--normal"   , "#f4b350"
                              , "--high"     , "#ec644b"
                              , "--suffix"   , "On"
-                             , "--width"    , "6"
+                             , "--width"    , "10"
                              ] 10
 
         -- cpu activity monitor
-        , Run MultiCpu       [ "--template" , "<fn=1>\xf108</fn> <total0>%"
+        , Run MultiCpu       [ "--template" , "<fn=1>\xf108</fn><total0>%"
                              , "--Low"      , "50"         -- units: %
                              , "--High"     , "85"         -- units: %
                              , "--low"      , "#87d37c"
                              , "--normal"   , "#f4b350"
                              , "--high"     , "#ec644b"
-                             , "--width"    , "3"
+                             , "--width"    , "6"
                              ] 10
 
         -- cpu core temperature monitor
@@ -67,6 +70,7 @@ Config {
                              , "--low"      , "#87d37c"
                              , "--normal"   , "#f4b350"
                              , "--high"     , "#ec644b"
+                             , "--width"    , "4"
                              ] 50
 
         -- memory usage monitor
@@ -76,7 +80,7 @@ Config {
                              , "--low"      , "#87d37c"
                              , "--normal"   , "#f4b350"
                              , "--high"     , "#ec644b"
-                             , "--width"    , "2"
+                             , "--width"    , "4"
                              ] 10
 
         -- battery monitor
@@ -98,7 +102,7 @@ Config {
 
         -- time and date indicator
         --   (%F = y-m-d date, %a = day of week, %T = h:m:s time)
-        , Run Date           "<fn=1>\xf073</fn> %F(%a) <fn=1>\xf017</fn> %T" "date" 10
+        , Run Date           "<fn=1>\xf073</fn> %F(%a)   <fn=1>\xf017</fn> %T" "date" 10
 
         ]
    }
