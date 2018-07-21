@@ -25,7 +25,7 @@ import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.SetWMName
 import XMonad.Hooks.ToggleHook
--- TODO: urgency hook
+import XMonad.Hooks.UrgencyHook
 
 import XMonad.Layout.NoBorders
 import XMonad.Layout.Tabbed
@@ -66,7 +66,7 @@ myProjects =
             , projectDirectory = "~/"
             , projectStartHook = Just $ do
                 spawn "appimage-run ~/Sync/appimg/ieaseMusic.AppImage"
-                spawn "appimage-run ~/Sync/appimg/wewechat.AppImage"
+                -- spawn "appimage-run ~/Sync/appimg/wewechat.AppImage"
             }
   , Project { projectName = "WEB"
             , projectDirectory = "~/Downloads"
@@ -129,7 +129,7 @@ myScratchPads =
   , NS "dropdown"
     " urxvtc -title dropdown -e zsh -c 'tmux has -t dropdown && exec tmux attach-session -d -t dropdown || exec tmux new-session -s dropdown'"
       (title =? "dropdown")
-      (customFloating $ W.RationalRect 0 0.02 1 0.5)
+      (customFloating $ W.RationalRect 0 0 1 0.5)
   ]
 
 myTerminal = "urxvtc"
@@ -311,7 +311,7 @@ myLayout = id
    . mkToggle (single FULL)
    . avoidStruts
    $ onWorkspace "WRK" (myPane ||| myTiled ||| myMirror)
-   $ onWorkspace "WEB" (myTab  ||| myCross ||| myBig)
+   $ onWorkspace "WEB" (myTab  ||| myPane |||myCross ||| myBig)
    $ onWorkspace "VOD" myGrid
    $ onWorkspace "MSG" (myFloat ||| myCross ||| myGrid)
    $ myTiled |||  myMirror  ||| myGrid ||| myCross
@@ -329,12 +329,13 @@ myManageHook =
   , [fmap (pt `isInfixOf`) title --> doFloat | pt <- myPTFloats]
   , [fmap (pc `isInfixOf`) className --> doFloat | pc <- myPCFloats]
   , [namedScratchpadManageHook myScratchPads]
+  , [className =? "mpv" --> doShift "VOD"]
   ]
   where
     role = stringProperty "WM_WINDOW_ROLE"
     myCFloats =
-      [ "mpv"
-      , "Lxappearance"
+      [ -- "mpv"
+        "Lxappearance"
       , "File-roller"
       , "Gimp"
       , "VirtualBox"
@@ -411,7 +412,9 @@ main = do
   -- h2 <- spawnPipe "xmobar -x 2 ~/.xmonad/xmoside.hs"
   xmonad
     $ ewmh
-    $ dynamicProjects myProjects def
+    $ dynamicProjects myProjects
+    $ withUrgencyHook NoUrgencyHook
+      def
       { terminal = myTerminal
       , focusFollowsMouse = myFocusFollowsMouse
       , borderWidth = myBorderWidth
