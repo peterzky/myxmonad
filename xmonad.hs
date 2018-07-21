@@ -17,6 +17,7 @@ import XMonad.Actions.CopyWindow
 import XMonad.Actions.PerWorkspaceKeys
 import XMonad.Actions.DynamicProjects
 import XMonad.Actions.DynamicWorkspaces
+import XMonad.Actions.OnScreen
 
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops
@@ -44,6 +45,7 @@ import XMonad.Layout.Tabbed
 import XMonad.Layout.OneBig
 import XMonad.Layout.PerWorkspace
 import XMonad.Layout.Drawer
+import XMonad.Layout.IndependentScreens (countScreens)
 
 import XMonad.Prompt
 import XMonad.Prompt.XMonad
@@ -66,7 +68,7 @@ myProjects =
                 spawn "appimage-run ~/Sync/appimg/ieaseMusic.AppImage"
                 spawn "appimage-run ~/Sync/appimg/wewechat.AppImage"
             }
-  , ProJect { projectName = "WEB"
+  , Project { projectName = "WEB"
             , projectDirectory = "~/Downloads"
             , projectStartHook = Just $ do
                 spawn "firefox"
@@ -390,20 +392,27 @@ addEWMHFullscreen   = do
     wfs <- getAtom "_NET_WM_STATE_FULLSCREEN"
     mapM_ addNETSupported [wms, wfs]
 
+initialScrLayout = onScr 1 W.greedyView "MSG"
+  <+> onScr 2 W.greedyView "ORG"
+  <+> onScr 0 W.greedyView "WEB"
+
 myStartupHook = setWMName "LG3D"
   <+> setDefaultCursor xC_left_ptr
   <+> spawn "source $HOME/.fehbg"
   <+> spawn "$HOME/.xmonad/startup.sh"
-  >> addEWMHFullscreen
+  <+> addEWMHFullscreen
 
 myToggleHook = toggleHook "float" doFloat
                <+> toggleHook "sink" doSink
+
+onScr :: ScreenId -> (WorkspaceId -> WindowSet -> WindowSet) -> WorkspaceId -> X ()
+onScr n f i = screenWorkspace n >>= \sn -> windows (f i . maybe id W.view sn)
 
 doSink :: ManageHook
 doSink = ask >>= \w -> liftX (reveal w) >> doF (W.sink w)
 
 main = do
-  -- nScreens <- countScreens
+  nScreens <- countScreens
   h0 <- spawnPipe "xmobar -x 0 ~/.xmonad/xmobar.hs"
   -- h1 <- spawnPipe "xmobar -x 1 ~/.xmonad/xmoside.hs"
   -- h2 <- spawnPipe "xmobar -x 2 ~/.xmonad/xmoside.hs"
@@ -421,7 +430,11 @@ main = do
       , mouseBindings = myMouseBindings
       , layoutHook =  myLayout
       , handleEventHook = handleEventHook def <+> fullscreenEventHook <+> docksEventHook
-      , startupHook = myStartupHook
+      , startupHook = (if nScreens == 3 then
+                         myStartupHook >> initialScrLayout
+                       else
+                         myStartupHook)
+
       , manageHook = myToggleHook <+> myManageHook
       , logHook = myLogHook h0
       }
