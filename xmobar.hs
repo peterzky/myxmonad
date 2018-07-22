@@ -16,7 +16,7 @@ Config {
    -- layout
    , sepChar =  "%"   -- delineator between plugin names and straight text
    , alignSep = "}{"  -- separator between left-right alignment
-   , template = "%StdinReader% } {%org%   %dynnetwork%   %disku%   %multicpu%   %coretemp%   %memory%   %date%   %default:Master% %battery% "
+   , template = "%StdinReader% } {%org%   %dynnetwork%   %disku%   %multicpu%   %coretemp%   %memory%   %date%   %default:Master%   %battery% "
 
    -- general behavior
    , lowerOnStart =     True    -- send to bottom of window stack on start
@@ -84,7 +84,7 @@ Config {
                              ] 10
 
         -- battery monitor
-        , Run Battery        [ "--template" , "<fn=1>\xf240</fn> <acstatus>"
+        , Run Battery        [ "--template" , "<acstatus>"
                              , "--Low"      , "10"        -- units: %
                              , "--High"     , "80"        -- units: %
                              , "--low"      , "#ec644b"
@@ -93,11 +93,11 @@ Config {
 
                              , "--" -- battery specific options
                                        -- discharging status
-                                       , "-o"	, "<left>% (<timeleft>)"
+                                       , "-o"	, "<fn=1>\xf240</fn>  <left>% (<timeleft>)"
                                        -- AC "on" status
-                                       , "-O"	, "<fc=#dAA520>Charging</fc>"
+                                       , "-O"	, "<fc=#dAA520><fn=1>\xf376</fn> <left></fc>"
                                        -- charged status
-                                       , "-i"	, "<fc=#006000>Charged</fc>"
+                                       , "-i"	, "<fc=#006000><fn=1>\xf1e6</fn></fc>"
                              ] 50
 
         -- time and date indicator
