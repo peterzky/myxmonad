@@ -186,7 +186,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   -- Layout Management
   , ((modm, xK_grave), sendMessage NextLayout)
   , ((modm .|. shiftMask, xK_grave), layoutPrompt myPromptTheme)
-  , ((modm .|. shiftMask, xK_space), sendMessage $ JumpToLayout "T")
+  , ((modm .|. shiftMask, xK_space), setLayout $ XMonad.layoutHook conf)
   , ((modm, xK_b), withFocused toggleBorder)
   , ((modm, xK_y), sendMessage $ Toggle REFLECTX)
   , ((modm .|. shiftMask, xK_f), sendMessage $ Toggle FULL)
