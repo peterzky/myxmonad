@@ -94,7 +94,7 @@ myProjects =
 myPromptTheme = def
   { position = Bottom
   , font = "xft:Sarasa UI SC:size=9"
-  , height = 20
+  , height = 22
   , bgColor = "black"
   }
 

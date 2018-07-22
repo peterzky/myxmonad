@@ -16,7 +16,7 @@ Config {
    -- layout
    , sepChar =  "%"   -- delineator between plugin names and straight text
    , alignSep = "}{"  -- separator between left-right alignment
-   , template = "%StdinReader% } {%org%   %dynnetwork%   %disku%   %multicpu%   %coretemp%   %memory%   %date%   %default:Master% "
+   , template = "%StdinReader% } {%org%   %dynnetwork%   %disku%   %multicpu%   %coretemp%   %memory%   %date%   %default:Master% %battery% "
 
    -- general behavior
    , lowerOnStart =     True    -- send to bottom of window stack on start
@@ -84,7 +84,7 @@ Config {
                              ] 10
 
         -- battery monitor
-        , Run Battery        [ "--template" , "Batt: <acstatus>"
+        , Run Battery        [ "--template" , "<fn=1>\xf240</fn> <acstatus>"
                              , "--Low"      , "10"        -- units: %
                              , "--High"     , "80"        -- units: %
                              , "--low"      , "#ec644b"
