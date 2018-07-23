@@ -33,6 +33,7 @@ import XMonad.Layout.Tabbed
 import XMonad.Layout.Renamed
 import XMonad.Layout.Spacing
 import XMonad.Layout.SimpleFloat
+import XMonad.Layout.SimplestFloat
 import XMonad.Layout.WindowArranger
 import XMonad.Layout.DecorationMadness
 import XMonad.Layout.Reflect
@@ -72,6 +73,11 @@ myProjects =
             , projectDirectory = "~/Downloads"
             , projectStartHook = Just $ do
                 spawn "firefox"
+            }
+  , Project { projectName = "GAME"
+            , projectDirectory = "~/"
+            , projectStartHook = Just $ do
+                spawn "steam"
             }
   , Project { projectName = "ML"
             , projectDirectory = "~/project/yolo"
@@ -148,7 +154,7 @@ myModMask = mod4Mask
 
 myOrgCmd = "emacsclient -nc"
 
-myWorkspaces = ["GEN","WEB","WRK","ORG","MSG","VOD"]
+myWorkspaces = ["GEN","WEB","WRK","ORG","MSG","VOD","GAME"]
 
 killAll = withAll (\w -> do (focus w) >> kill1)
 
@@ -286,6 +292,9 @@ myMirror = renamed [Replace "M"]
 myFloat = renamed [Replace "L"]
     $ floatSimple shrinkText myTheme
 
+mySimpleFloat = renamed [Replace "SimpleF"]
+    $ simplestFloat
+
 myGrid = renamed [Replace "Grid"]
     $ mkToggle (single REFLECTX)
     $ Grid False
@@ -314,8 +323,9 @@ myLayout = id
    $ onWorkspace "WEB" (myTab  ||| myPane |||myCross ||| myBig)
    $ onWorkspace "VOD" myGrid
    $ onWorkspace "MSG" (myFloat ||| myCross ||| myGrid)
+   $ onWorkspace "GAME" mySimpleFloat
    $ myTiled |||  myMirror  ||| myGrid ||| myCross
-   ||| myPane ||| myTab ||| myBig ||| myFloat
+   ||| myPane ||| myTab ||| myBig ||| myFloat ||| mySimpleFloat
 
 myManageHook =
   composeAll . concat $
