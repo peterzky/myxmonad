@@ -87,7 +87,7 @@ myProjects =
   , Project { projectName = "ORG"
             , projectDirectory = "~/Sync/org"
             , projectStartHook = Just $ do
-                spawn "emacsclient -nc -e '(progn (org-todo-list)(delete-other-windows))'"
+                spawn "emacsclient -nc -e '(progn (org-todo-list)(delete-other-windows)(org-agenda-redo-all))'"
             }
   , Project { projectName = "WRK"
             , projectDirectory = "~/"
