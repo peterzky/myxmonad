@@ -142,13 +142,13 @@ myTerminal = "urxvtc"
 
 myFocusFollowsMouse = True
 
-myBorderWidth = 3
+myBorderWidth = 2
 
 xmobarTitleColor = "#ababab"
 
-myNormalBorderColor = "#000000"
+myNormalBorderColor = "#282A36"
 
-myFocusedBorderColor = "#90C695"
+myFocusedBorderColor = "#aecf96"
 
 myModMask = mod4Mask
 
@@ -167,7 +167,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_e), io exitSuccess)
   , ((modm, xK_n), refresh)
   , ((modm, xK_r), spawn "rofi -show run")
-  , ((modm, xK_Tab), toggleWS)
+  , ((modm, xK_Tab), toggleWS' ["NSP"])
   , ((modm, xK_j), windows W.focusDown)
   , ((modm, xK_k), windows W.focusUp)
   , ((modm, xK_m), windows W.focusMaster)
@@ -376,7 +376,7 @@ myPP  =
   , ppWsSep = "  "
   , ppTitle = xmobarColor xmobarTitleColor "" . shorten 50
   , ppOrder = \(ws:m:t:e) -> [ws,m] ++ e ++ [t]
-  , ppSort = getSortByXineramaPhysicalRule
+  -- , ppSort = getSortByXineramaPhysicalRule
   , ppLayout = xmobarColor "#CEFFAC" ""
   , ppExtras = [ willHookNextPP "float" $ xmobarColor "green" ""
                , willHookNextPP "sink" $ xmobarColor "red" ""
