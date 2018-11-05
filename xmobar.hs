@@ -1,30 +1,29 @@
 Config {
-
    -- appearance
-     font =         "xft:Sarasa UI SC:size=10"
-   , additionalFonts = ["xft:FontAwesome:size=10"]
-   , alpha = 204
-   , textOffset = -1
-   , iconOffset = -1
-   , iconRoot = "."
-   , bgColor =      "black"
-   , fgColor =      "#ABABAB"
-   , position =     Top
+       font            = "xft:Sarasa UI SC:size=10"
+     , additionalFonts = ["xft:FontAwesome:size=10"]
+     , alpha           = 180
+     , textOffset      = -1
+     , iconOffset      = -1
+     , iconRoot        = "."
+     , bgColor         = "black"
+     , fgColor         = "#ABABAB"
+     , position        = Top
    -- , border =       BottomB
    -- , borderColor =  "#646464"
 
    -- layout
-   , sepChar =  "%"   -- delineator between plugin names and straight text
+   , sepChar  = "%"   -- delineator between plugin names and straight text
    , alignSep = "}{"  -- separator between left-right alignment
    , template = "%StdinReader% } {%org%   %dynnetwork%   %disku%   %multicpu%   %coretemp%   %memory%   %date%   %default:Master%   %battery% "
 
    -- general behavior
-   , lowerOnStart =     True    -- send to bottom of window stack on start
-   , hideOnStart =      False   -- start with window unmapped (hidden)
-   , allDesktops =      True    -- show on all desktops
+   , lowerOnStart     = True    -- send to bottom of window stack on start
+   , hideOnStart      = False   -- start with window unmapped (hidden)
+   , allDesktops      = True    -- show on all desktops
    , overrideRedirect = True    -- set the Override Redirect flag (Xlib)
-   , pickBroadest =     False   -- choose widest display (multi-monitor)
-   , persistent =       True    -- enable/disable hiding (True = disabled)
+   , pickBroadest     = False   -- choose widest display (multi-monitor)
+   , persistent       = True    -- enable/disable hiding (True = disabled)
    , commands =
         [ Run StdinReader
         , Run Com "iem" [] "iem" 10

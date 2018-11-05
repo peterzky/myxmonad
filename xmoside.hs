@@ -3,7 +3,7 @@ Config {
    -- appearance
      font =         "xft:Sarasa UI SC:size=10"
    , additionalFonts = ["xft:FontAwesome:size=10"]
-   , alpha = 160
+   , alpha = 180
    , textOffset = -1
    , iconOffset = -1
    , iconRoot = "."

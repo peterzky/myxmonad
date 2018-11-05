@@ -101,7 +101,8 @@ myPromptTheme = def
   { position = Bottom
   , font = "xft:Sarasa UI SC:size=9"
   , height = 22
-  , bgColor = "black"
+  , bgColor = "#2d3436"
+  , promptBorderWidth = 0
   }
 
 
@@ -292,7 +293,7 @@ myMirror = renamed [Replace "M"]
 myFloat = renamed [Replace "L"]
     $ floatSimple shrinkText myTheme
 
-mySimpleFloat = renamed [Replace "SimpleF"]
+mySimpleFloat = renamed [Replace "SFlot"]
     $ simplestFloat
 
 myGrid = renamed [Replace "Grid"]
@@ -322,7 +323,7 @@ myLayout = id
    $ onWorkspace "WRK" (myPane ||| myTiled ||| myMirror)
    $ onWorkspace "WEB" (myTab  ||| myPane |||myCross ||| myBig)
    $ onWorkspace "VOD" myGrid
-   $ onWorkspace "MSG" (myFloat ||| myCross ||| myGrid)
+   $ onWorkspace "MSG" (mySimpleFloat ||| myFloat ||| myCross ||| myGrid)
    $ onWorkspace "GAME" mySimpleFloat
    $ myTiled |||  myMirror  ||| myGrid ||| myCross
    ||| myPane ||| myTab ||| myBig ||| myFloat ||| mySimpleFloat
