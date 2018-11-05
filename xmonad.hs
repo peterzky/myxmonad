@@ -227,6 +227,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_f), namedScratchpadAction myScratchPads "ranger")
   , ((modm, xK_space), namedScratchpadAction myScratchPads "dropdown")
   , ((modm, xK_z), namedScratchpadAction myScratchPads "org")
+  , ((modm, xK_g), spawn "$HOME/.bin/rofi-surfraw.sh")
    -- Volume control
   , ((0, 0x1008FF13), spawn "pactl set-sink-volume @DEFAULT_SINK@ +2%")
   , ((0, 0x1008FF11), spawn "pactl set-sink-volume @DEFAULT_SINK@ -2%")
