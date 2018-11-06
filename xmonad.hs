@@ -6,6 +6,8 @@ import System.IO
 import Control.Monad (when, join)
 import Data.Maybe (maybeToList)
 import Data.List
+import Data.Char (toLower)
+import Data.Function (on)
 
 import XMonad.Actions.CycleWS
 import XMonad.Actions.UpdatePointer
@@ -103,6 +105,7 @@ myPromptTheme = def
   , height = 22
   , bgColor = "#2d3436"
   , promptBorderWidth = 0
+  , searchPredicate = isInfixOf `on` map toLower
   }
 
 
@@ -136,7 +139,7 @@ myScratchPads =
   , NS "dropdown"
     " urxvtc -title dropdown -e zsh -c 'tmux has -t dropdown && exec tmux attach-session -d -t dropdown || exec tmux new-session -s dropdown'"
       (title =? "dropdown")
-      (customFloating $ W.RationalRect 0 0 1 0.5)
+      (customFloating $ W.RationalRect 0 0.02 1 0.5)
   ]
 
 myTerminal = "urxvtc"
@@ -281,8 +284,11 @@ myTheme = def
     }
 
 -- Layouts
+
+mySpacing x = spacingRaw True (Border 0 x x x) True (Border x x x x) True
+
 myTiled = renamed [Replace "T"]
-    . smartSpacing 4
+    . mySpacing 4
     $ mkToggle (single REFLECTX)
     $ drawer `onBottom` (Tall 1 (3 / 100) (1 / 2))
     where
@@ -306,7 +312,7 @@ myCross = renamed [Replace "Cross"]
     $ simpleCross
 
 myPane = renamed [Replace "Pane"]
-    . smartSpacing 4
+    . mySpacing 4
     $ mkToggle (single REFLECTX)
     $ TwoPane (3/100) (1/2)
 
@@ -314,7 +320,7 @@ myTab = renamed [Replace "Tab"]
     $ tabbed shrinkText myTheme
 
 myBig = renamed [Replace "Big"]
-    . smartSpacing 4
+    . mySpacing 4
     $ OneBig (3/4) (3/4)
 
 myLayout = id
