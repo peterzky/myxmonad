@@ -71,11 +71,18 @@ myProjects =
                 spawn "appimage-run ~/Sync/appimg/ieaseMusic.AppImage"
                 -- spawn "appimage-run ~/Sync/appimg/wewechat.AppImage"
             }
+
   , Project { projectName = "WEB"
             , projectDirectory = "~/Downloads"
             , projectStartHook = Just $ do
                 spawn "firefox"
             }
+  , Project { projectName = "TOR"
+            , projectDirectory = "~/data/torrent"
+            , projectStartHook = Just $ do
+                spawn "qbittorrent"
+            }
+
   , Project { projectName = "GAME"
             , projectDirectory = "~/"
             , projectStartHook = Just $ do
@@ -158,7 +165,7 @@ myModMask = mod4Mask
 
 myOrgCmd = "emacsclient -nc"
 
-myWorkspaces = ["GEN","WEB","WRK","ORG","MSG","VOD","GAME"]
+myWorkspaces = ["GEN","WEB","WRK","ORG","MSG","VOD","GAME","TOR"]
 
 killAll = withAll (\w -> do (focus w) >> kill1)
 
@@ -332,6 +339,7 @@ myLayout = id
    $ onWorkspace "VOD" myGrid
    $ onWorkspace "MSG" (mySimpleFloat ||| myFloat ||| myCross ||| myGrid)
    $ onWorkspace "GAME" mySimpleFloat
+   $ onWorkspace "TOR" mySimpleFloat
    $ myTiled |||  myMirror  ||| myGrid ||| myCross
    ||| myPane ||| myTab ||| myBig ||| myFloat ||| mySimpleFloat
 
@@ -348,6 +356,7 @@ myManageHook =
   , [fmap (pc `isInfixOf`) className --> doFloat | pc <- myPCFloats]
   , [namedScratchpadManageHook myScratchPads]
   , [className =? "mpv" --> doShift "VOD"]
+  , [className =? "qBittorrent" --> doShift "TOR"]
   ]
   where
     role = stringProperty "WM_WINDOW_ROLE"
