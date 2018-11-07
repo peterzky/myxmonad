@@ -133,6 +133,9 @@ myScratchPads =
   , NS "nm" "urxvtc -title nmtui -e nmtui"
       (title =? "nmtui")
       (customFloating $ W.RationalRect (1 / 3) (1 / 3) (1 / 3) (1 / 3))
+  , NS "arandr" "arandr"
+      (className =? "Arandr")
+      (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
   , NS "pamix" "urxvtc -title pamix -e ncpamixer"
       (title =? "pamix")
       (customFloating $ W.RationalRect (1 / 3) (1 / 3) (1 / 3) (1 / 3))
@@ -194,8 +197,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_p), switchProjectPrompt myPromptTheme)
   , ((modm .|. shiftMask, xK_p), shiftToProjectPrompt myPromptTheme)
   , ((modm .|. shiftMask, xK_Return), bindOn [("WEB", spawn "firefox")
-                                        ,("ORG", spawn myOrgCmd)
-                                        ,("", spawn "urxvtc")])
+                                             ,("ORG", spawn myOrgCmd)
+                                             ,("", spawn "urxvtc")])
   , ((modm, xK_w), selectWorkspace myPromptTheme)
   , ((modm .|. shiftMask, xK_w), withWorkspace myPromptTheme (windows . W.shift))
   , ((modm .|. controlMask, xK_w), withWorkspace myPromptTheme (windows . copy))
@@ -231,6 +234,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       , ((0, xK_n), namedScratchpadAction myScratchPads "nm")
       , ((0, xK_v), namedScratchpadAction myScratchPads "pamix")
       , ((0, xK_a), namedScratchpadAction myScratchPads "music")
+      , ((0, xK_r), namedScratchpadAction myScratchPads "arandr")
       ])
    -- Applications
   , ((modm .|. shiftMask, xK_r) , spawn "pkill xmobar; xmonad --recompile; xmonad --restart")
