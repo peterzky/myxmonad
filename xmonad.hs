@@ -19,6 +19,7 @@ import XMonad.Actions.CopyWindow
 import XMonad.Actions.PerWorkspaceKeys
 import XMonad.Actions.DynamicProjects
 import XMonad.Actions.DynamicWorkspaces
+import XMonad.Actions.DynamicWorkspaceOrder as DO
 import XMonad.Actions.OnScreen
 
 import XMonad.Hooks.DynamicLog
@@ -203,6 +204,10 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_w), withWorkspace myPromptTheme (windows . W.shift))
   , ((modm .|. controlMask, xK_w), withWorkspace myPromptTheme (windows . copy))
   , ((modm .|. shiftMask, xK_BackSpace), removeWorkspace)
+  , ((modm, xK_Left ), DO.moveTo Prev HiddenNonEmptyWS)
+  , ((modm, xK_Right), DO.moveTo Next HiddenNonEmptyWS)
+  , ((modm .|. shiftMask, xK_Left ), DO.swapWith Next NonEmptyWS)
+  , ((modm .|. shiftMask, xK_Right), DO.swapWith Prev NonEmptyWS)
   -- Layout Management
   , ((modm, xK_grave), sendMessage NextLayout)
   , ((modm .|. shiftMask, xK_grave), layoutPrompt myPromptTheme)
@@ -216,15 +221,6 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. controlMask, xK_f), toggleHookAllNew "float" >> runLogHook)
   , ((modm, xK_backslash), toggleHookNext "float" >> runLogHook)
   , ((modm .|. shiftMask, xK_t), sinkAll)
-  -- SimpleFloat Layout Keys
-  , ((modm, xK_Left ), sendMessage (MoveLeft      20))
-  , ((modm, xK_Right), sendMessage (MoveRight     20))
-  , ((modm, xK_Down ), sendMessage (MoveDown      20))
-  , ((modm, xK_Up   ), sendMessage (MoveUp        20))
-  , ((modm .|. shiftMask, xK_Left ), sendMessage (DecreaseLeft 20))
-  , ((modm .|. shiftMask, xK_Right), sendMessage (IncreaseRight 20))
-  , ((modm .|. shiftMask, xK_Down ), sendMessage (IncreaseDown  20))
-  , ((modm .|. shiftMask, xK_Up   ), sendMessage (DecreaseUp  20))
   -- Submap
   , ((modm, xK_e), submap . M.fromList $
       [ ((0, xK_e), spawn "emacsclient -nc")
@@ -397,7 +393,7 @@ myPP  =
   , ppWsSep = "  "
   , ppTitle = xmobarColor xmobarTitleColor "" . shorten 50
   , ppOrder = \(ws:m:t:e) -> [ws,m] ++ e ++ [t]
-  -- , ppSort = getSortByXineramaPhysicalRule
+  , ppSort = DO.getSortByOrder
   , ppLayout = xmobarColor "#CEFFAC" ""
   , ppExtras = [ willHookNextPP "float" $ xmobarColor "green" ""
                , willHookNextPP "sink" $ xmobarColor "red" ""
