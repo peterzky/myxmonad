@@ -206,8 +206,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_BackSpace), removeWorkspace)
   , ((modm, xK_Left ), DO.moveTo Prev HiddenNonEmptyWS)
   , ((modm, xK_Right), DO.moveTo Next HiddenNonEmptyWS)
-  , ((modm .|. shiftMask, xK_Left ), DO.swapWith Next NonEmptyWS)
-  , ((modm .|. shiftMask, xK_Right), DO.swapWith Prev NonEmptyWS)
+  , ((modm .|. shiftMask, xK_Left ), DO.swapWith Prev NonEmptyWS)
+  , ((modm .|. shiftMask, xK_Right), DO.swapWith Next NonEmptyWS)
   -- Layout Management
   , ((modm, xK_grave), sendMessage NextLayout)
   , ((modm .|. shiftMask, xK_grave), layoutPrompt myPromptTheme)
