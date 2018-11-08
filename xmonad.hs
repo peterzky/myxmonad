@@ -251,11 +251,11 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
 
   ] ++
     -- Workspaces
-  zip (zip (repeat (modm)) [xK_1..xK_9]) (map (withNthWorkspace W.greedyView) [0..])
+  zip (zip (repeat (modm)) [xK_1..xK_9]) (map (DO.withNthWorkspace W.greedyView) [0..])
     ++
-  zip (zip (repeat (modm .|. shiftMask)) [xK_1..xK_9]) (map (withNthWorkspace W.shift) [0..])
+  zip (zip (repeat (modm .|. shiftMask)) [xK_1..xK_9]) (map (DO.withNthWorkspace W.shift) [0..])
     ++
-  zip (zip (repeat (modm .|. controlMask)) [xK_1..xK_9]) (map (withNthWorkspace copy) [0..])
+  zip (zip (repeat (modm .|. controlMask)) [xK_1..xK_9]) (map (DO.withNthWorkspace copy) [0..])
     ++
     -- Monitors
   [ ((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
