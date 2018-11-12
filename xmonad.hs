@@ -244,6 +244,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((0, 0x1008FF12), spawn "pactl set-sink-mute @DEFAULT_SINK@ toggle")
   , ((modm, xK_Home), spawn "~/.bin/AudioSwitch.sh speaker")
   , ((modm, xK_End), spawn "~/.bin/AudioSwitch.sh headphone")
+  , ((modm, xK_Next), spawn "cmus-remote -n")
+  , ((modm, xK_Prior), spawn "cmus-remote -r")
    -- Screenshots
   , ((0, xK_Print), spawn "$HOME/.bin/ScreenShot.sh")
    -- System Prompt
