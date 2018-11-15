@@ -26,9 +26,7 @@ Config {
    , persistent       = True    -- enable/disable hiding (True = disabled)
    , commands =
         [ Run StdinReader
-        , Run Com "iem" [] "iem" 10
-        , Run Com "emacsclient" ["-e","(polybar-clock)"] "org" 20
-        , Run Com "timer-client" [] "timer" 10
+        , Run Com ".bin/xmobar-org.sh" [] "org" 20
         , Run Volume "default" "Master" [
                 "-t", "<action=`pactl set-sink-volume @DEFAULT_SINK@ -2%` button=5><action=`pactl set-sink-volume @DEFAULT_SINK@ +2%` button=4><action=`pactl set-sink-mute @DEFAULT_SINK@ toggle` button=1><status> <volume>%</action></action></action>",
                 "--",
