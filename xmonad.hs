@@ -69,8 +69,7 @@ myProjects =
   [ Project { projectName = "MSG"
             , projectDirectory = "~/"
             , projectStartHook = Just $ do
-                spawn "appimage-run ~/Sync/appimg/ieaseMusic.AppImage"
-                -- spawn "appimage-run ~/Sync/appimg/wewechat.AppImage"
+                spawn "urxvtc -geometry 130x26-500+200 -e cmus"
             }
 
   , Project { projectName = "WEB"
