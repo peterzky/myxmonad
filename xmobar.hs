@@ -47,7 +47,8 @@ Config {
                              , "--normal"   , "#f4b350"
                              , "--high"     , "#ec644b"
                              , "--suffix"   , "On"
-                             , "--width"    , "10"
+                             , "--width"    , "8"
+                             , "-p"         , "4"
                              ] 10
 
         -- cpu activity monitor
@@ -58,6 +59,7 @@ Config {
                              , "--normal"   , "#f4b350"
                              , "--high"     , "#ec644b"
                              , "--width"    , "6"
+                             , "-p"         , "3"
                              ] 10
 
         -- cpu core temperature monitor
