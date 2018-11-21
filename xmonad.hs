@@ -3,7 +3,7 @@ import XMonad hiding ((|||))
 import System.Exit
 import System.IO
 
-import Control.Monad (when, join)
+import Control.Monad (when, join, liftM2)
 import Data.Maybe (maybeToList)
 import Data.List
 import Data.Char (toLower)
@@ -103,6 +103,12 @@ myProjects =
             , projectStartHook = Just $ do
                 spawn "emacsclient -nc"
             }
+
+  , Project { projectName = "DOC"
+            , projectDirectory = "~/"
+            , projectStartHook = Just $ do
+                spawn "XMind"
+            }
   ]
 
 
@@ -168,7 +174,7 @@ myModMask = mod4Mask
 
 myOrgCmd = "emacsclient -nc"
 
-myWorkspaces = ["GEN","WEB","WRK","ORG","MSG","VOD","GAME","TOR"]
+myWorkspaces = ["GEN","WEB","WRK","ORG","DOC","MSG","VOD","GAME","TOR"]
 
 killAll = withAll (\w -> do (focus w) >> kill1)
 
@@ -357,9 +363,14 @@ myManageHook =
   , [fmap (pc `isInfixOf`) className --> doFloat | pc <- myPCFloats]
   , [namedScratchpadManageHook myScratchPads]
   , [className =? "mpv" --> doShift "VOD"]
+  , [className =? ".zathura-wrapped_" --> doShiftAndGo "DOC"]
+  , [className =? "XMind" --> doShiftAndGo "DOC" ]
+  , [title =? "XMind" --> doFloat <+> doShiftAndGo "DOC" ]
   , [className =? "qBittorrent" --> doShift "TOR"]
+  , [className =? "qBittorrent" --> doFloat]
   ]
   where
+    doShiftAndGo = doF . liftM2 (.) W.greedyView W.shift
     role = stringProperty "WM_WINDOW_ROLE"
     myCFloats =
       [ -- "mpv"
