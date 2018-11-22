@@ -89,7 +89,7 @@ myProjects =
                 spawn "steam"
             }
   , Project { projectName = "ML"
-            , projectDirectory = "~/project/yolo"
+            , projectDirectory = "~/Sync/project/yolov3_on_respberrypi/yolo"
             , projectStartHook = Just $ do
                 runInTerm "-title nixos-env-fun" "load-env-ml emacs --eval \"(call-interactively 'ein:jupyter-server-start)\""
             }
@@ -341,8 +341,8 @@ myLayout = id
    . smartBorders
    . mkToggle (single FULL)
    . avoidStruts
-   $ onWorkspace "WRK" (myPane ||| myTiled ||| myMirror)
-   $ onWorkspace "WEB" (myTab  ||| myPane |||myCross ||| myBig)
+   $ onWorkspace "WRK" (myTiled ||| myPane ||| myMirror)
+   $ onWorkspace "WEB" (myTab ||| myPane |||myCross ||| myBig)
    $ onWorkspace "VOD" myGrid
    $ onWorkspace "MSG" (mySimpleFloat ||| myFloat ||| myCross ||| myGrid)
    $ onWorkspace "GAME" mySimpleFloat
@@ -401,11 +401,11 @@ myPP  =
   namedScratchpadFilterOutWorkspacePP $
   xmobarPP
   {
-    ppSep = "  "
-  , ppWsSep = "  "
-  , ppTitle = xmobarColor xmobarTitleColor "" . shorten 50
-  , ppOrder = \(ws:m:t:e) -> [ws,m] ++ e ++ [t]
-  , ppSort = DO.getSortByOrder
+    ppSep    = "  "
+  , ppWsSep  = "  "
+  , ppTitle  = xmobarColor xmobarTitleColor "" . shorten 50
+  , ppOrder  = \(ws:m:t:e) -> [ws,m] ++ e ++ [t]
+  , ppSort   = DO.getSortByOrder
   , ppLayout = xmobarColor "#CEFFAC" ""
   , ppExtras = [ willHookNextPP "float" $ xmobarColor "green" ""
                , willHookNextPP "sink" $ xmobarColor "red" ""
