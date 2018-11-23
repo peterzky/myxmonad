@@ -442,6 +442,7 @@ myStartupHook = setWMName "LG3D"
   <+> addEWMHFullscreen
   <+> setDefaultCursor xC_left_ptr
   <+> spawn "source $HOME/.fehbg"
+  <+> spawn "tmux new-session -s dropdown -d"
   <+> spawn "$HOME/.xmonad/startup.sh"
   <+> dynStatusBarStartup barCreate barDestroy
 
