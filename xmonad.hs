@@ -106,8 +106,7 @@ myProjects =
 
   , Project { projectName = "DOC"
             , projectDirectory = "~/"
-            , projectStartHook = Just $ do
-                spawn "XMind"
+            , projectStartHook = Nothing
             }
   ]
 
@@ -204,6 +203,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_p), shiftToProjectPrompt myPromptTheme)
   , ((modm .|. shiftMask, xK_Return), bindOn [("WEB", spawn "firefox")
                                              ,("ORG", spawn myOrgCmd)
+                                             ,("DOC", spawn "XMind")
                                              ,("", spawn "urxvtc")])
   , ((modm, xK_w), selectWorkspace myPromptTheme)
   , ((modm .|. shiftMask, xK_w), withWorkspace myPromptTheme (windows . W.shift))
