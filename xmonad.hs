@@ -364,7 +364,7 @@ myManageHook =
   , [namedScratchpadManageHook myScratchPads]
   , [className =? "mpv" --> doShift "VOD"]
   , [className =? ".zathura-wrapped_" --> doShiftAndGo "DOC"]
-  , [className =? "XMind" --> doShiftAndGo "DOC" ]
+  , [className =? "XMind ZEN" --> doShiftAndGo "DOC" ]
   , [title =? "XMind" --> doFloat <+> doShiftAndGo "DOC" ]
   , [className =? "qBittorrent" --> doShift "TOR"]
   , [className =? "qBittorrent" --> doFloat]
