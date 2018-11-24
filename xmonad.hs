@@ -85,8 +85,7 @@ myProjects =
 
   , Project { projectName = "GAME"
             , projectDirectory = "~/"
-            , projectStartHook = Just $ do
-                spawn "steam"
+            , projectStartHook = Nothing
             }
   , Project { projectName = "ML"
             , projectDirectory = "~/Sync/project/yolov3_on_respberrypi/yolo"
@@ -204,6 +203,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_Return), bindOn [("WEB", spawn "firefox")
                                              ,("ORG", spawn myOrgCmd)
                                              ,("DOC", spawn "XMind")
+                                             ,("GAME", spawn "steam")
                                              ,("", spawn "urxvtc")])
   , ((modm, xK_w), selectWorkspace myPromptTheme)
   , ((modm .|. shiftMask, xK_w), withWorkspace myPromptTheme (windows . W.shift))
@@ -366,8 +366,8 @@ myManageHook =
   , [className =? ".zathura-wrapped_" --> doShiftAndGo "DOC"]
   , [className =? "XMind ZEN" --> doShiftAndGo "DOC" ]
   , [title =? "XMind" --> doFloat <+> doShiftAndGo "DOC" ]
-  , [className =? "qBittorrent" --> doShift "TOR"]
-  , [className =? "qBittorrent" --> doFloat]
+  , [className =? "qBittorrent" --> doFloat <+> doShift "TOR"]
+  , [className =? "Steam" --> doFloat <+> doShift "GAME"]
   ]
   where
     doShiftAndGo = doF . liftM2 (.) W.greedyView W.shift

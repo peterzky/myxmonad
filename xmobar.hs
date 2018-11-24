@@ -15,7 +15,7 @@ Config {
    -- layout
    , sepChar  = "%"   -- delineator between plugin names and straight text
    , alignSep = "}{"  -- separator between left-right alignment
-   , template = "%StdinReader% } {%org%   %dynnetwork%   %disku%   %multicpu%   %coretemp%   %memory%   %date%   %default:Master%   %battery% "
+   , template = "%StdinReader% } {%org% %pomodoro% %dynnetwork%   %disku%   %multicpu%   %coretemp%   %memory%   %date%   %default:Master%   %battery% "
 
    -- general behavior
    , lowerOnStart     = True    -- send to bottom of window stack on start
@@ -27,6 +27,7 @@ Config {
    , commands =
         [ Run StdinReader
         , Run Com ".bin/xmobar-org.sh" [] "org" 20
+        , Run Com "timer" ["-c"] "pomodoro" 10
         , Run Volume "default" "Master" [
                 "-t", "<action=`pactl set-sink-volume @DEFAULT_SINK@ -2%` button=5><action=`pactl set-sink-volume @DEFAULT_SINK@ +2%` button=4><action=`pactl set-sink-mute @DEFAULT_SINK@ toggle` button=1><status> <volume>%</action></action></action>",
                 "--",
