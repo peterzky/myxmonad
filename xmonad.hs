@@ -365,6 +365,7 @@ myManageHook =
   , [className =? "mpv" --> doShift "VOD"]
   , [className =? ".zathura-wrapped_" --> doShiftAndGo "DOC"]
   , [className =? "XMind ZEN" --> doShiftAndGo "DOC" ]
+  , [className =? "Zeal" --> doShiftAndGo "DOC" ]
   , [title =? "XMind" --> doFloat <+> doShiftAndGo "DOC" ]
   , [className =? "qBittorrent" --> doFloat <+> doShift "TOR"]
   , [className =? "Steam" --> doFloat <+> doShift "GAME"]
@@ -382,7 +383,6 @@ myManageHook =
       , "octave-gui"
       , "Gnuplot"
       , "Wine"
-      , "Zeal"
       , "obs"
       , "Xmessage"
       , "Thunderbird"
