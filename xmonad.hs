@@ -363,7 +363,7 @@ myManageHook =
   , [isFullscreen --> doFullFloat]
   , [isDialog --> doCenterFloat]
   , [className =? c --> doCenterFloat | c <- myCFloats]
-  , [title =? t --> doFloat | t <- myTFloats]
+  , [title =? t --> doCenterFloat | t <- myTFloats]
   , [role =? t --> doFloat | t <- myRole]
   , [resource =? r --> doFloat | r <- myRFloats]
   , [fmap (pt `isInfixOf`) title --> doFloat | pt <- myPTFloats]
@@ -392,7 +392,6 @@ myManageHook =
       , "Wine"
       , "obs"
       , "Xmessage"
-      , "Thunderbird"
       , "Octave"
       , "feh"
       , "Anki"
