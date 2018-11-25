@@ -44,8 +44,8 @@ Config {
         , Run DynNetwork     [ "--template" , "<fn=1>\xf1eb</fn> <tx> <rx>"
                              , "--Low"      , "1000"       -- units: B/s
                              , "--High"     , "5000"       -- units: B/s
-                             , "--low"      , "#87d37c"
-                             , "--normal"   , "#f4b350"
+                             -- , "--low"      , "#87d37c"
+                             -- , "--normal"   , "#f4b350"
                              , "--high"     , "#ec644b"
                              , "--suffix"   , "On"
                              , "--width"    , "8"
@@ -56,18 +56,18 @@ Config {
         , Run MultiCpu       [ "--template" , "<fn=1>\xf108</fn><total0>%"
                              , "--Low"      , "50"         -- units: %
                              , "--High"     , "85"         -- units: %
-                             , "--low"      , "#87d37c"
+                             -- , "--low"      , "#87d37c"
                              , "--normal"   , "#f4b350"
                              , "--high"     , "#ec644b"
                              , "--width"    , "6"
-                             , "-p"         , "3"
+                             , "-p"         , "4"
                              ] 10
 
         -- cpu core temperature monitor
         , Run CoreTemp       [ "--template" , "<fn=1>\xf2c8</fn> <core0>°C"
                              , "--Low"      , "70"        -- units: °C
                              , "--High"     , "80"        -- units: °C
-                             , "--low"      , "#87d37c"
+                             -- , "--low"      , "#87d37c"
                              , "--normal"   , "#f4b350"
                              , "--high"     , "#ec644b"
                              , "--width"    , "4"
@@ -77,7 +77,7 @@ Config {
         , Run Memory         [ "--template" ,"<fn=1>\xf233</fn> <usedratio>%"
                              , "--Low"      , "20"        -- units: %
                              , "--High"     , "90"        -- units: %
-                             , "--low"      , "#87d37c"
+                             -- , "--low"      , "#87d37c"
                              , "--normal"   , "#f4b350"
                              , "--high"     , "#ec644b"
                              , "--width"    , "4"

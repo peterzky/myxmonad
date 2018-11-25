@@ -22,6 +22,6 @@ fi
 
 check_process "unclutter" "unclutter -b"
 check_process "compton" "compton -b"
-check_process "urxvtd" "urxvtd -f"
+check_process "urxvtd" "urxvtd -f -o -q"
 check_process "emacs" "emacs --daemon "
 check_process "xkeysnail" "sudo xkeysnail -q /home/peterzky/.config/xkeysnail/config.py"

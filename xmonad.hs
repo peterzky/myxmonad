@@ -54,6 +54,7 @@ import XMonad.Layout.Drawer
 import XMonad.Prompt
 import XMonad.Prompt.XMonad
 import XMonad.Prompt.Layout
+import XMonad.Prompt.FuzzyMatch
 
 import XMonad.Util.Cursor
 import XMonad.Util.NamedScratchpad
@@ -116,7 +117,7 @@ myPromptTheme = def
   , height = 22
   , bgColor = "#2d3436"
   , promptBorderWidth = 0
-  , searchPredicate = isInfixOf `on` map toLower
+  , searchPredicate = fuzzyMatch
   }
 
 
@@ -166,7 +167,7 @@ xmobarTitleColor = "#ababab"
 
 myNormalBorderColor = "#282A36"
 
-myFocusedBorderColor = "#aecf96"
+myFocusedBorderColor = "#dfe6e9"
 
 myModMask = mod4Mask
 
@@ -213,6 +214,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_Right), DO.moveTo Next HiddenNonEmptyWS)
   , ((modm .|. shiftMask, xK_Left ), DO.swapWith Prev NonEmptyWS)
   , ((modm .|. shiftMask, xK_Right), DO.swapWith Next NonEmptyWS)
+  , ((modm, xK_u), focusUrgent)
   -- Layout Management
   , ((modm, xK_grave), sendMessage NextLayout)
   , ((modm .|. shiftMask, xK_grave), layoutPrompt myPromptTheme)
@@ -287,9 +289,9 @@ myMouseBindings XConfig {XMonad.modMask = modm} =
     ]
 
 myTheme = def
-   {  activeColor         = "#aecf96"
+   {  activeColor         = "#dfe6e9"
     , inactiveColor       = "#111111"
-    , activeBorderColor   = "#aecf96"
+    , activeBorderColor   = "#dfe6e9"
     , inactiveBorderColor = "#111111"
     , activeTextColor     = "black"
     , inactiveTextColor   = "#d5d3a7"
@@ -362,7 +364,7 @@ myManageHook =
   , [fmap (pt `isInfixOf`) title --> doFloat | pt <- myPTFloats]
   , [fmap (pc `isInfixOf`) className --> doFloat | pc <- myPCFloats]
   , [namedScratchpadManageHook myScratchPads]
-  , [className =? "mpv" --> doShift "VOD"]
+  , [className =? "mpv" --> doShift "VOD" ]
   , [className =? ".zathura-wrapped_" --> doShiftAndGo "DOC"]
   , [className =? "XMind ZEN" --> doShiftAndGo "DOC" ]
   , [className =? "Zeal" --> doShiftAndGo "DOC" ]
@@ -397,16 +399,20 @@ myManageHook =
     myRole = ["pop-up"]
 
 -- xmobar
+-- more in dynamiclog
 myPP  =
   namedScratchpadFilterOutWorkspacePP $
   xmobarPP
   {
     ppSep    = "  "
+  , ppCurrent = xmobarColor "#74b9ff" ""
+  , ppVisible = xmobarColor "#dfe6e9" ""
+  , ppUrgent = xmobarColor "#ff7675" ""
   , ppWsSep  = "  "
   , ppTitle  = xmobarColor xmobarTitleColor "" . shorten 50
   , ppOrder  = \(ws:m:t:e) -> [ws,m] ++ e ++ [t]
   , ppSort   = DO.getSortByOrder
-  , ppLayout = xmobarColor "#CEFFAC" ""
+  , ppLayout = xmobarColor "#a29bfe" "" . wrap "| " " |"
   , ppExtras = [ willHookNextPP "float" $ xmobarColor "green" ""
                , willHookNextPP "sink" $ xmobarColor "red" ""
                , willHookAllNewPP "sink" $ xmobarColor "red" ""
@@ -460,8 +466,8 @@ myEventHook = handleEventHook def
 main = do
   xmonad
     $ ewmh
-    $ dynamicProjects myProjects
     $ withUrgencyHook NoUrgencyHook
+    $ dynamicProjects myProjects
       def
       { terminal = myTerminal
       , focusFollowsMouse = myFocusFollowsMouse
