@@ -21,6 +21,7 @@ import XMonad.Actions.DynamicProjects
 import XMonad.Actions.DynamicWorkspaces
 import XMonad.Actions.DynamicWorkspaceOrder as DO
 import XMonad.Actions.OnScreen
+import XMonad.Actions.CycleWorkspaceByScreen
 
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops
@@ -30,6 +31,7 @@ import XMonad.Hooks.SetWMName
 import XMonad.Hooks.ToggleHook
 import XMonad.Hooks.UrgencyHook
 import XMonad.Hooks.DynamicBars
+import XMonad.Hooks.WorkspaceHistory (workspaceHistoryHook)
 
 import XMonad.Layout.NoBorders
 import XMonad.Layout.Tabbed
@@ -186,7 +188,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_e), io exitSuccess)
   , ((modm, xK_n), refresh)
   , ((modm, xK_r), spawn "rofi -show run")
-  , ((modm, xK_Tab), toggleWS' ["NSP"])
+  -- , ((modm, xK_Tab), toggleWS' ["NSP"])
+  , ((modm, xK_Tab), cycleWorkspaceOnCurrentScreen [xK_Super_L] xK_Tab xK_grave)
   , ((modm, xK_j), windows W.focusDown)
   , ((modm, xK_k), windows W.focusUp)
   , ((modm, xK_m), windows W.focusMaster)
@@ -199,8 +202,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_comma), sendMessage (IncMasterN 1))
   , ((modm, xK_period), sendMessage (IncMasterN (-1)))
   -- Workspace Bindings
-  , ((modm, xK_p), switchProjectPrompt myPromptTheme)
-  , ((modm .|. shiftMask, xK_p), shiftToProjectPrompt myPromptTheme)
+  -- , ((modm, xK_p), switchProjectPrompt myPromptTheme)
+  -- , ((modm .|. shiftMask, xK_p), shiftToProjectPrompt myPromptTheme)
   , ((modm .|. shiftMask, xK_Return), bindOn [("WEB", spawn "firefox")
                                              ,("ORG", spawn myOrgCmd)
                                              ,("DOC", spawn "XMind")
@@ -212,12 +215,14 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_BackSpace), removeWorkspace)
   , ((modm, xK_Left ), DO.moveTo Prev HiddenNonEmptyWS)
   , ((modm, xK_Right), DO.moveTo Next HiddenNonEmptyWS)
-  , ((modm .|. shiftMask, xK_Left ), DO.swapWith Prev NonEmptyWS)
-  , ((modm .|. shiftMask, xK_Right), DO.swapWith Next NonEmptyWS)
+  -- , ((modm .|. shiftMask, xK_Left ), DO.swapWith Prev NonEmptyWS)
+  -- , ((modm .|. shiftMask, xK_Right), DO.swapWith Next NonEmptyWS)
   , ((modm, xK_u), focusUrgent)
   -- Layout Management
-  , ((modm, xK_grave), sendMessage NextLayout)
-  , ((modm .|. shiftMask, xK_grave), layoutPrompt myPromptTheme)
+  -- , ((modm, xK_grave), sendMessage NextLayout)
+  -- , ((modm .|. shiftMask, xK_grave), layoutPrompt myPromptTheme)
+  , ((modm, xK_p), sendMessage NextLayout)
+  , ((modm .|. shiftMask, xK_p), layoutPrompt myPromptTheme)
   , ((modm .|. shiftMask, xK_space), setLayout $ XMonad.layoutHook conf)
   , ((modm, xK_b), withFocused toggleBorder)
   , ((modm, xK_y), sendMessage $ Toggle REFLECTX)
@@ -420,6 +425,7 @@ myPP  =
   }
 
 myLogHook = multiPP myPP myPP
+  >> workspaceHistoryHook
   >> updatePointer (0.9, 0.9) (0.9, 0.9)
 
 barCreate (S 0) = spawnPipe $ "xmobar -x 0 ~/.xmonad/xmobar.hs"
