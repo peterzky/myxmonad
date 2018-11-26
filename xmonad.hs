@@ -257,6 +257,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_equal), spawn "playerctl next")
   , ((modm, xK_minus), spawn "playerctl previous")
   , ((modm, xK_0), spawn "playerctl play-pause")
+  , ((modm .|. shiftMask, xK_0), spawn "playerctl -a play-pause")
+  , ((modm .|. controlMask, xK_0), spawn "playerctl -a stop")
    -- Screenshots
   , ((0, xK_Print), spawn "$HOME/.bin/ScreenShot.sh")
    -- System Prompt
