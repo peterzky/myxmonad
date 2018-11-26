@@ -74,6 +74,11 @@ myProjects =
             , projectStartHook = Just $ do
                 spawn "urxvtc -geometry 130x26-500+200 -e cmus"
             }
+  , Project { projectName = "GEN"
+            , projectDirectory = "~/"
+            , projectStartHook = Just $ do
+                runInTerm "neofetch"
+            }
 
   , Project { projectName = "WEB"
             , projectDirectory = "~/Downloads"
@@ -96,7 +101,7 @@ myProjects =
                 runInTerm "-title nixos-env-fun" "load-env-ml emacs --eval \"(call-interactively 'ein:jupyter-server-start)\""
             }
   , Project { projectName = "ORG"
-            , projectDirectory = "~/Sync/org"
+            , projectDirectory = "~/Sync/sync/org"
             , projectStartHook = Just $ do
                 spawn "emacsclient -nc -e '(progn (org-todo-list)(delete-other-windows)(org-agenda-redo-all))'"
             }
