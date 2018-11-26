@@ -175,7 +175,7 @@ myModMask = mod4Mask
 
 myOrgCmd = "emacsclient -nc"
 
-myWorkspaces = ["WEB","WRK","ORG","DOC","MSG","VOD","GAME","TOR"]
+myWorkspaces = ["GEN","WEB","WRK","ORG","DOC","MSG","VOD","GAME","TOR"]
 
 killAll = withAll (\w -> do (focus w) >> kill1)
 
