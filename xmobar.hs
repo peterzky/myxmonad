@@ -29,7 +29,7 @@ Config {
         , Run Com ".bin/xmobar-org.sh" [] "org" 20
         , Run Com "timer" ["-c"] "pomodoro" 10
         , Run Volume "default" "Master" [
-                "-t", "<action=`pactl set-sink-volume @DEFAULT_SINK@ -2%` button=5><action=`pactl set-sink-volume @DEFAULT_SINK@ +2%` button=4><action=`pactl set-sink-mute @DEFAULT_SINK@ toggle` button=1><status> <volume>%</action></action></action>",
+                "-t", "<action=`pactl set-sink-volume @DEFAULT_SINK@ -2%; sleep 0.1` button=5><action=`pactl set-sink-volume @DEFAULT_SINK@ +2%; sleep 0.1` button=4><action=`pactl set-sink-mute @DEFAULT_SINK@ toggle` button=1><status> <volume>%</action></action></action>",
                 "--",
                 "-o", "<fn=1>\xf026</fn>",
                 "-O", "<fn=1>\xf028</fn>",

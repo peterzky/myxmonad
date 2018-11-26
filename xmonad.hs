@@ -77,7 +77,7 @@ myProjects =
   , Project { projectName = "GEN"
             , projectDirectory = "~/"
             , projectStartHook = Just $ do
-                runInTerm "neofetch"
+                runInTerm "urxvtc" "zsh -c 'neofetch; zsh'"
             }
 
   , Project { projectName = "WEB"
@@ -193,7 +193,6 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_e), io exitSuccess)
   , ((modm, xK_n), refresh)
   , ((modm, xK_r), spawn "rofi -show run")
-  -- , ((modm, xK_Tab), toggleWS' ["NSP"])
   , ((modm, xK_Tab), cycleWorkspaceOnCurrentScreen [xK_Super_L] xK_Tab xK_grave)
   , ((modm, xK_j), windows W.focusDown)
   , ((modm, xK_k), windows W.focusUp)
@@ -207,8 +206,6 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_comma), sendMessage (IncMasterN 1))
   , ((modm, xK_period), sendMessage (IncMasterN (-1)))
   -- Workspace Bindings
-  -- , ((modm, xK_p), switchProjectPrompt myPromptTheme)
-  -- , ((modm .|. shiftMask, xK_p), shiftToProjectPrompt myPromptTheme)
   , ((modm .|. shiftMask, xK_Return), bindOn [("WEB", spawn "firefox")
                                              ,("ORG", spawn myOrgCmd)
                                              ,("DOC", spawn "XMind")
@@ -220,12 +217,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_BackSpace), removeWorkspace)
   , ((modm, xK_Left ), DO.moveTo Prev HiddenNonEmptyWS)
   , ((modm, xK_Right), DO.moveTo Next HiddenNonEmptyWS)
-  -- , ((modm .|. shiftMask, xK_Left ), DO.swapWith Prev NonEmptyWS)
-  -- , ((modm .|. shiftMask, xK_Right), DO.swapWith Next NonEmptyWS)
   , ((modm, xK_u), focusUrgent)
   -- Layout Management
-  -- , ((modm, xK_grave), sendMessage NextLayout)
-  -- , ((modm .|. shiftMask, xK_grave), layoutPrompt myPromptTheme)
   , ((modm, xK_p), sendMessage NextLayout)
   , ((modm .|. shiftMask, xK_p), layoutPrompt myPromptTheme)
   , ((modm .|. shiftMask, xK_space), setLayout $ XMonad.layoutHook conf)
@@ -261,12 +254,14 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((0, 0x1008FF12), spawn "pactl set-sink-mute @DEFAULT_SINK@ toggle")
   , ((modm, xK_Home), spawn "~/.bin/AudioSwitch.sh speaker")
   , ((modm, xK_End), spawn "~/.bin/AudioSwitch.sh headphone")
-  , ((modm, xK_Next), spawn "cmus-remote -n")
-  , ((modm, xK_Prior), spawn "cmus-remote -r")
+  , ((modm, xK_equal), spawn "playerctl next")
+  , ((modm, xK_minus), spawn "playerctl previous")
+  , ((modm, xK_0), spawn "playerctl play-pause")
    -- Screenshots
   , ((0, xK_Print), spawn "$HOME/.bin/ScreenShot.sh")
    -- System Prompt
    ,((0, xK_Pause), xmonadPromptC systemPromptCmds myPromptTheme)
+   ,((modm .|. shiftMask, xK_q), xmonadPromptC systemPromptCmds myPromptTheme)
 
   ] ++
     -- Workspaces
