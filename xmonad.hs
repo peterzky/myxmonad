@@ -4,7 +4,7 @@ import System.Exit
 import System.IO
 
 import Control.Monad (when, join, liftM2)
-import Data.Maybe (maybeToList)
+import Data.Maybe (maybeToList,fromJust,isJust)
 import Data.List
 import Data.Char (toLower)
 import Data.Function (on)
@@ -175,15 +175,7 @@ myModMask = mod4Mask
 
 myOrgCmd = "emacsclient -nc"
 
-xmobarEscape = concatMap doubleLts
-  where doubleLts '<' = "<<"
-        doubleLts x   = [x]
-
-myWorkspaces = clickable . (map xmobarEscape) $ ["WEB","WRK","ORG","DOC","MSG","VOD","GAME","TOR"]
-  where
-    clickable l = [ "<action=xdotool key Super_L+" ++ show (n) ++ ">" ++ ws ++ "</action>" |
-                             (i,ws) <- zip [1..8] l,
-                            let n = i ]
+myWorkspaces = ["WEB","WRK","ORG","DOC","MSG","VOD","GAME","TOR"]
 
 killAll = withAll (\w -> do (focus w) >> kill1)
 
@@ -411,15 +403,23 @@ myManageHook =
     myRole = ["pop-up"]
 
 -- xmobar
--- more in dynamiclog
+clickable ws =
+  let index = elemIndex ws myWorkspaces
+  in
+    if isJust index
+    then "<action=xdotool key Super_L+" ++ show(fromJust index + 1) ++ ">" ++ ws ++ "</action>"
+    else ws
+
+
 myPP  =
   namedScratchpadFilterOutWorkspacePP $
   xmobarPP
   {
     ppSep    = "  "
-  , ppCurrent = xmobarColor "#74b9ff" ""
-  , ppVisible = xmobarColor "#dfe6e9" ""
-  , ppUrgent = xmobarColor "#ff7675" ""
+  , ppCurrent = xmobarColor "#74b9ff" "" . clickable
+  , ppVisible = xmobarColor "#dfe6e9" "" . clickable
+  , ppUrgent = xmobarColor "#ff7675" "" . clickable
+  , ppHidden = clickable
   , ppWsSep  = "  "
   , ppTitle  = xmobarColor xmobarTitleColor "" . shorten 50
   , ppOrder  = \(ws:m:t:e) -> [ws,m] ++ e ++ [t]
