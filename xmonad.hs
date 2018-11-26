@@ -163,13 +163,13 @@ myTerminal = "urxvtc"
 
 myFocusFollowsMouse = True
 
-myBorderWidth = 2
+myBorderWidth = 3
 
 xmobarTitleColor = "#ababab"
 
 myNormalBorderColor = "#282A36"
 
-myFocusedBorderColor = "#dfe6e9"
+myFocusedBorderColor = "#7f8c8d"
 
 myModMask = mod4Mask
 
@@ -294,12 +294,12 @@ myMouseBindings XConfig {XMonad.modMask = modm} =
     ]
 
 myTheme = def
-   {  activeColor         = "#dfe6e9"
+   {  activeColor         = myFocusedBorderColor
     , inactiveColor       = "#111111"
-    , activeBorderColor   = "#dfe6e9"
+    , activeBorderColor   = myFocusedBorderColor
     , inactiveBorderColor = "#111111"
     , activeTextColor     = "black"
-    , inactiveTextColor   = "#d5d3a7"
+    , inactiveTextColor   = myFocusedBorderColor
     , fontName            = "xft:Sarasa UI SC:size=10"
     , decoHeight          = 16
     }
