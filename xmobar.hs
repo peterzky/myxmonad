@@ -15,7 +15,7 @@ Config {
    -- layout
    , sepChar  = "%"   -- delineator between plugin names and straight text
    , alignSep = "}{"  -- separator between left-right alignment
-   , template = "%StdinReader% } {%org% %pomodoro% %dynnetwork%   %disku%   %multicpu%   %coretemp%   %memory%   %date%   %default:Master%   %battery% "
+   , template = "   %StdinReader% } { %org% %pomodoro% %dynnetwork%   %disku%   %multicpu%   %coretemp%   %memory%   %date%   %default:Master%   %battery%   "
 
    -- general behavior
    , lowerOnStart     = True    -- send to bottom of window stack on start
