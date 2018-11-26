@@ -175,7 +175,15 @@ myModMask = mod4Mask
 
 myOrgCmd = "emacsclient -nc"
 
-myWorkspaces = ["WEB","WRK","ORG","DOC","MSG","VOD","GAME","TOR"]
+xmobarEscape = concatMap doubleLts
+  where doubleLts '<' = "<<"
+        doubleLts x   = [x]
+
+myWorkspaces = clickable . (map xmobarEscape) $ ["WEB","WRK","ORG","DOC","MSG","VOD","GAME","TOR"]
+  where
+    clickable l = [ "<action=xdotool key Super_L+" ++ show (n) ++ ">" ++ ws ++ "</action>" |
+                             (i,ws) <- zip [1..8] l,
+                            let n = i ]
 
 killAll = withAll (\w -> do (focus w) >> kill1)
 

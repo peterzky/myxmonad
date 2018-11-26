@@ -15,7 +15,7 @@ Config {
    -- layout
    , sepChar  = "%"   -- delineator between plugin names and straight text
    , alignSep = "}{"  -- separator between left-right alignment
-   , template = "   %StdinReader% } { %org% %pomodoro% %dynnetwork%   %disku%   %multicpu%   %coretemp%   %memory%   %date%   %default:Master%   %battery%   "
+   , template = "   %UnsafeStdinReader% } { %org% %pomodoro% %dynnetwork%   %disku%   %multicpu%   %coretemp%   %memory%   %date%   %default:Master%   %battery%   "
 
    -- general behavior
    , lowerOnStart     = True    -- send to bottom of window stack on start
@@ -25,7 +25,7 @@ Config {
    , pickBroadest     = False   -- choose widest display (multi-monitor)
    , persistent       = True    -- enable/disable hiding (True = disabled)
    , commands =
-        [ Run StdinReader
+        [ Run UnsafeStdinReader
         , Run Com ".bin/xmobar-org.sh" [] "org" 20
         , Run Com "timer" ["-c"] "pomodoro" 10
         , Run Volume "default" "Master" [
