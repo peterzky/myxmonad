@@ -155,7 +155,7 @@ myScratchPads =
       (title =? "rangerfloat")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
   , NS "org"
-       "emacsclient -c -F '((name . \"org-agenda\") (alpha . (85 . 85)))' -e '(progn (org-todo-list)(delete-other-windows))'"
+       "emacsclient -c -F '((name . \"org-agenda\") (alpha . (85 . 85)))' -e '(org-capture nil \"i\")'"
        (title =? "org-agenda")
        (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
   , NS "dropdown"
@@ -246,7 +246,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_r) , spawn "pkill xmobar; xmonad --recompile; xmonad --restart")
   , ((modm, xK_f), namedScratchpadAction myScratchPads "ranger")
   , ((modm, xK_space), namedScratchpadAction myScratchPads "dropdown")
-  , ((modm, xK_z), namedScratchpadAction myScratchPads "org")
+  , ((modm, xK_c), namedScratchpadAction myScratchPads "org")
   , ((modm, xK_g), spawn "$HOME/.bin/rofi-surfraw.sh")
    -- Volume control
   , ((0, 0x1008FF13), spawn "pactl set-sink-volume @DEFAULT_SINK@ +2%")
@@ -262,7 +262,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
    -- Screenshots
   , ((0, xK_Print), spawn "$HOME/.bin/ScreenShot.sh")
    -- System Prompt
-   ,((0, xK_Pause), xmonadPromptC systemPromptCmds myPromptTheme)
+   ,((0, xK_Pause), spawn "i3lock-fancy")
    ,((modm .|. shiftMask, xK_q), xmonadPromptC systemPromptCmds myPromptTheme)
 
   ] ++
