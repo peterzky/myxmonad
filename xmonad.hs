@@ -242,13 +242,25 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       , ((0, xK_a), namedScratchpadAction myScratchPads "music")
       , ((0, xK_r), namedScratchpadAction myScratchPads "arandr")
       ])
-   -- Applications
+  -- Org Mode
+  , ((modm, xK_o), submap . M.fromList $
+      [ ((0, xK_i), spawn "emacsclient -e '(org-clock-in-last)'")
+      , ((0, xK_o), spawn "emacsclient -e '(org-clock-out)'")
+      , ((0, xK_q), spawn "emacsclient -e '(org-clock-cancel)'")
+      -- timers
+      , ((0, xK_p), spawn "timer 25")
+      , ((0, xK_5), spawn "timer 5")
+      , ((0, xK_1), spawn "timer 10")
+      , ((0, xK_2), spawn "timer 20")
+      , ((0, xK_k), spawn "pkill timer")
+      ])
+  -- Applications
   , ((modm .|. shiftMask, xK_r) , spawn "pkill xmobar; xmonad --recompile; xmonad --restart")
   , ((modm, xK_f), namedScratchpadAction myScratchPads "ranger")
   , ((modm, xK_space), namedScratchpadAction myScratchPads "dropdown")
   , ((modm, xK_c), namedScratchpadAction myScratchPads "org")
   , ((modm, xK_g), spawn "$HOME/.bin/rofi-surfraw.sh")
-   -- Volume control
+  -- Volume control
   , ((0, 0x1008FF13), spawn "pactl set-sink-volume @DEFAULT_SINK@ +2%")
   , ((0, 0x1008FF11), spawn "pactl set-sink-volume @DEFAULT_SINK@ -2%")
   , ((0, 0x1008FF12), spawn "pactl set-sink-mute @DEFAULT_SINK@ toggle")
@@ -259,21 +271,21 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_0), spawn "playerctl play-pause")
   , ((modm .|. shiftMask, xK_0), spawn "playerctl -a play-pause")
   , ((modm .|. controlMask, xK_0), spawn "playerctl -a stop")
-   -- Screenshots
+  -- Screenshots
   , ((0, xK_Print), spawn "$HOME/.bin/ScreenShot.sh")
-   -- System Prompt
+  -- System Prompt
    ,((0, xK_Pause), spawn "i3lock-fancy")
    ,((modm .|. shiftMask, xK_q), xmonadPromptC systemPromptCmds myPromptTheme)
 
   ] ++
-    -- Workspaces
+  -- Workspaces
   zip (zip (repeat (modm)) [xK_1..xK_9]) (map (DO.withNthWorkspace W.greedyView) [0..])
     ++
   zip (zip (repeat (modm .|. shiftMask)) [xK_1..xK_9]) (map (DO.withNthWorkspace W.shift) [0..])
     ++
   zip (zip (repeat (modm .|. controlMask)) [xK_1..xK_9]) (map (DO.withNthWorkspace copy) [0..])
     ++
-    -- Monitors
+  -- Monitors
   [ ((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
   | (key, sc) <- zip [xK_s, xK_a, xK_d] [0 ..]
   , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]
@@ -484,18 +496,18 @@ main = do
     $ withUrgencyHook NoUrgencyHook
     $ dynamicProjects myProjects
       def
-      { terminal = myTerminal
-      , focusFollowsMouse = myFocusFollowsMouse
-      , borderWidth = myBorderWidth
-      , modMask = myModMask
-      , workspaces = myWorkspaces
-      , normalBorderColor = myNormalBorderColor
+      { terminal           = myTerminal
+      , focusFollowsMouse  = myFocusFollowsMouse
+      , borderWidth        = myBorderWidth
+      , modMask            = myModMask
+      , workspaces         = myWorkspaces
+      , normalBorderColor  = myNormalBorderColor
       , focusedBorderColor = myFocusedBorderColor
-      , keys = myKeys
-      , mouseBindings = myMouseBindings
-      , layoutHook =  myLayout
-      , handleEventHook = myEventHook
-      , startupHook = myStartupHook
-      , manageHook = myToggleHook <+> myManageHook
-      , logHook = myLogHook
+      , keys               = myKeys
+      , mouseBindings      = myMouseBindings
+      , layoutHook         = myLayout
+      , handleEventHook    = myEventHook
+      , startupHook        = myStartupHook
+      , manageHook         = myToggleHook <+> myManageHook
+      , logHook            = myLogHook
       }

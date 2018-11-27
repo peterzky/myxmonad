@@ -15,7 +15,7 @@ Config {
    -- layout
    , sepChar  = "%"   -- delineator between plugin names and straight text
    , alignSep = "}{"  -- separator between left-right alignment
-   , template = "   %UnsafeStdinReader% } { %org% %pomodoro% %dynnetwork%   %disku%   %multicpu%   %coretemp%   %memory%   %date%   %default:Master%   %battery%   "
+   , template = "   %UnsafeStdinReader% } %pomodoro%  %org%  {%dynnetwork%   %disku%    %date%   %default:Master%   %battery%   "
 
    -- general behavior
    , lowerOnStart     = True    -- send to bottom of window stack on start
@@ -29,59 +29,20 @@ Config {
         , Run Com ".bin/xmobar-org.sh" [] "org" 20
         , Run Com "timer" ["-c"] "pomodoro" 10
         , Run Volume "default" "Master" [
-                "-t", "<action=`pactl set-sink-volume @DEFAULT_SINK@ -2%; sleep 0.1` button=5><action=`pactl set-sink-volume @DEFAULT_SINK@ +2%; sleep 0.1` button=4><action=`pactl set-sink-mute @DEFAULT_SINK@ toggle` button=1><status> <volume>%</action></action></action>",
+                "-t", "<action=`pactl set-sink-volume @DEFAULT_SINK@ -2%` button=5><action=`pactl set-sink-volume @DEFAULT_SINK@ +2%` button=4><action=`pactl set-sink-mute @DEFAULT_SINK@ toggle` button=1><status> <volume>%</action></action></action>",
                 "--",
                 "-o", "<fn=1>\xf026</fn>",
                 "-O", "<fn=1>\xf028</fn>",
                 "-c", "#ababab",
                 "-C", "#ababab"
-                                        ] 10
+                                        ] 20
         , Run DiskU [("/", "<fn=1>\xf0a0</fn>  <used>/<size>")]
-         ["-L", "20", "-H", "50", "-m", "1", "-p", "3"]
-         20
+         ["-L", "20", "-H", "50", "-m", "1", "-p", "3"] 20
 
-        -- network activity monitor (dynamic interface resolution)
-        , Run DynNetwork     [ "--template" , "<fn=1>\xf1eb</fn> <tx> <rx>"
-                             , "--Low"      , "1000"       -- units: B/s
-                             , "--High"     , "5000"       -- units: B/s
-                             -- , "--low"      , "#87d37c"
-                             -- , "--normal"   , "#f4b350"
-                             , "--high"     , "#ec644b"
-                             , "--suffix"   , "On"
-                             , "--width"    , "8"
-                             , "-p"         , "4"
-                             ] 10
+        -- , Run Mpris2 "cmus" ["-t", "<fn=1>\xf001</fn>  <artist> - <title>" ] 10
 
-        -- cpu activity monitor
-        , Run MultiCpu       [ "--template" , "<fn=1>\xf108</fn><total0>%"
-                             , "--Low"      , "50"         -- units: %
-                             , "--High"     , "85"         -- units: %
-                             -- , "--low"      , "#87d37c"
-                             , "--normal"   , "#f4b350"
-                             , "--high"     , "#ec644b"
-                             , "--width"    , "6"
-                             , "-p"         , "4"
-                             ] 10
-
-        -- cpu core temperature monitor
-        , Run CoreTemp       [ "--template" , "<fn=1>\xf2c8</fn> <core0>°C"
-                             , "--Low"      , "70"        -- units: °C
-                             , "--High"     , "80"        -- units: °C
-                             -- , "--low"      , "#87d37c"
-                             , "--normal"   , "#f4b350"
-                             , "--high"     , "#ec644b"
-                             , "--width"    , "4"
-                             ] 50
-
-        -- memory usage monitor
-        , Run Memory         [ "--template" ,"<fn=1>\xf233</fn> <usedratio>%"
-                             , "--Low"      , "20"        -- units: %
-                             , "--High"     , "90"        -- units: %
-                             -- , "--low"      , "#87d37c"
-                             , "--normal"   , "#f4b350"
-                             , "--high"     , "#ec644b"
-                             , "--width"    , "4"
-                             ] 10
+        , Run DynNetwork ["-t","<rx> <tx>"
+                         ,"-S", "True"] 10
 
         -- battery monitor
         , Run Battery        [ "--template" , "<acstatus>"
@@ -102,7 +63,7 @@ Config {
 
         -- time and date indicator
         --   (%F = y-m-d date, %a = day of week, %T = h:m:s time)
-        , Run Date           "<fn=1>\xf073</fn> %F(%a)   <fn=1>\xf017</fn> %T" "date" 10
+        , Run Date           "<fn=1>\xf073</fn> %_m-%_d (%a)   <fn=1>\xf017</fn>  %H:%M" "date" 30
 
         ]
    }
