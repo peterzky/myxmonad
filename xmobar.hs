@@ -15,7 +15,7 @@ Config {
    -- layout
    , sepChar  = "%"   -- delineator between plugin names and straight text
    , alignSep = "}{"  -- separator between left-right alignment
-   , template = "   %UnsafeStdinReader% } %pomodoro%  %org%  {%dynnetwork%   %disku%    %date%   %default:Master%   %battery%   "
+   , template = "   %UnsafeStdinReader% } %pomodoro%  %org%  {%dynnetwork%    %cpu%   %coretemp%   %disku%    %date%   %default:Master%   %battery%   "
 
    -- general behavior
    , lowerOnStart     = True    -- send to bottom of window stack on start
@@ -36,13 +36,34 @@ Config {
                 "-c", "#ababab",
                 "-C", "#ababab"
                                         ] 20
-        , Run DiskU [("/", "<fn=1>\xf0a0</fn>  <used>/<size>")]
+        , Run DiskU [("/", "<fn=1>\xf0a0</fn>  <free>")]
          ["-L", "20", "-H", "50", "-m", "1", "-p", "3"] 20
 
         -- , Run Mpris2 "cmus" ["-t", "<fn=1>\xf001</fn>  <artist> - <title>" ] 10
 
-        , Run DynNetwork ["-t","<rx> <tx>"
-                         ,"-S", "True"] 10
+        , Run DynNetwork ["-t", "<fn=1>\xf102</fn> <rx> <fn=1>\xf103</fn> <tx>"
+                         ,"-S", "True"
+                         ] 10
+
+        , Run Cpu ["-t", "<fn=1>\xf108</fn> <total>%"
+                  , "--Low"      , "50"
+                  , "--High"     , "85"
+                  , "--normal"   , "#f4b350"
+                  , "--high"     , "#ec644b"
+                  , "--width"    , "4"
+                  ] 10
+
+
+        -- cpu core temperature monitor
+        , Run CoreTemp       [ "--template" , "<fn=1>\xf2c8</fn> <core0>°C"
+                             , "--Low"      , "70"        -- units: °C
+                             , "--High"     , "80"        -- units: °C
+                             -- , "--low"      , "#87d37c"
+                             , "--normal"   , "#f4b350"
+                             , "--high"     , "#ec644b"
+                             , "--width"    , "4"
+                             ] 50
+
 
         -- battery monitor
         , Run Battery        [ "--template" , "<acstatus>"
@@ -53,12 +74,12 @@ Config {
                              , "--high"     , "#87d37c"
 
                              , "--" -- battery specific options
-                                       -- discharging status
-                                       , "-o"	, "<fn=1>\xf240</fn>  <left>% (<timeleft>)"
-                                       -- AC "on" status
-                                       , "-O"	, "<fc=#dAA520><fn=1>\xf376</fn> <left></fc>"
-                                       -- charged status
-                                       , "-i"	, "<fc=#006000><fn=1>\xf1e6</fn></fc>"
+                              -- discharging status
+                             , "-o"	, "<fn=1>\xf240</fn>  <left>% (<timeleft>)"
+                              -- AC "on" status
+                             , "-O"	, "<fc=#dAA520><fn=1>\xf376</fn> <left></fc>"
+                              -- charged status
+                             , "-i"	, "<fc=#006000><fn=1>\xf1e6</fn></fc>"
                              ] 50
 
         -- time and date indicator
