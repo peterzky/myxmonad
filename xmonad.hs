@@ -247,12 +247,24 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       [ ((0, xK_i), spawn "emacsclient -e '(org-clock-in-last)'")
       , ((0, xK_o), spawn "emacsclient -e '(org-clock-out)'")
       , ((0, xK_q), spawn "emacsclient -e '(org-clock-cancel)'")
+
+      , ((modm, xK_i), spawn "emacsclient -e '(org-clock-in-last)'")
+      , ((modm, xK_o), spawn "emacsclient -e '(org-clock-out)'")
+      , ((modm, xK_q), spawn "emacsclient -e '(org-clock-cancel)'")
+
       -- timers
       , ((0, xK_p), spawn "timer 25")
       , ((0, xK_5), spawn "timer 5")
       , ((0, xK_1), spawn "timer 10")
       , ((0, xK_2), spawn "timer 20")
       , ((0, xK_k), spawn "pkill timer")
+
+      , ((modm, xK_p), spawn "timer 25")
+      , ((modm, xK_5), spawn "timer 5")
+      , ((modm, xK_1), spawn "timer 10")
+      , ((modm, xK_2), spawn "timer 20")
+      , ((modm, xK_k), spawn "pkill timer")
+
       ])
   -- Applications
   , ((modm .|. shiftMask, xK_r) , spawn "pkill xmobar; xmonad --recompile; xmonad --restart")
@@ -274,7 +286,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   -- Screenshots
   , ((0, xK_Print), spawn "$HOME/.bin/ScreenShot.sh")
   -- System Prompt
-   ,((0, xK_Pause), spawn "i3lock-fancy")
+   ,((modm, xK_Pause), spawn "i3lock-fancy")
    ,((modm .|. shiftMask, xK_q), xmonadPromptC systemPromptCmds myPromptTheme)
 
   ] ++
