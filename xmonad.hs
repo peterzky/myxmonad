@@ -186,14 +186,14 @@ killAll = withAll (\w -> do (focus w) >> kill1)
 
 myKeys conf@XConfig {XMonad.modMask = modm} =
   M.fromList $
-     -- Basic
+  -- Basic
   [ ((modm, xK_q), kill1)
   , ((modm, xK_BackSpace), killAll)
   , ((modm .|. controlMask, xK_s), sinkAll)
   , ((modm .|. shiftMask, xK_e), io exitSuccess)
   , ((modm, xK_n), refresh)
   , ((modm, xK_r), spawn "rofi -show run")
-  , ((modm, xK_Tab), cycleWorkspaceOnCurrentScreen [xK_Super_L] xK_Tab xK_grave)
+  -- Window Bindings
   , ((modm, xK_j), windows W.focusDown)
   , ((modm, xK_k), windows W.focusUp)
   , ((modm, xK_m), windows W.focusMaster)
@@ -205,7 +205,9 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_t), withFocused $ windows . W.sink)
   , ((modm, xK_comma), sendMessage (IncMasterN 1))
   , ((modm, xK_period), sendMessage (IncMasterN (-1)))
+  , ((modm, xK_grave), windows W.focusDown)
   -- Workspace Bindings
+  , ((modm, xK_Tab), cycleWorkspaceOnCurrentScreen [xK_Super_L] xK_Tab xK_grave)
   , ((modm .|. shiftMask, xK_Return), bindOn [("WEB", spawn "firefox")
                                              ,("ORG", spawn myOrgCmd)
                                              ,("DOC", spawn "XMind")
