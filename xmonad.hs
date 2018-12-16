@@ -103,7 +103,7 @@ myProjects =
   , Project { projectName = "ORG"
             , projectDirectory = "~/Sync/sync/org"
             , projectStartHook = Just $ do
-                spawn "emacsclient -nc -e '(progn (org-todo-list)(delete-other-windows)(org-agenda-redo-all))'"
+                spawn "emacsclient -nc -e \"(call-interactively 'org-agenda-list)\""
             }
   , Project { projectName = "WRK"
             , projectDirectory = "~/"
@@ -192,7 +192,11 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. controlMask, xK_s), sinkAll)
   , ((modm .|. shiftMask, xK_e), io exitSuccess)
   , ((modm, xK_n), refresh)
-  , ((modm, xK_r), spawn "rofi -show run")
+  , ((modm, xK_r), bindOn [("MSG", spawn "$HOME/.bin/rofi-msg.sh")
+                          ,("WEB", spawn "$HOME/.bin/rofi-surfraw.sh")
+                          ,("DOC", spawn "$HOME/.bin/rofi-doc.sh")
+                          ,("ORG", spawn "$HOME/.bin/rofi-org.sh")
+                          ,("", spawn "rofi -show run")])
   -- Window Bindings
   , ((modm, xK_j), windows W.focusDown)
   , ((modm, xK_k), windows W.focusUp)
@@ -273,7 +277,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_f), namedScratchpadAction myScratchPads "ranger")
   , ((modm, xK_space), namedScratchpadAction myScratchPads "dropdown")
   , ((modm, xK_c), namedScratchpadAction myScratchPads "org")
-  , ((modm, xK_g), spawn "$HOME/.bin/rofi-surfraw.sh")
+  , ((modm, xK_g), spawn "rofi -show window")
   -- Volume control
   , ((0, 0x1008FF13), spawn "pactl set-sink-volume @DEFAULT_SINK@ +2%")
   , ((0, 0x1008FF11), spawn "pactl set-sink-volume @DEFAULT_SINK@ -2%")

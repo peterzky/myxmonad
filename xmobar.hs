@@ -41,7 +41,7 @@ Config {
 
         -- , Run Mpris2 "cmus" ["-t", "<fn=1>\xf001</fn>  <artist> - <title>" ] 10
 
-        , Run DynNetwork ["-t", "<fn=1>\xf102</fn> <rx> <fn=1>\xf103</fn> <tx>"
+        , Run DynNetwork ["-t", "<fn=1>\xf102</fn> <tx>  <fn=1>\xf103</fn> <rx>"
                          ,"-S", "True"
                          ] 10
 
