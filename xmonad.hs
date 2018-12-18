@@ -72,12 +72,17 @@ myProjects =
   [ Project { projectName = "MSG"
             , projectDirectory = "~/"
             , projectStartHook = Just $ do
-                spawn "urxvtc -geometry 130x26-500+200 -e cmus"
+                spawn "$HOME/.bin/rofi-msg.sh"
             }
   , Project { projectName = "GEN"
             , projectDirectory = "~/"
             , projectStartHook = Just $ do
                 runInTerm "urxvtc" "zsh -c 'neofetch; zsh'"
+            }
+  , Project { projectName = "ENV"
+            , projectDirectory = "~/"
+            , projectStartHook = Just $ do
+                spawn "$HOME/.bin/rofi-env.sh"
             }
 
   , Project { projectName = "WEB"
@@ -103,7 +108,7 @@ myProjects =
   , Project { projectName = "ORG"
             , projectDirectory = "~/Sync/sync/org"
             , projectStartHook = Just $ do
-                spawn "emacsclient -nc -e \"(call-interactively 'org-agenda-list)\""
+                spawn "$HOME/.bin/rofi-org.sh"
             }
   , Project { projectName = "WRK"
             , projectDirectory = "~/"
@@ -180,7 +185,7 @@ myModMask = mod4Mask
 
 myOrgCmd = "emacsclient -nc"
 
-myWorkspaces = ["GEN","WEB","WRK","ORG","DOC","MSG","VOD","GAME","TOR"]
+myWorkspaces = ["GEN","WEB","WRK","ORG","DOC","MSG","VOD","ENV","TOR","GAME"]
 
 killAll = withAll (\w -> do (focus w) >> kill1)
 
@@ -196,6 +201,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
                           ,("WEB", spawn "$HOME/.bin/rofi-surfraw.sh")
                           ,("DOC", spawn "$HOME/.bin/rofi-doc.sh")
                           ,("ORG", spawn "$HOME/.bin/rofi-org.sh")
+                          ,("ENV", spawn "$HOME/.bin/rofi-env.sh")
                           ,("", spawn "rofi -show run")])
   -- Window Bindings
   , ((modm, xK_j), windows W.focusDown)
@@ -385,6 +391,7 @@ myLayout = id
    $ onWorkspace "VOD" myGrid
    $ onWorkspace "MSG" (mySimpleFloat ||| myFloat ||| myCross ||| myGrid)
    $ onWorkspace "GAME" mySimpleFloat
+   $ onWorkspace "ENV" mySimpleFloat
    $ onWorkspace "TOR" mySimpleFloat
    $ myTiled |||  myMirror  ||| myGrid ||| myCross
    ||| myPane ||| myTab ||| myBig ||| myFloat ||| mySimpleFloat
@@ -435,13 +442,7 @@ myManageHook =
     myRole = ["pop-up"]
 
 -- xmobar
-clickable ws =
-  let index = elemIndex ws myWorkspaces
-  in
-    if isJust index
-    then "<action=xdotool key Super_L+" ++ show(fromJust index + 1) ++ ">" ++ ws ++ "</action>"
-    else ws
-
+clickable ws = "<action=$HOME/.bin/switch-ws.sh " ++ show(ws) ++ ">" ++ ws ++ "</action>"
 
 myPP  =
   namedScratchpadFilterOutWorkspacePP $
