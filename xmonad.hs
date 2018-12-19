@@ -69,6 +69,13 @@ import qualified Data.Map                         as M
 import qualified XMonad.StackSet                  as W
 
 
+-- https://hackage.haskell.org/package/xmonad-contrib-0.15/docs/src/XMonad.Actions.DynamicWorkspaces.html#selectWorkspace
+-- rofiWithWorkspace job = do
+--   ws <- gets (workspaces . windowset)
+--   sort <- getSortByIndex
+--   t <- menuArgs "rofi" ["-dmenu", "-i","-p","SWITCH"] $ map W.tag $ sort ws
+--   when (t /= "") $ job t
+
 rofiGoto = do
   s <- gets windowset
   w <- menuArgs "rofi" ["-dmenu", "-i","-p","SWITCH"] myWorkspaces
