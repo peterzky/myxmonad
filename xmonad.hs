@@ -61,12 +61,20 @@ import XMonad.Prompt.FuzzyMatch
 import XMonad.Util.Cursor
 import XMonad.Util.NamedScratchpad
 import XMonad.Util.Run
+import XMonad.Util.Dmenu (menuArgs)
 import XMonad.Util.WorkspaceCompare
 import XMonad.Util.Font
 
 import qualified Data.Map                         as M
 import qualified XMonad.StackSet                  as W
 
+
+rofiGoto = do
+  s <- gets windowset
+  w <- menuArgs "rofi" ["-dmenu", "-i","-p","SWITCH"] myWorkspaces
+  when (w /= "") $ if W.tagMember w s
+    then windows $ W.greedyView w
+    else addWorkspace w
 
 myProjects =
   [ Project { projectName = "MSG"
@@ -223,7 +231,9 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
                                              ,("DOC", spawn "XMind")
                                              ,("GAME", spawn "steam")
                                              ,("", spawn "urxvtc")])
-  , ((modm, xK_w), selectWorkspace myPromptTheme)
+  -- , ((modm, xK_w), selectWorkspace myPromptTheme)
+  , ((modm, xK_w), rofiGoto)
+
   , ((modm .|. shiftMask, xK_w), withWorkspace myPromptTheme (windows . W.shift))
   , ((modm .|. controlMask, xK_w), withWorkspace myPromptTheme (windows . copy))
   , ((modm .|. shiftMask, xK_BackSpace), removeWorkspace)
