@@ -78,7 +78,7 @@ import qualified XMonad.StackSet                  as W
 
 rofiGoto = do
   s <- gets windowset
-  w <- menuArgs "rofi" ["-dmenu", "-i","-p","SWITCH"] myWorkspaces
+  w <- menuArgs "rofi" ["-dmenu", "-i","-p","switch"] myWorkspaces
   when (w /= "") $ if W.tagMember w s
     then windows $ W.greedyView w
     else addWorkspace w
@@ -451,6 +451,7 @@ myManageHook =
       , "Octave"
       , "feh"
       , "Anki"
+      , "Pcmanfm"
       ]
     myTFloats = ["Add Downloads", "Library","emacs-capture"]
     myRFloats = ["desktop_window"]
