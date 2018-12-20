@@ -45,7 +45,13 @@ import XMonad.Layout.Reflect
 import XMonad.Layout.MultiToggle
 import XMonad.Layout.MultiToggle.Instances
 import XMonad.Layout.LayoutCombinators
-import XMonad.Layout.HintedGrid
+-- import XMonad.Layout.HintedGrid
+-- import XMonad.Layout.HintedTile (hidding Tall)
+-- import XMonad.Layout.HintedTile (HintedTile)
+import XMonad.Layout.LayoutHints
+import XMonad.Layout.MosaicAlt
+import XMonad.Layout.IfMax
+
 import XMonad.Layout.Cross
 import XMonad.Layout.TwoPane
 import XMonad.Layout.Tabbed
@@ -69,7 +75,6 @@ import qualified Data.Map                         as M
 import qualified XMonad.StackSet                  as W
 
 
--- https://hackage.haskell.org/package/xmonad-contrib-0.15/docs/src/XMonad.Actions.DynamicWorkspaces.html#selectWorkspace
 rofiWithWorkspace prompt job = do
   ws <- gets (W.workspaces . windowset)
   sort <- getSortByIndex
@@ -383,9 +388,13 @@ myFloat = renamed [Replace "L"]
 mySimpleFloat = renamed [Replace "SFlot"]
     $ simplestFloat
 
-myGrid = renamed [Replace "Grid"]
-    $ mkToggle (single REFLECTX)
-    $ Grid False
+myMSG = renamed [Replace "MSG"]
+    $ IfMax 2 simpleCross
+    $ layoutHintsToCenter (Mirror (Tall 2 (3/100) (1/2)))
+
+myVideo = renamed [Replace "VIDEO"]
+    $ layoutHintsWithPlacement (0.5,0.5)
+    $ MosaicAlt M.empty
 
 myCross = renamed [Replace "Cross"]
     . noBorders
@@ -409,12 +418,12 @@ myLayout = id
    . avoidStruts
    $ onWorkspace "WRK" (myTiled ||| myPane ||| myMirror)
    $ onWorkspace "WEB" (myTab ||| myPane |||myCross ||| myBig)
-   $ onWorkspace "VOD" myGrid
-   $ onWorkspace "MSG" (mySimpleFloat ||| myFloat ||| myCross ||| myGrid)
+   $ onWorkspace "VOD" myVideo
+   $ onWorkspace "MSG" (myMSG ||| mySimpleFloat ||| myFloat ||| myCross )
    $ onWorkspace "GAME" mySimpleFloat
    $ onWorkspace "ENV" mySimpleFloat
    $ onWorkspace "TOR" mySimpleFloat
-   $ myTiled |||  myMirror  ||| myGrid ||| myCross
+   $ myTiled |||  myMirror  ||| myCross
    ||| myPane ||| myTab ||| myBig ||| myFloat ||| mySimpleFloat
 
 myManageHook =
