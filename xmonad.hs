@@ -70,15 +70,16 @@ import qualified XMonad.StackSet                  as W
 
 
 -- https://hackage.haskell.org/package/xmonad-contrib-0.15/docs/src/XMonad.Actions.DynamicWorkspaces.html#selectWorkspace
--- rofiWithWorkspace job = do
---   ws <- gets (workspaces . windowset)
---   sort <- getSortByIndex
---   t <- menuArgs "rofi" ["-dmenu", "-i","-p","SWITCH"] $ map W.tag $ sort ws
---   when (t /= "") $ job t
+rofiWithWorkspace prompt job = do
+  ws <- gets (W.workspaces . windowset)
+  sort <- getSortByIndex
+  t <- menuArgs "rofi" ["-dmenu", "-i","-p", prompt]
+    $ filter (\w -> w /= "NSP") $ map W.tag $ sort ws
+  when (t /= "") $ job t
 
 rofiGoto = do
   s <- gets windowset
-  w <- menuArgs "rofi" ["-dmenu", "-i","-p","switch"] myWorkspaces
+  w <- menuArgs "rofi" ["-dmenu", "-i","-p","switch"] $ myWorkspaces
   when (w /= "") $ if W.tagMember w s
     then windows $ W.greedyView w
     else addWorkspace w
@@ -241,8 +242,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   -- , ((modm, xK_w), selectWorkspace myPromptTheme)
   , ((modm, xK_w), rofiGoto)
 
-  , ((modm .|. shiftMask, xK_w), withWorkspace myPromptTheme (windows . W.shift))
-  , ((modm .|. controlMask, xK_w), withWorkspace myPromptTheme (windows . copy))
+  , ((modm .|. shiftMask, xK_w), rofiWithWorkspace "shift" (windows . W.shift))
+  , ((modm .|. controlMask, xK_w), rofiWithWorkspace "copy" (windows . copy))
   , ((modm .|. shiftMask, xK_BackSpace), removeWorkspace)
   , ((modm, xK_Left ), DO.moveTo Prev HiddenNonEmptyWS)
   , ((modm, xK_Right), DO.moveTo Next HiddenNonEmptyWS)
