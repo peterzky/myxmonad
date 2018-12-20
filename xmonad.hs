@@ -45,9 +45,7 @@ import XMonad.Layout.Reflect
 import XMonad.Layout.MultiToggle
 import XMonad.Layout.MultiToggle.Instances
 import XMonad.Layout.LayoutCombinators
--- import XMonad.Layout.HintedGrid
--- import XMonad.Layout.HintedTile (hidding Tall)
--- import XMonad.Layout.HintedTile (HintedTile)
+
 import XMonad.Layout.LayoutHints
 import XMonad.Layout.MosaicAlt
 import XMonad.Layout.IfMax
@@ -156,19 +154,8 @@ myPromptTheme = def
   , searchPredicate = fuzzyMatch
   }
 
-
-systemPromptCmds =
-  [ ("Shutdown", spawn "$HOME/.bin/shutdown.sh poweroff")
-  , ("Reboot", spawn "$HOME/.bin/shutdown.sh reboot")
-  , ("Exit", io exitSuccess)
-  , ("Hibernate", spawn "sudo systemctl hibernate")
-  , ("Restart", restart "xmonad" True)
-  ]
-
 myScratchPads =
-  [ NS "fileManager" "thunar" (className =? "Thunar")
-    (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
-  , NS "htop" "urxvtc -title htop -e htop"
+  [ NS "htop" "urxvtc -title htop -e htop"
       (title =? "htop")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
   , NS "nm" "urxvtc -title nmtui -e nmtui"
@@ -305,7 +292,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
 
       ])
   -- Applications
-  , ((modm .|. shiftMask, xK_r) , spawn "pkill xmobar; xmonad --recompile; xmonad --restart")
+  , ((modm .|. shiftMask, xK_r) , spawn "rofi -show run")
   , ((modm, xK_f), namedScratchpadAction myScratchPads "ranger")
   , ((modm, xK_space), namedScratchpadAction myScratchPads "dropdown")
   , ((modm, xK_c), namedScratchpadAction myScratchPads "org")
@@ -325,7 +312,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((0, xK_Print), spawn "$HOME/.bin/ScreenShot.sh")
   -- System Prompt
    ,((modm, xK_Pause), spawn "i3lock-fancy")
-   ,((modm .|. shiftMask, xK_q), xmonadPromptC systemPromptCmds myPromptTheme)
+   ,((modm .|. shiftMask, xK_q), spawn "$HOME/.bin/rofi-system.sh")
 
   ] ++
   -- Workspaces
@@ -390,7 +377,7 @@ mySimpleFloat = renamed [Replace "SFlot"]
 
 myMSG = renamed [Replace "MSG"]
     $ IfMax 2 simpleCross
-    $ layoutHintsToCenter (Mirror (Tall 2 (3/100) (1/2)))
+    $ layoutHintsWithPlacement (0.5, 0.5) (Mirror (Tall 2 (3/100) (1/2)))
 
 myVideo = renamed [Replace "VIDEO"]
     $ layoutHintsWithPlacement (0.5,0.5)
@@ -439,7 +426,7 @@ myManageHook =
   , [fmap (pc `isInfixOf`) className --> doFloat | pc <- myPCFloats]
   , [namedScratchpadManageHook myScratchPads]
   , [className =? "mpv" --> doShift "VOD" ]
-  , [className =? ".zathura-wrapped_" --> doShiftAndGo "DOC"]
+  , [className =? "Zathura" --> doShiftAndGo "DOC"]
   , [className =? "XMind ZEN" --> doShiftAndGo "DOC" ]
   , [className =? "Zeal" --> doShiftAndGo "DOC" ]
   , [title =? "XMind" --> doFloat <+> doShiftAndGo "DOC" ]
