@@ -78,11 +78,14 @@ rofiWithWorkspace prompt job = do
   when (t /= "") $ job t
 
 rofiGoto = do
+  ws <- gets (W.workspaces . windowset)
+  sort <- getSortByIndex
   s <- gets windowset
-  w <- menuArgs "rofi" ["-dmenu", "-i","-p","switch"] $ myWorkspaces
-  when (w /= "") $ if W.tagMember w s
-    then windows $ W.greedyView w
-    else addWorkspace w
+  t <- menuArgs "rofi" ["-dmenu", "-i","-p","switch"]
+    $ filter (\w -> w /= "NSP") $ map W.tag $ sort ws
+  when (t /= "") $ if W.tagMember t s
+    then windows $ W.greedyView t
+    else addWorkspace t
 
 myProjects =
   [ Project { projectName = "MSG"
