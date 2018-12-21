@@ -1,0 +1,97 @@
+#+TITLE:XMonad Cheat Sheet
+#+latex_class: refcard
+#+options: author:nil date:nil toc:nil
+#+latex: \begin{multicols}{3}
+* Basic
+#+attr_latex: :center nil
+| =M-r=     | rofi script specific to workspace |
+| =M-S-r=   | rofi run                          |
+| =M-S-q=   | quit prompt                       |
+| =M-Pause= | lock screen                       |
+| =Print=   | screenshot                        |
+
+* Window
+#+attr_latex: :center nil
+| =M-j=         | window focus down             |
+| =M-k=         | window focus up               |
+| =M-m=         | window focus master           |
+| =M-RET=       | promote window                |
+| =M-S-j=       | window swap down              |
+| =M-S-k=       | window swap up                |
+| =M-q=         | kill current window           |
+| =M-Backspace= | kill all windows in workspace |
+| =M-C-s=       | sink all windows in workspace |
+| =M-h=         | shrink window                 |
+| =M-l=         | expand window                 |
+| =M-t=         | sink window                   |
+| =M-,=         | increase master by 1          |
+| =M-.=         | decrease master by 1          |
+| =M-`=         | window focus down             |
+
+* Workspace
+#+attr_latex: :center nil
+| =M-TAB=         | cycle workspace on current screen         |
+| =M-S-RET=       | open terminal / workspace specific action |
+| =M-w=           | goto / create workspace                   |
+| =M-S-w=         | send window to workspace                  |
+| =M-C-w=         | copy window to workspace                  |
+| =M-S-Backspace= | remove current workspace                  |
+| =M-Left=        | switch to previous non visible workspace  |
+| =M-Right=       | switch to next non visible workspace      |
+| =M-u=           | focus urgent                              |
+
+* Layout
+#+attr_latex: :center nil
+| =M-p=     | next layout       |
+| =M-S-p=   | select layout     |
+| =M-S-SPC= | reset layout      |
+| =M-b=     | toggle border     |
+| =M-y=     | toggle reflex x   |
+| =M-v=     | toggle bar        |
+| =M-S-f=   | toggle fullscreen |
+
+* Hook
+#+attr_latex: :center nil
+| =M-C-t= | all window sink hook   |
+| =M-C-f= | all window float hook  |
+| =M-\=   | next window float hook |
+
+
+* Application
+#+attr_latex: :center nil
+| =M-f= | ranger |
+
+~prefix  M-e~
+
+#+attr_latex: :center nil
+| =e= | emacsclient            |
+| =f= | firefox                |
+| =h= | htop                   |
+| =n= | nmtui(networkmanager)  |
+| =r= | arandr(screen control) |
+
+* Org Clock
+~prefix M-o~
+
+#+attr_latex: :center nil
+| =i= | org-clock-in-last    |
+| =o= | org-clock-out        |
+| =q= | org-clock-cancel     |
+| =p= | set 25 minutes timer |
+| =1= | set 10 minutes timer |
+| =5= | set 5 minutes timer  |
+| =2= | set 20 minutes timer |
+| =k= | kill timer           |
+
+
+* Media Control
+#+attr_latex: :center nil
+| =M-HOME= | switch to speaker (PC only)     |
+| =M-END=  | switch to headphone (PC only)   |
+| =M-==    | playerctl next (next song)      |
+| =M--=    | playerctl previous (prev song)  |
+| =M-0=    | playerctl play-pause            |
+| =M-S-0=  | playerctl paly-pause all client |
+| =M-C-0=  | playerctl stop all client       |
+
+#+latex: \end{multicols}

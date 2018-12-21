@@ -190,7 +190,8 @@ xmobarTitleColor = "#ababab"
 
 myNormalBorderColor = "#282A36"
 
-myFocusedBorderColor = "#7f8c8d"
+-- myFocusedBorderColor = "#7f8c8d"
+myFocusedBorderColor = "#3498db"
 
 myModMask = mod4Mask
 
@@ -204,9 +205,6 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   M.fromList $
   -- Basic
   [ ((modm, xK_q), kill1)
-  , ((modm, xK_BackSpace), killAll)
-  , ((modm .|. controlMask, xK_s), sinkAll)
-  , ((modm .|. shiftMask, xK_e), io exitSuccess)
   , ((modm, xK_n), refresh)
   , ((modm, xK_r), bindOn [("MSG", spawn "$HOME/.bin/rofi-msg.sh")
                           ,("WEB", spawn "$HOME/.bin/rofi-surfraw.sh")
@@ -227,6 +225,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_comma), sendMessage (IncMasterN 1))
   , ((modm, xK_period), sendMessage (IncMasterN (-1)))
   , ((modm, xK_grave), windows W.focusDown)
+  , ((modm, xK_BackSpace), killAll)
+  , ((modm .|. controlMask, xK_s), sinkAll)
   -- Workspace Bindings
   , ((modm, xK_Tab), cycleWorkspaceOnCurrentScreen [xK_Super_L] xK_Tab xK_grave)
   , ((modm .|. shiftMask, xK_Return), bindOn [("WEB", spawn "firefox")
@@ -255,7 +255,6 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. controlMask, xK_t), toggleHookAllNew "sink" >> runLogHook)
   , ((modm .|. controlMask, xK_f), toggleHookAllNew "float" >> runLogHook)
   , ((modm, xK_backslash), toggleHookNext "float" >> runLogHook)
-  , ((modm .|. shiftMask, xK_t), sinkAll)
   -- Submap
   , ((modm, xK_e), submap . M.fromList $
       [ ((0, xK_e), spawn "emacsclient -nc")
@@ -263,8 +262,6 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       , ((0, xK_f), spawn "firefox")
       , ((0, xK_h), namedScratchpadAction myScratchPads "htop")
       , ((0, xK_n), namedScratchpadAction myScratchPads "nm")
-      , ((0, xK_v), namedScratchpadAction myScratchPads "pamix")
-      , ((0, xK_a), namedScratchpadAction myScratchPads "music")
       , ((0, xK_r), namedScratchpadAction myScratchPads "arandr")
       ])
   -- Org Mode
