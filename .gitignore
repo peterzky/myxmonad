@@ -11,3 +11,5 @@ iem
 /xmonad.o
 *.hi
 *.o
+*.pdf
+/README.tex

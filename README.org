@@ -1,6 +1,6 @@
 #+TITLE:XMonad Cheat Sheet
 #+latex_class: refcard
-#+options: author:nil date:nil toc:nil
+#+options: author:nil date:nil toc:nil num:nil
 #+latex: \begin{multicols}{3}
 * Basic
 #+attr_latex: :center nil
