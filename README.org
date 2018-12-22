@@ -56,7 +56,6 @@
 | =M-C-f= | all window float hook  |
 | =M-\=   | next window float hook |
 
-
 * Application
 #+attr_latex: :center nil
 | =M-f= | ranger |
@@ -82,7 +81,6 @@
 | =5= | set 5 minutes timer  |
 | =2= | set 20 minutes timer |
 | =k= | kill timer           |
-
 
 * Media Control
 #+attr_latex: :center nil
