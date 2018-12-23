@@ -19,9 +19,9 @@ import XMonad.Actions.CopyWindow
 import XMonad.Actions.PerWorkspaceKeys
 import XMonad.Actions.DynamicProjects
 import XMonad.Actions.DynamicWorkspaces
-import XMonad.Actions.DynamicWorkspaceOrder as DO
 import XMonad.Actions.OnScreen
 import XMonad.Actions.CycleWorkspaceByScreen
+import XMonad.Actions.DynWG
 
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops
@@ -227,6 +227,14 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_grave), windows W.focusDown)
   , ((modm, xK_BackSpace), killAll)
   , ((modm .|. controlMask, xK_s), sinkAll)
+  -- Workspace Groups
+  , ((modm, xK_x), submap . M.fromList $
+    [ ((0, xK_a), promptWSGroupAdd myPromptTheme "Name this group: ")
+    , ((0, xK_s), promptWSGroupView myPromptTheme "Go to group: ")
+    , ((0, xK_d), promptWSGroupForget myPromptTheme "Forget group: ")
+    ])
+  , ((modm, xK_Down), addCurrentWSGroup "Default")
+  , ((modm, xK_Up), viewWSGroup "Default")
   -- Workspace Bindings
   , ((modm, xK_Tab), cycleWorkspaceOnCurrentScreen [xK_Super_L] xK_Tab xK_grave)
   , ((modm .|. shiftMask, xK_Return), bindOn [("WEB", spawn "firefox")
@@ -240,8 +248,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_w), rofiWithWorkspace "shift" (windows . W.shift))
   , ((modm .|. controlMask, xK_w), rofiWithWorkspace "copy" (windows . copy))
   , ((modm .|. shiftMask, xK_BackSpace), removeWorkspace)
-  , ((modm, xK_Left ), DO.moveTo Prev HiddenNonEmptyWS)
-  , ((modm, xK_Right), DO.moveTo Next HiddenNonEmptyWS)
+  -- , ((modm, xK_Left ), DO.moveTo Prev HiddenNonEmptyWS)
+  -- , ((modm, xK_Right), DO.moveTo Next HiddenNonEmptyWS)
   , ((modm, xK_u), focusUrgent)
   -- Layout Management
   , ((modm, xK_p), sendMessage NextLayout)
@@ -308,16 +316,16 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   -- Screenshots
   , ((0, xK_Print), spawn "$HOME/.bin/ScreenShot.sh")
   -- System Prompt
-   ,((modm, xK_Pause), spawn "i3lock-fancy")
-   ,((modm .|. shiftMask, xK_q), spawn "$HOME/.bin/rofi-system.sh")
+  , ((modm, xK_Pause), spawn "i3lock-fancy")
+  , ((modm .|. shiftMask, xK_q), spawn "$HOME/.bin/rofi-system.sh")
 
   ] ++
   -- Workspaces
-  zip (zip (repeat (modm)) [xK_1..xK_9]) (map (DO.withNthWorkspace W.greedyView) [0..])
+  zip (zip (repeat (modm)) [xK_1..xK_9]) (map (withNthWorkspace W.greedyView) [0..])
     ++
-  zip (zip (repeat (modm .|. shiftMask)) [xK_1..xK_9]) (map (DO.withNthWorkspace W.shift) [0..])
+  zip (zip (repeat (modm .|. shiftMask)) [xK_1..xK_9]) (map (withNthWorkspace W.shift) [0..])
     ++
-  zip (zip (repeat (modm .|. controlMask)) [xK_1..xK_9]) (map (DO.withNthWorkspace copy) [0..])
+  zip (zip (repeat (modm .|. controlMask)) [xK_1..xK_9]) (map (withNthWorkspace copy) [0..])
     ++
   -- Monitors
   [ ((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
@@ -471,7 +479,7 @@ myPP  =
   , ppWsSep  = "  "
   , ppTitle  = xmobarColor xmobarTitleColor "" . shorten 50
   , ppOrder  = \(ws:m:t:e) -> [ws,m] ++ e ++ [t]
-  , ppSort   = DO.getSortByOrder
+  , ppSort   = getSortByIndex
   , ppLayout = xmobarColor "#a29bfe" "" . wrap "| " " |"
   , ppExtras = [ willHookNextPP "float" $ xmobarColor "green" ""
                , willHookNextPP "sink" $ xmobarColor "red" ""
@@ -512,6 +520,7 @@ myStartupHook = setWMName "LG3D"
   <+> spawn "tmux new-session -s dropdown -d"
   <+> spawn "$HOME/.xmonad/startup.sh"
   <+> dynStatusBarStartup barCreate barDestroy
+  -- <+> addRawWSGroup "video" [(0,"VOD"),(1,"vod1"),(2,"vod2")]
 
 myToggleHook = toggleHook "float" doFloat
                <+> toggleHook "sink" doSink
