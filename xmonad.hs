@@ -247,6 +247,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
 
   , ((modm .|. shiftMask, xK_w), rofiWithWorkspace "shift" (windows . W.shift))
   , ((modm .|. controlMask, xK_w), rofiWithWorkspace "copy" (windows . copy))
+  , ((modm .|. mod1Mask, xK_w), rofiWithWorkspace "remove" removeEmptyWorkspaceByTag)
   , ((modm .|. shiftMask, xK_BackSpace), removeWorkspace)
   -- , ((modm, xK_Left ), DO.moveTo Prev HiddenNonEmptyWS)
   -- , ((modm, xK_Right), DO.moveTo Next HiddenNonEmptyWS)
