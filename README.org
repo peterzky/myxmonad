@@ -28,6 +28,11 @@
 | =M-.=         | decrease master by 1          |
 | =M-`=         | window focus down             |
 
+* Workspace Group
+#+attr_latex: :center nil
+| =M-Right= | go to workgroup                  |
+| =M-Up=    | save current layout to workgroup |
+| =M-Left=  | delete workgroup                 |
 * Workspace
 #+attr_latex: :center nil
 | =M-TAB=         | cycle workspace on current screen         |
