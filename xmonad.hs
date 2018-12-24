@@ -228,13 +228,9 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_BackSpace), killAll)
   , ((modm .|. controlMask, xK_s), sinkAll)
   -- Workspace Groups
-  , ((modm, xK_x), submap . M.fromList $
-    [ ((0, xK_a), promptWSGroupAdd myPromptTheme "Name this group: ")
-    , ((0, xK_s), promptWSGroupView myPromptTheme "Go to group: ")
-    , ((0, xK_d), promptWSGroupForget myPromptTheme "Forget group: ")
-    ])
-  , ((modm, xK_Down), addCurrentWSGroup "Default")
-  , ((modm, xK_Up), viewWSGroup "Default")
+  , ((modm, xK_Up), promptWSGroupAdd myPromptTheme "Name this group: ")
+  , ((modm, xK_Right), promptWSGroupView myPromptTheme "Goto Group: ")
+  , ((modm, xK_Left), promptWSGroupForget myPromptTheme "Delete Group: ")
   -- Workspace Bindings
   , ((modm, xK_Tab), cycleWorkspaceOnCurrentScreen [xK_Super_L] xK_Tab xK_grave)
   , ((modm .|. shiftMask, xK_Return), bindOn [("WEB", spawn "firefox")
@@ -521,7 +517,7 @@ myStartupHook = setWMName "LG3D"
   <+> spawn "tmux new-session -s dropdown -d"
   <+> spawn "$HOME/.xmonad/startup.sh"
   <+> dynStatusBarStartup barCreate barDestroy
-  -- <+> addRawWSGroup "video" [(0,"VOD"),(1,"vod1"),(2,"vod2")]
+  <+> addRawWSGroup "default" [(0,"WEB"),(1,"GEN"),(2,"WRK")]
 
 myToggleHook = toggleHook "float" doFloat
                <+> toggleHook "sink" doSink
