@@ -268,6 +268,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       , ((0, xK_h), namedScratchpadAction myScratchPads "htop")
       , ((0, xK_n), namedScratchpadAction myScratchPads "nm")
       , ((0, xK_r), namedScratchpadAction myScratchPads "arandr")
+      , ((0, xK_v), spawn "$HOME/.bin/AudioSwitch.sh")
       ])
   -- Org Mode
   , ((modm, xK_o), submap . M.fromList $
