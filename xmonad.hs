@@ -269,6 +269,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       , ((0, xK_n), namedScratchpadAction myScratchPads "nm")
       , ((0, xK_r), namedScratchpadAction myScratchPads "arandr")
       , ((0, xK_v), spawn "$HOME/.bin/AudioSwitch.sh")
+      , ((0, xK_w), spawn "$HOME/.bin/wacom.sh")
       ])
   -- Org Mode
   , ((modm, xK_o), submap . M.fromList $
@@ -424,10 +425,10 @@ myManageHook =
   , [isDialog --> doCenterFloat]
   , [className =? c --> doCenterFloat | c <- myCFloats]
   , [title =? t --> doCenterFloat | t <- myTFloats]
-  , [role =? t --> doFloat | t <- myRole]
-  , [resource =? r --> doFloat | r <- myRFloats]
-  , [fmap (pt `isInfixOf`) title --> doFloat | pt <- myPTFloats]
-  , [fmap (pc `isInfixOf`) className --> doFloat | pc <- myPCFloats]
+  -- , [role =? t --> doFloat | t <- myRole]
+  -- , [resource =? r --> doFloat | r <- myRFloats]
+  -- , [fmap (pt `isInfixOf`) title --> doFloat | pt <- myPTFloats]
+  -- , [fmap (pc `isInfixOf`) className --> doFloat | pc <- myPCFloats]
   , [namedScratchpadManageHook myScratchPads]
   , [className =? "mpv" --> doShift "VOD" ]
   , [className =? "Zathura" --> doShiftAndGo "DOC"]
@@ -435,7 +436,10 @@ myManageHook =
   , [className =? "Zeal" --> doShiftAndGo "DOC" ]
   , [title =? "XMind" --> doFloat <+> doShiftAndGo "DOC" ]
   , [className =? "qBittorrent" --> doFloat <+> doShift "TOR"]
+  , [className =? "VirtualBox Manager" --> doFloat <+> doShift "ENV"]
+  , [className =? "VirtualBox Machine" --> doFloat <+> doShift "ENV"]
   , [className =? "Steam" --> doFloat <+> doShift "GAME"]
+  , [className =? "ieaseMusic" --> doSink]
   ]
   where
     doShiftAndGo = doF . liftM2 (.) W.greedyView W.shift
@@ -444,9 +448,10 @@ myManageHook =
       [ -- "mpv"
         "Lxappearance"
       , "File-roller"
-      , "Gimp"
-      , "VirtualBox"
-      , "Gpicview"
+      -- , "Gimp"
+      -- , "VirtualBox"
+      -- , "Gpicview"
+      , "Dragon"
       , "octave-gui"
       , "Gnuplot"
       , "Wine"
@@ -458,10 +463,10 @@ myManageHook =
       , "Pcmanfm"
       ]
     myTFloats = ["Add Downloads", "Library","emacs-capture"]
-    myRFloats = ["desktop_window"]
-    myPTFloats = ["DownThemAll!", "AutoProxy", "Install user style","Ediff"]
-    myPCFloats = []
-    myRole = ["pop-up"]
+    -- myRFloats = ["desktop_window"]
+    -- myPTFloats = ["DownThemAll!", "AutoProxy", "Install user style","Ediff"]
+    -- myPCFloats = []
+    -- myRole = ["pop-up"]
 
 -- xmobar
 clickable ws = "<action=$HOME/.bin/switch-ws.sh " ++ show(ws) ++ ">" ++ ws ++ "</action>"
@@ -517,6 +522,7 @@ myStartupHook = setWMName "LG3D"
   <+> setDefaultCursor xC_left_ptr
   <+> spawn "source $HOME/.fehbg"
   <+> spawn "tmux new-session -s dropdown -d"
+  <+> spawn "dunst &"
   <+> spawn "$HOME/.xmonad/startup.sh"
   <+> dynStatusBarStartup barCreate barDestroy
   <+> addRawWSGroup "default" [(0,"WEB"),(1,"GEN"),(2,"WRK")]

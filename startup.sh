@@ -1,6 +1,6 @@
 #/run/current-system/sw/bin/env bash
 
-check_process() {
+function check_process() {
     if ! pgrep $1 > /dev/null ; then
         $2
         echo $1 started...
@@ -20,8 +20,9 @@ else
     echo "laptop..."
 fi
 
+# check_process "dunst" "dunst &"
 check_process "unclutter" "unclutter -b"
 check_process "compton" "compton -b"
-check_process "urxvtd" "urxvtd -f -o -q"
-check_process "emacs" "emacs --daemon "
-check_process "xkeysnail" "sudo xkeysnail -q /home/peterzky/.config/xkeysnail/config.py"
+check_process "xkeysnail" "sudo xkeysnail --watch -q /home/peterzky/.config/xkeysnail/config.py"
+# check_process "urxvtd" "urxvtd -f -o -q"
+# check_process "emacs" "emacs --daemon "
