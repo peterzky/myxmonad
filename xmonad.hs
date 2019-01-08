@@ -129,8 +129,9 @@ myProjects =
             }
   , Project { projectName = "ORG"
             , projectDirectory = "~/Sync/sync/org"
-            , projectStartHook = Just $ do
-                spawn "$HOME/.bin/rofi-org.sh"
+            , projectStartHook = Nothing
+            -- , projectStartHook = Just $ do
+            --     spawn "$HOME/.bin/rofi-org.sh"
             }
   , Project { projectName = "WRK"
             , projectDirectory = "~/"
@@ -259,6 +260,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   -- Manage Hooks
   , ((modm .|. controlMask, xK_t), toggleHookAllNew "sink" >> runLogHook)
   , ((modm .|. controlMask, xK_f), toggleHookAllNew "float" >> runLogHook)
+  , ((modm .|. controlMask, xK_v), toggleHookAllNew "mpv" >> runLogHook)
   , ((modm, xK_backslash), toggleHookNext "float" >> runLogHook)
   -- Submap
   , ((modm, xK_e), submap . M.fromList $
@@ -430,7 +432,7 @@ myManageHook =
   -- , [fmap (pt `isInfixOf`) title --> doFloat | pt <- myPTFloats]
   -- , [fmap (pc `isInfixOf`) className --> doFloat | pc <- myPCFloats]
   , [namedScratchpadManageHook myScratchPads]
-  , [className =? "mpv" --> doShift "VOD" ]
+  -- , [className =? "mpv" --> doShift "VOD" ]
   , [className =? "Zathura" --> doShiftAndGo "DOC"]
   , [className =? "XMind ZEN" --> doShiftAndGo "DOC" ]
   , [className =? "Zeal" --> doShiftAndGo "DOC" ]
@@ -488,7 +490,8 @@ myPP  =
   , ppExtras = [ willHookNextPP "float" $ xmobarColor "green" ""
                , willHookNextPP "sink" $ xmobarColor "red" ""
                , willHookAllNewPP "sink" $ xmobarColor "red" ""
-               , willHookAllNewPP "float" $ xmobarColor "green" ""]
+               , willHookAllNewPP "float" $ xmobarColor "green" ""
+               , willHookAllNewPP "mpv" $ xmobarColor "yellow" ""]
   }
 
 myLogHook = multiPP myPP myPP
@@ -529,6 +532,13 @@ myStartupHook = setWMName "LG3D"
 
 myToggleHook = toggleHook "float" doFloat
                <+> toggleHook "sink" doSink
+               <+> toggleHook' "mpv" myMpvFloat myMpvSink
+
+myMpvSink :: ManageHook
+myMpvSink = className =? "mpv" --> doShift "VOD"
+
+myMpvFloat :: ManageHook
+myMpvFloat = className =? "mpv" --> doFloat
 
 doSink :: ManageHook
 doSink = ask >>= \w -> liftX (reveal w) >> doF (W.sink w)
