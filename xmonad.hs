@@ -267,6 +267,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       [ ((0, xK_e), spawn "emacsclient -nc")
       , ((modm, xK_e), spawn "emacsclient -nc")
       , ((0, xK_f), spawn "firefox")
+      , ((0, xK_c), spawn "chromium")
       , ((0, xK_h), namedScratchpadAction myScratchPads "htop")
       , ((0, xK_n), namedScratchpadAction myScratchPads "nm")
       , ((0, xK_r), namedScratchpadAction myScratchPads "arandr")
