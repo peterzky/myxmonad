@@ -418,7 +418,7 @@ myLayout = id
    $ onWorkspace "GAME" mySimpleFloat
    $ onWorkspace "ENV" mySimpleFloat
    $ onWorkspace "TOR" mySimpleFloat
-   $ myTiled |||  myMirror  ||| myCross
+   $ myTiled |||  myMirror  ||| myCross ||| myVideo
    ||| myPane ||| myTab ||| myBig ||| myFloat ||| mySimpleFloat
 
 myManageHook =
