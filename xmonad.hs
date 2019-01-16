@@ -299,11 +299,11 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
 
       ])
   -- Applications
-  , ((modm .|. shiftMask, xK_r) , spawn "rofi -show run")
+  , ((modm .|. shiftMask, xK_r) , spawn "rofi -show-icons -combi-modi drun,run -show combi -modi combi")
   , ((modm, xK_f), namedScratchpadAction myScratchPads "ranger")
   , ((modm, xK_space), namedScratchpadAction myScratchPads "dropdown")
   , ((modm, xK_c), namedScratchpadAction myScratchPads "org")
-  , ((modm, xK_g), spawn "rofi -show window")
+  , ((modm, xK_g), spawn "rofi -show-icons -show window")
   , ((modm, xK_z), spawn "$HOME/.bin/rofi-cheat.sh")
   -- Volume control
   , ((0, 0x1008FF13), spawn "pactl set-sink-volume @DEFAULT_SINK@ +2%")
