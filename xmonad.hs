@@ -191,7 +191,7 @@ xmobarTitleColor = "#ababab"
 
 myNormalBorderColor = "#282A36"
 
--- myFocusedBorderColor = "#7f8c8d"
+-- myFocusedBorderColor = "#ecf0f1"
 myFocusedBorderColor = "#3498db"
 
 myModMask = mod4Mask
