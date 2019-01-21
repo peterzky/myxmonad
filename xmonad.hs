@@ -37,14 +37,16 @@ import XMonad.Layout.NoBorders
 import XMonad.Layout.Tabbed
 import XMonad.Layout.Renamed
 import XMonad.Layout.Spacing
-import XMonad.Layout.SimpleFloat
+import XMonad.Layout.Simplest (Simplest(..))
 import XMonad.Layout.SimplestFloat
-import XMonad.Layout.WindowArranger
-import XMonad.Layout.DecorationMadness
 import XMonad.Layout.Reflect
 import XMonad.Layout.MultiToggle
 import XMonad.Layout.MultiToggle.Instances
 import XMonad.Layout.LayoutCombinators
+import XMonad.Layout.LayoutModifier
+import XMonad.Layout.SubLayouts
+import XMonad.Layout.WindowNavigation
+import XMonad.Layout.BoringWindows hiding (Replace)
 
 import XMonad.Layout.LayoutHints
 import XMonad.Layout.MosaicAlt
@@ -214,9 +216,9 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
                           ,("ENV", spawn "$HOME/.bin/rofi-env.sh")
                           ,("", spawn "rofi -show run")])
   -- Window Bindings
-  , ((modm, xK_j), windows W.focusDown)
-  , ((modm, xK_k), windows W.focusUp)
-  , ((modm, xK_m), windows W.focusMaster)
+  , ((modm, xK_j), focusDown)
+  , ((modm, xK_k), focusUp)
+  , ((modm, xK_m), focusMaster)
   , ((modm, xK_Return), promote)
   , ((modm .|. shiftMask, xK_j), windows W.swapDown)
   , ((modm .|. shiftMask, xK_k), windows W.swapUp)
@@ -228,6 +230,17 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_grave), windows W.focusDown)
   , ((modm, xK_BackSpace), killAll)
   , ((modm .|. controlMask, xK_s), sinkAll)
+  -- Sublayouts
+  , ((modm .|. controlMask, xK_h), sendMessage $ pullGroup L)
+  , ((modm .|. controlMask, xK_l), sendMessage $ pullGroup R)
+  , ((modm .|. controlMask, xK_k), sendMessage $ pullGroup U)
+  , ((modm .|. controlMask, xK_j), sendMessage $ pullGroup D)
+
+  , ((modm .|. controlMask, xK_m), withFocused (sendMessage . MergeAll))
+  , ((modm .|. controlMask, xK_u), withFocused (sendMessage . UnMerge))
+
+  , ((modm, xK_apostrophe), onGroup W.focusUp')
+  , ((modm, xK_semicolon), onGroup W.focusDown')
   -- Workspace Groups
   , ((modm, xK_Up), promptWSGroupAdd myPromptTheme "Name this group: ")
   , ((modm, xK_Right), promptWSGroupView myPromptTheme "Goto Group: ")
@@ -370,17 +383,18 @@ myTheme = def
 mySpacing x = spacingRaw True (Border 0 x x x) True (Border x x x x) True
 
 myTiled = renamed [Replace "T"]
-    . mySpacing 4
     $ mkToggle (single REFLECTX)
-    $ drawer `onBottom` (Tall 1 (3 / 100) (1 / 2))
-    where
-      drawer = simpleDrawer 0 0.3 (Title "nixos-env-fun")
+    $ windowNavigation
+    $ addTabs shrinkText myTheme
+    $ subLayout [] Simplest
+    $ mySpacing 4
+    $ Tall 1 0.2 0.5
 
 myMirror = renamed [Replace "M"]
     $ Mirror myTiled
 
-myFloat = renamed [Replace "L"]
-    $ floatSimple shrinkText myTheme
+-- myFloat = renamed [Replace "L"]
+--     $ floatSimple shrinkText myTheme
 
 mySimpleFloat = renamed [Replace "SFlot"]
     $ simplestFloat
@@ -413,15 +427,16 @@ myLayout = id
    . smartBorders
    . mkToggle (single FULL)
    . avoidStruts
+   $ boringWindows
    $ onWorkspace "WRK" (myTiled ||| myPane ||| myMirror)
    $ onWorkspace "WEB" (myTab ||| myPane |||myCross ||| myBig)
    $ onWorkspace "VOD" myVideo
-   $ onWorkspace "MSG" (myMSG ||| mySimpleFloat ||| myFloat ||| myCross )
+   $ onWorkspace "MSG" (myMSG ||| mySimpleFloat ||| myCross )
    $ onWorkspace "GAME" mySimpleFloat
    $ onWorkspace "ENV" mySimpleFloat
    $ onWorkspace "TOR" mySimpleFloat
    $ myTiled |||  myMirror  ||| myCross ||| myVideo
-   ||| myPane ||| myTab ||| myBig ||| myFloat ||| mySimpleFloat
+   ||| myPane ||| myTab ||| myBig ||| mySimpleFloat
 
 myManageHook =
   composeAll . concat $
