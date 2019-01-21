@@ -50,7 +50,6 @@ import XMonad.Layout.BoringWindows hiding (Replace)
 
 import XMonad.Layout.LayoutHints
 import XMonad.Layout.MosaicAlt
-import XMonad.Layout.IfMax
 
 import XMonad.Layout.Cross
 import XMonad.Layout.TwoPane
@@ -393,15 +392,11 @@ myTiled = renamed [Replace "T"]
 myMirror = renamed [Replace "M"]
     $ Mirror myTiled
 
--- myFloat = renamed [Replace "L"]
---     $ floatSimple shrinkText myTheme
-
 mySimpleFloat = renamed [Replace "SFlot"]
     $ simplestFloat
 
 myMSG = renamed [Replace "MSG"]
-    $ IfMax 2 simpleCross
-    $ layoutHintsWithPlacement (0.5, 0.5) (Mirror (Tall 2 (3/100) (1/2)))
+    $ simpleCross
 
 myVideo = renamed [Replace "VIDEO"]
     $ layoutHintsWithPlacement (0.5,0.5)
