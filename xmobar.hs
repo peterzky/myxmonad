@@ -15,7 +15,7 @@ Config {
    -- layout
    , sepChar  = "%"   -- delineator between plugin names and straight text
    , alignSep = "}{"  -- separator between left-right alignment
-   , template = "   %UnsafeStdinReader% } %pomodoro%  %org%  {%dynnetwork%    %cpu%   %coretemp%   %disku%    %date%   %default:Master%   %battery%   "
+   , template = "   %UnsafeStdinReader% } %pomodoro%  %org%  {%dynnetwork%    %cpu%   %coretemp%   %disku%    %date%   %battery%   "
 
    -- general behavior
    , lowerOnStart     = True    -- send to bottom of window stack on start
@@ -28,14 +28,14 @@ Config {
         [ Run UnsafeStdinReader
         , Run Com ".bin/xmobar-org.sh" [] "org" 20
         , Run Com "timer" ["-c"] "pomodoro" 10
-        , Run Volume "default" "Master" [
-                "-t", "<action=`pactl set-sink-volume @DEFAULT_SINK@ -2%` button=5><action=`pactl set-sink-volume @DEFAULT_SINK@ +2%` button=4><action=`pactl set-sink-mute @DEFAULT_SINK@ toggle` button=1><status> <volume>%</action></action></action>",
-                "--",
-                "-o", "<fn=1>\xf026</fn>",
-                "-O", "<fn=1>\xf028</fn>",
-                "-c", "#ababab",
-                "-C", "#ababab"
-                                        ] 20
+        -- , Run Volume "default" "Master" [
+        --         "-t", "<action=`pactl set-sink-volume @DEFAULT_SINK@ -2%` button=5><action=`pactl set-sink-volume @DEFAULT_SINK@ +2%` button=4><action=`pactl set-sink-mute @DEFAULT_SINK@ toggle` button=1><status> <volume>%</action></action></action>",
+        --         "--",
+        --         "-o", "<fn=1>\xf026</fn>",
+        --         "-O", "<fn=1>\xf028</fn>",
+        --         "-c", "#ababab",
+        --         "-C", "#ababab"
+        --                                 ] 20
         , Run DiskU [("/", "<fn=1>\xf0a0</fn>  <free>")]
          ["-L", "20", "-H", "50", "-m", "1", "-p", "3"] 20
 
