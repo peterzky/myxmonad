@@ -32,13 +32,17 @@ import XMonad.Hooks.ToggleHook
 import XMonad.Hooks.UrgencyHook
 import XMonad.Hooks.DynamicBars
 import XMonad.Hooks.WorkspaceHistory (workspaceHistoryHook)
+import XMonad.Hooks.PositionStoreHooks
 
 import XMonad.Layout.NoBorders
 import XMonad.Layout.Tabbed
 import XMonad.Layout.Renamed
 import XMonad.Layout.Spacing
 import XMonad.Layout.Simplest (Simplest(..))
-import XMonad.Layout.SimplestFloat
+import XMonad.Layout.PositionStoreFloat
+import XMonad.Layout.NoFrillsDecoration
+import XMonad.Layout.BorderResize
+
 import XMonad.Layout.Reflect
 import XMonad.Layout.MultiToggle
 import XMonad.Layout.MultiToggle.Instances
@@ -392,11 +396,12 @@ myTiled = renamed [Replace "T"]
 myMirror = renamed [Replace "M"]
     $ Mirror myTiled
 
-mySimpleFloat = renamed [Replace "SFlot"]
-    $ simplestFloat
-
-myMSG = renamed [Replace "MSG"]
-    $ simpleCross
+myFloat = renamed [Replace "F"]
+    $ floatingDeco
+    $ borderResize
+    $ positionStoreFloat
+  where
+    floatingDeco l = noFrillsDeco shrinkText myTheme l
 
 myVideo = renamed [Replace "VIDEO"]
     $ layoutHintsWithPlacement (0.5,0.5)
@@ -424,14 +429,14 @@ myLayout = id
    . avoidStruts
    $ boringWindows
    $ onWorkspace "WRK" (myTiled ||| myPane ||| myMirror)
-   $ onWorkspace "WEB" (myTab ||| myPane |||myCross ||| myBig)
+   $ onWorkspace "WEB" (myTab ||| myTiled)
    $ onWorkspace "VOD" myVideo
-   $ onWorkspace "MSG" (myMSG ||| mySimpleFloat ||| myCross )
-   $ onWorkspace "GAME" mySimpleFloat
-   $ onWorkspace "ENV" mySimpleFloat
-   $ onWorkspace "TOR" mySimpleFloat
+   $ onWorkspace "MSG" (myCross ||| myFloat)
+   $ onWorkspace "GAME" myFloat
+   $ onWorkspace "ENV" myFloat
+   $ onWorkspace "TOR" myFloat
    $ myTiled |||  myMirror  ||| myCross ||| myVideo
-   ||| myPane ||| myTab ||| myBig ||| mySimpleFloat
+   ||| myPane ||| myTab ||| myBig ||| myFloat
 
 myManageHook =
   composeAll . concat $
@@ -449,11 +454,11 @@ myManageHook =
   , [className =? "Zathura" --> doShiftAndGo "DOC"]
   , [className =? "XMind ZEN" --> doShiftAndGo "DOC" ]
   , [className =? "Zeal" --> doShiftAndGo "DOC" ]
-  , [title =? "XMind" --> doFloat <+> doShiftAndGo "DOC" ]
-  , [className =? "qBittorrent" --> doFloat <+> doShift "TOR"]
-  , [className =? "VirtualBox Manager" --> doFloat <+> doShift "ENV"]
-  , [className =? "VirtualBox Machine" --> doFloat <+> doShift "ENV"]
-  , [className =? "Steam" --> doFloat <+> doShift "GAME"]
+  -- , [title =? "XMind" --> doFloat <+> doShiftAndGo "DOC" ]
+  , [className =? "qBittorrent" --> doShift "TOR"]
+  , [className =? "VirtualBox Manager" --> doShift "ENV"]
+  , [className =? "VirtualBox Machine" --> doShift "ENV"]
+  , [className =? "Steam" --> doShift "GAME"]
   , [className =? "ieaseMusic" --> doSink]
   ]
   where
@@ -557,6 +562,7 @@ doSink :: ManageHook
 doSink = ask >>= \w -> liftX (reveal w) >> doF (W.sink w)
 
 myEventHook = handleEventHook def
+          <+> positionStoreEventHook
           <+> fullscreenEventHook
           <+> docksEventHook
           <+> dynStatusBarEventHook barCreate barDestroy
@@ -579,6 +585,8 @@ main = do
       , layoutHook         = myLayout
       , handleEventHook    = myEventHook
       , startupHook        = myStartupHook
-      , manageHook         = myToggleHook <+> myManageHook
+      , manageHook         = myToggleHook
+                             <+> myManageHook
+                             <+> positionStoreManageHook Nothing
       , logHook            = myLogHook
       }
