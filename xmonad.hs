@@ -387,6 +387,7 @@ myTheme = def
 mySpacing x = spacingRaw True (Border 0 x x x) True (Border x x x x) True
 
 myTiled = renamed [Replace "T"]
+    $ avoidStruts
     $ mkToggle (single REFLECTX)
     $ windowNavigation
     $ addTabs shrinkText myTheme
@@ -397,6 +398,7 @@ myTiled = renamed [Replace "T"]
     $ Tall 1 (3/100) (1/2)
 
 myMirror = renamed [Replace "M"]
+    $ avoidStruts
     $ mkToggle (single REFLECTX)
     $ windowNavigation
     $ addTabs shrinkText myTheme
@@ -408,6 +410,8 @@ myMirror = renamed [Replace "M"]
     $ Tall 1 (3/100) (1/2)
 
 myFloat = renamed [Replace "F"]
+    $ avoidStruts
+    $ noBorders
     $ maximize
     $ floatingDeco
     $ borderResize
@@ -415,25 +419,36 @@ myFloat = renamed [Replace "F"]
   where
     floatingDeco = noFrillsDeco shrinkText myTheme
 
-myVideo = renamed [Replace "VIDEO"]
+myGame = renamed [Replace "G"]
+    $ noBorders
+    $ maximizeWithPadding 0
+    $ floatingDeco
+    $ borderResize
+    $ positionStoreFloat
+  where
+    floatingDeco = noFrillsDeco shrinkText myTheme
+
+myVideo = renamed [Replace "V"]
+    $ avoidStruts
     $ layoutHintsWithPlacement (0.5,0.5)
     $ MosaicAlt M.empty
 
-myCross = renamed [Replace "Cross"]
-    . noBorders
+myCross = renamed [Replace "C"]
+    $ avoidStruts
+    $ noBorders
     $ simpleCross
 
-myTab = renamed [Replace "Tab"]
+myTab = renamed [Replace "B"]
+    $ avoidStruts
     $ tabbed shrinkText myTheme
 
 myLayout = smartBorders
-   . avoidStruts
    $ boringWindows
    $ onWorkspace "WRK" (myTiled ||| myMirror)
    $ onWorkspace "WEB" (myTab ||| myTiled)
    $ onWorkspace "VOD" myVideo
    $ onWorkspace "MSG" (myCross ||| myFloat)
-   $ onWorkspace "GAME" myFloat
+   $ onWorkspace "GAME" myGame
    $ onWorkspace "ENV" myFloat
    $ onWorkspace "TOR" myFloat
    $ myTiled |||  myMirror  ||| myCross ||| myVideo
