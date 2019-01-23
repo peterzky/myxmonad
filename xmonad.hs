@@ -42,7 +42,8 @@ import XMonad.Layout.Simplest (Simplest(..))
 import XMonad.Layout.PositionStoreFloat
 import XMonad.Layout.NoFrillsDecoration
 import XMonad.Layout.BorderResize
-
+import XMonad.Layout.StateFull (focusTracking)
+import XMonad.Layout.Maximize
 import XMonad.Layout.Reflect
 import XMonad.Layout.MultiToggle
 import XMonad.Layout.MultiToggle.Instances
@@ -51,16 +52,11 @@ import XMonad.Layout.LayoutModifier
 import XMonad.Layout.SubLayouts
 import XMonad.Layout.WindowNavigation
 import XMonad.Layout.BoringWindows hiding (Replace)
-
 import XMonad.Layout.LayoutHints
 import XMonad.Layout.MosaicAlt
-
 import XMonad.Layout.Cross
-import XMonad.Layout.TwoPane
 import XMonad.Layout.Tabbed
-import XMonad.Layout.OneBig
 import XMonad.Layout.PerWorkspace
-import XMonad.Layout.Drawer
 
 import XMonad.Prompt
 import XMonad.Prompt.XMonad
@@ -180,6 +176,10 @@ myScratchPads =
        "emacsclient -c -F '((name . \"org-agenda\") (alpha . (85 . 85)))' -e '(org-capture nil \"i\")'"
        (title =? "org-agenda")
        (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
+  , NS "note"
+       "emacsclient -c -F '((name . \"org-agenda\") (alpha . (85 . 85)))' -e '(org-capture nil \"c\")'"
+       (title =? "org-agenda")
+       (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
   , NS "dropdown"
     " urxvtc -title dropdown -e zsh -c 'tmux has -t dropdown && exec tmux attach-session -d -t dropdown || exec tmux new-session -s dropdown'"
       (title =? "dropdown")
@@ -187,8 +187,6 @@ myScratchPads =
   ]
 
 myTerminal = "urxvtc"
-
-myFocusFollowsMouse = True
 
 myBorderWidth = 3
 
@@ -233,6 +231,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_grave), windows W.focusDown)
   , ((modm, xK_BackSpace), killAll)
   , ((modm .|. controlMask, xK_s), sinkAll)
+  -- Max/Minimize
+  , ((modm, xK_x), withFocused $ sendMessage . maximizeRestore)
   -- Sublayouts
   , ((modm .|. controlMask, xK_h), sendMessage $ pullGroup L)
   , ((modm .|. controlMask, xK_l), sendMessage $ pullGroup R)
@@ -244,6 +244,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
 
   , ((modm, xK_apostrophe), onGroup W.focusUp')
   , ((modm, xK_semicolon), onGroup W.focusDown')
+  -- , ((modm .|. shiftMask, xK_semicolon), onGroup W.swapUp')
   -- Workspace Groups
   , ((modm, xK_Up), promptWSGroupAdd myPromptTheme "Name this group: ")
   , ((modm, xK_Right), promptWSGroupView myPromptTheme "Goto Group: ")
@@ -320,7 +321,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_space), namedScratchpadAction myScratchPads "dropdown")
   , ((modm, xK_c), namedScratchpadAction myScratchPads "org")
   , ((modm, xK_g), spawn "rofi -show-icons -show window")
-  , ((modm, xK_z), spawn "$HOME/.bin/rofi-cheat.sh")
+  , ((modm, xK_z), namedScratchpadAction myScratchPads "note")
   , ((modm .|. controlMask, xK_d), spawn "$HOME/.bin/dict.sh")
   , ((modm .|. controlMask, xK_r), spawn "tts -sel")
   -- Volume control
@@ -391,17 +392,28 @@ myTiled = renamed [Replace "T"]
     $ addTabs shrinkText myTheme
     $ subLayout [] Simplest
     $ mySpacing 4
-    $ Tall 1 0.2 0.5
+    $ focusTracking
+    $ maximize
+    $ Tall 1 (3/100) (1/2)
 
 myMirror = renamed [Replace "M"]
-    $ Mirror myTiled
+    $ mkToggle (single REFLECTX)
+    $ windowNavigation
+    $ addTabs shrinkText myTheme
+    $ subLayout [] Simplest
+    $ mySpacing 4
+    $ focusTracking
+    $ maximize
+    $ Mirror
+    $ Tall 1 (3/100) (1/2)
 
 myFloat = renamed [Replace "F"]
+    $ maximize
     $ floatingDeco
     $ borderResize
     $ positionStoreFloat
   where
-    floatingDeco l = noFrillsDeco shrinkText myTheme l
+    floatingDeco = noFrillsDeco shrinkText myTheme
 
 myVideo = renamed [Replace "VIDEO"]
     $ layoutHintsWithPlacement (0.5,0.5)
@@ -411,24 +423,13 @@ myCross = renamed [Replace "Cross"]
     . noBorders
     $ simpleCross
 
-myPane = renamed [Replace "Pane"]
-    . mySpacing 4
-    $ mkToggle (single REFLECTX)
-    $ TwoPane (3/100) (1/2)
-
 myTab = renamed [Replace "Tab"]
     $ tabbed shrinkText myTheme
 
-myBig = renamed [Replace "Big"]
-    . mySpacing 4
-    $ OneBig (3/4) (3/4)
-
-myLayout = id
-   . smartBorders
-   . mkToggle (single FULL)
+myLayout = smartBorders
    . avoidStruts
    $ boringWindows
-   $ onWorkspace "WRK" (myTiled ||| myPane ||| myMirror)
+   $ onWorkspace "WRK" (myTiled ||| myMirror)
    $ onWorkspace "WEB" (myTab ||| myTiled)
    $ onWorkspace "VOD" myVideo
    $ onWorkspace "MSG" (myCross ||| myFloat)
@@ -436,25 +437,19 @@ myLayout = id
    $ onWorkspace "ENV" myFloat
    $ onWorkspace "TOR" myFloat
    $ myTiled |||  myMirror  ||| myCross ||| myVideo
-   ||| myPane ||| myTab ||| myBig ||| myFloat
+    ||| myTab ||| myFloat
 
 myManageHook =
   composeAll . concat $
   [ [manageDocks]
+  , [namedScratchpadManageHook myScratchPads]
   , [isFullscreen --> doFullFloat]
   , [isDialog --> doCenterFloat]
   , [className =? c --> doCenterFloat | c <- myCFloats]
   , [title =? t --> doCenterFloat | t <- myTFloats]
-  -- , [role =? t --> doFloat | t <- myRole]
-  -- , [resource =? r --> doFloat | r <- myRFloats]
-  -- , [fmap (pt `isInfixOf`) title --> doFloat | pt <- myPTFloats]
-  -- , [fmap (pc `isInfixOf`) className --> doFloat | pc <- myPCFloats]
-  , [namedScratchpadManageHook myScratchPads]
-  -- , [className =? "mpv" --> doShift "VOD" ]
   , [className =? "Zathura" --> doShiftAndGo "DOC"]
   , [className =? "XMind ZEN" --> doShiftAndGo "DOC" ]
   , [className =? "Zeal" --> doShiftAndGo "DOC" ]
-  -- , [title =? "XMind" --> doFloat <+> doShiftAndGo "DOC" ]
   , [className =? "qBittorrent" --> doShift "TOR"]
   , [className =? "VirtualBox Manager" --> doShift "ENV"]
   , [className =? "VirtualBox Machine" --> doShift "ENV"]
@@ -465,12 +460,8 @@ myManageHook =
     doShiftAndGo = doF . liftM2 (.) W.greedyView W.shift
     role = stringProperty "WM_WINDOW_ROLE"
     myCFloats =
-      [ -- "mpv"
-        "Lxappearance"
+      ["Lxappearance"
       , "File-roller"
-      -- , "Gimp"
-      -- , "VirtualBox"
-      -- , "Gpicview"
       , "Dragon"
       , "octave-gui"
       , "Gnuplot"
@@ -483,10 +474,6 @@ myManageHook =
       , "Pcmanfm"
       ]
     myTFloats = ["Add Downloads", "Library","emacs-capture"]
-    -- myRFloats = ["desktop_window"]
-    -- myPTFloats = ["DownThemAll!", "AutoProxy", "Install user style","Ediff"]
-    -- myPCFloats = []
-    -- myRole = ["pop-up"]
 
 -- xmobar
 clickable ws = "<action=$HOME/.bin/switch-ws.sh " ++ show(ws) ++ ">" ++ ws ++ "</action>"
@@ -574,7 +561,7 @@ main = do
     $ dynamicProjects myProjects
       def
       { terminal           = myTerminal
-      , focusFollowsMouse  = myFocusFollowsMouse
+      , focusFollowsMouse  = True
       , borderWidth        = myBorderWidth
       , modMask            = myModMask
       , workspaces         = myWorkspaces
