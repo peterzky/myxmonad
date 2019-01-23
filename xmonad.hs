@@ -466,8 +466,8 @@ myManageHook =
   , [className =? "XMind ZEN" --> doShiftAndGo "DOC" ]
   , [className =? "Zeal" --> doShiftAndGo "DOC" ]
   , [className =? "qBittorrent" --> doShift "TOR"]
-  , [className =? "VirtualBox Manager" --> doShift "ENV"]
-  , [className =? "VirtualBox Machine" --> doShift "ENV"]
+  -- , [className =? "VirtualBox Manager" --> doShift "ENV"]
+  -- , [className =? "VirtualBox Machine" --> doShift "ENV"]
   , [className =? "Steam" --> doShift "GAME"]
   , [className =? "ieaseMusic" --> doSink]
   ]
@@ -475,17 +475,16 @@ myManageHook =
     doShiftAndGo = doF . liftM2 (.) W.greedyView W.shift
     role = stringProperty "WM_WINDOW_ROLE"
     myCFloats =
-      ["Lxappearance"
-      , "File-roller"
+      [ "File-roller"
       , "Dragon"
       , "octave-gui"
       , "Gnuplot"
       , "Wine"
-      , "obs"
+      -- , "obs"
       , "Xmessage"
       , "Octave"
       , "feh"
-      , "Anki"
+      -- , "Anki"
       , "Pcmanfm"
       ]
     myTFloats = ["Add Downloads", "Library","emacs-capture"]
