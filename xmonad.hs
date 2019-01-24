@@ -121,7 +121,8 @@ myProjects =
 
   , Project { projectName = "GAME"
             , projectDirectory = "~/"
-            , projectStartHook = Nothing
+            , projectStartHook = Just $ do
+                spawn "$HOME/.bin/rofi-game.sh"
             }
   , Project { projectName = "ML"
             , projectDirectory = "~/Sync/project/yolov3_on_respberrypi/yolo"
@@ -215,6 +216,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
                           ,("DOC", spawn "$HOME/.bin/rofi-doc.sh")
                           ,("ORG", spawn "$HOME/.bin/rofi-org.sh")
                           ,("ENV", spawn "$HOME/.bin/rofi-env.sh")
+                          ,("GAME", spawn "$HOME/.bin/rofi-game.sh")
                           ,("", spawn "rofi -show run")])
   -- Window Bindings
   , ((modm, xK_j), focusDown)
@@ -254,7 +256,6 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_Return), bindOn [("WEB", spawn "firefox")
                                              ,("ORG", spawn myOrgCmd)
                                              ,("DOC", spawn myOrgCmd)
-                                             ,("GAME", spawn "steam")
                                              ,("", spawn "urxvtc")])
   -- , ((modm, xK_w), selectWorkspace myPromptTheme)
   , ((modm, xK_w), rofiGoto)
