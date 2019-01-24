@@ -57,6 +57,7 @@ import XMonad.Layout.MosaicAlt
 import XMonad.Layout.Cross
 import XMonad.Layout.Tabbed
 import XMonad.Layout.PerWorkspace
+import XMonad.Layout.ResizableTile
 
 import XMonad.Prompt
 import XMonad.Prompt.XMonad
@@ -227,6 +228,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_k), windows W.swapUp)
   , ((modm, xK_h), sendMessage Shrink)
   , ((modm, xK_l), sendMessage Expand)
+  , ((modm .|. shiftMask, xK_h), sendMessage MirrorShrink)
+  , ((modm .|. shiftMask, xK_l), sendMessage MirrorExpand)
   , ((modm, xK_t), withFocused $ windows . W.sink)
   , ((modm, xK_comma), sendMessage (IncMasterN 1))
   , ((modm, xK_period), sendMessage (IncMasterN (-1)))
@@ -396,7 +399,7 @@ myTiled = renamed [Replace "T"]
     $ mySpacing 4
     $ focusTracking
     $ maximize
-    $ Tall 1 (3/100) (1/2)
+    $ ResizableTall 1 (3/100) (1/2) []
 
 myMirror = renamed [Replace "M"]
     $ avoidStruts
@@ -408,7 +411,7 @@ myMirror = renamed [Replace "M"]
     $ focusTracking
     $ maximize
     $ Mirror
-    $ Tall 1 (3/100) (1/2)
+    $ ResizableTall 1 (3/100) (1/2) []
 
 myFloat = renamed [Replace "F"]
     $ avoidStruts
