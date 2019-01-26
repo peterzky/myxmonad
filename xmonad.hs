@@ -101,7 +101,7 @@ myProjects =
   , Project { projectName = "GEN"
             , projectDirectory = "~/"
             , projectStartHook = Just $ do
-                runInTerm "urxvtc" "zsh -c 'neofetch; zsh'"
+                runInTerm "st" "zsh -c 'neofetch; zsh'"
             }
   , Project { projectName = "ENV"
             , projectDirectory = "~/"
@@ -159,19 +159,19 @@ myPromptTheme = def
   }
 
 myScratchPads =
-  [ NS "htop" "urxvtc -title htop -e htop"
+  [ NS "htop" "st -t htop -e htop"
       (title =? "htop")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
-  , NS "nm" "urxvtc -title nmtui -e nmtui"
+  , NS "nm" "st -t nmtui -e nmtui"
       (title =? "nmtui")
       (customFloating $ W.RationalRect (1 / 3) (1 / 3) (1 / 3) (1 / 3))
   , NS "arandr" "arandr"
       (className =? "Arandr")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
-  , NS "pamix" "urxvtc -title pamix -e ncpamixer"
+  , NS "pamix" "st -t pamix -e ncpamixer"
       (title =? "pamix")
       (customFloating $ W.RationalRect (1 / 3) (1 / 3) (1 / 3) (1 / 3))
-  , NS "ranger" "urxvtc -title rangerfloat -e ranger"
+  , NS "ranger" "st -t rangerfloat -e ranger"
       (title =? "rangerfloat")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
   , NS "org"
@@ -183,12 +183,12 @@ myScratchPads =
        (title =? "org-agenda")
        (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
   , NS "dropdown"
-    " urxvtc -title dropdown -e zsh -c 'tmux has -t dropdown && exec tmux attach-session -d -t dropdown || exec tmux new-session -s dropdown'"
+    "st -t dropdown -e zsh -c 'tmux has -t dropdown && exec tmux attach-session -d -t dropdown || exec tmux new-session -s dropdown'"
       (title =? "dropdown")
       (customFloating $ W.RationalRect 0 0.02 1 0.5)
   ]
 
-myTerminal = "urxvtc"
+myTerminal = "st"
 
 myBorderWidth = 3
 
@@ -259,7 +259,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_Return), bindOn [("WEB", spawn "firefox")
                                              ,("ORG", spawn myOrgCmd)
                                              ,("DOC", spawn myOrgCmd)
-                                             ,("", spawn "urxvtc")])
+                                             ,("", spawn "st")])
   -- , ((modm, xK_w), selectWorkspace myPromptTheme)
   , ((modm, xK_w), rofiGoto)
 
@@ -469,6 +469,7 @@ myManageHook =
   , [className =? "Zathura" --> doShiftAndGo "DOC"]
   , [className =? "XMind ZEN" --> doShiftAndGo "DOC" ]
   , [className =? "Zeal" --> doShiftAndGo "DOC" ]
+  , [className =? "libreoffice" --> doShiftAndGo "ENV" ]
   , [className =? "qBittorrent" --> doShift "TOR"]
   -- , [className =? "VirtualBox Manager" --> doShift "ENV"]
   -- , [className =? "VirtualBox Machine" --> doShift "ENV"]
