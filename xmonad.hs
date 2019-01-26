@@ -101,7 +101,7 @@ myProjects =
   , Project { projectName = "GEN"
             , projectDirectory = "~/"
             , projectStartHook = Just $ do
-                runInTerm "st" "zsh -c 'neofetch; zsh'"
+                spawn "alacritty"
             }
   , Project { projectName = "ENV"
             , projectDirectory = "~/"
@@ -168,9 +168,6 @@ myScratchPads =
   , NS "arandr" "arandr"
       (className =? "Arandr")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
-  , NS "pamix" "st -t pamix -e ncpamixer"
-      (title =? "pamix")
-      (customFloating $ W.RationalRect (1 / 3) (1 / 3) (1 / 3) (1 / 3))
   , NS "ranger" "st -t rangerfloat -e ranger"
       (title =? "rangerfloat")
       (customFloating $ W.RationalRect (1 / 6) (1 / 6) (2 / 3) (2 / 3))
@@ -183,7 +180,7 @@ myScratchPads =
        (title =? "org-agenda")
        (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
   , NS "dropdown"
-    "st -t dropdown -e zsh -c 'tmux has -t dropdown && exec tmux attach-session -d -t dropdown || exec tmux new-session -s dropdown'"
+    "alacritty -t dropdown -e zsh -c 'tmux has -t dropdown && exec tmux attach-session -d -t dropdown || exec tmux new-session -s dropdown'"
       (title =? "dropdown")
       (customFloating $ W.RationalRect 0 0.02 1 0.5)
   ]
@@ -259,7 +256,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_Return), bindOn [("WEB", spawn "firefox")
                                              ,("ORG", spawn myOrgCmd)
                                              ,("DOC", spawn myOrgCmd)
-                                             ,("", spawn "st")])
+                                             ,("", spawn "alacritty")])
   -- , ((modm, xK_w), selectWorkspace myPromptTheme)
   , ((modm, xK_w), rofiGoto)
 
