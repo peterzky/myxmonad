@@ -472,6 +472,7 @@ myManageHook =
   -- , [className =? "VirtualBox Machine" --> doShift "ENV"]
   , [className =? "Steam" --> doShift "GAME"]
   , [className =? "ieaseMusic" --> doSink]
+  , [title =? "Ediff" --> doFloat]
   ]
   where
     doShiftAndGo = doF . liftM2 (.) W.greedyView W.shift
