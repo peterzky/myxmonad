@@ -16,7 +16,8 @@ import XMonad.Actions.NoBorders
 import XMonad.Actions.WithAll hiding (killAll)
 import XMonad.Actions.Promote
 import XMonad.Actions.CopyWindow
-import XMonad.Actions.PerWorkspaceKeys
+-- import XMonad.Actions.PerWorkspaceKeys
+import XMonad.Actions.ConditionalKeys
 import XMonad.Actions.DynamicProjects
 import XMonad.Actions.DynamicWorkspaces
 import XMonad.Actions.OnScreen
@@ -49,15 +50,13 @@ import XMonad.Layout.MultiToggle
 import XMonad.Layout.MultiToggle.Instances
 import XMonad.Layout.LayoutCombinators
 import XMonad.Layout.LayoutModifier
-import XMonad.Layout.SubLayouts
-import XMonad.Layout.WindowNavigation
-import XMonad.Layout.BoringWindows hiding (Replace)
 import XMonad.Layout.LayoutHints
 import XMonad.Layout.MosaicAlt
 import XMonad.Layout.Cross
 import XMonad.Layout.Tabbed
 import XMonad.Layout.PerWorkspace
-import XMonad.Layout.ResizableTile
+import XMonad.Layout.Groups as G
+import XMonad.Layout.Groups.Helpers as GH
 
 import XMonad.Prompt
 import XMonad.Prompt.XMonad
@@ -209,43 +208,44 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   -- Basic
   [ ((modm, xK_q), kill1)
   , ((modm, xK_n), refresh)
-  , ((modm, xK_r), bindOn [("MSG", spawn "$HOME/.bin/rofi-msg.sh")
-                          ,("WEB", spawn "$HOME/.bin/rofi-surfraw.sh")
-                          ,("DOC", spawn "$HOME/.bin/rofi-doc.sh")
-                          ,("ORG", spawn "$HOME/.bin/rofi-org.sh")
-                          ,("ENV", spawn "$HOME/.bin/rofi-env.sh")
-                          ,("GAME", spawn "$HOME/.bin/rofi-game.sh")
-                          ,("", spawn "rofi -show run")])
+  , ((modm, xK_r), bindOn WS [("MSG", spawn "$HOME/.bin/rofi-msg.sh")
+                             ,("WEB", spawn "$HOME/.bin/rofi-surfraw.sh")
+                             ,("DOC", spawn "$HOME/.bin/rofi-doc.sh")
+                             ,("ORG", spawn "$HOME/.bin/rofi-org.sh")
+                             ,("ENV", spawn "$HOME/.bin/rofi-env.sh")
+                             ,("GAME", spawn "$HOME/.bin/rofi-game.sh")
+                             ,("", spawn "rofi -show run")])
   -- Window Bindings
-  , ((modm, xK_j), focusDown)
-  , ((modm, xK_k), focusUp)
-  , ((modm, xK_m), focusMaster)
-  , ((modm, xK_Return), promote)
-  , ((modm .|. shiftMask, xK_j), windows W.swapDown)
-  , ((modm .|. shiftMask, xK_k), windows W.swapUp)
-  , ((modm, xK_h), sendMessage Shrink)
-  , ((modm, xK_l), sendMessage Expand)
-  , ((modm .|. shiftMask, xK_h), sendMessage MirrorShrink)
-  , ((modm .|. shiftMask, xK_l), sendMessage MirrorExpand)
+  , ((modm, xK_j), bindOn LD [("G", GH.focusGroupDown)
+                             ,("", GH.focusDown)])
+  , ((modm, xK_k), bindOn LD [("G", GH.focusGroupUp)
+                             ,("", GH.focusUp)])
+  , ((modm, xK_m), GH.focusGroupMaster)
+  , ((modm, xK_Return), bindOn LD [("G", GH.swapGroupMaster)
+                                  ,("", promote)] )
+  , ((modm .|. shiftMask, xK_j), bindOn LD [("G", GH.swapGroupDown)
+                                           ,("", windows W.swapDown)])
+  , ((modm .|. shiftMask, xK_k), bindOn LD [("G", GH.swapGroupUp)
+                                           ,("", windows W.swapUp)])
+  , ((modm, xK_h), sendMessage $ G.ToEnclosing $ SomeMessage $ Shrink)
+  , ((modm, xK_l), sendMessage $ G.ToEnclosing $ SomeMessage $ Expand)
   , ((modm, xK_t), withFocused $ windows . W.sink)
-  , ((modm, xK_comma), sendMessage (IncMasterN 1))
-  , ((modm, xK_period), sendMessage (IncMasterN (-1)))
+  , ((modm, xK_comma), bindOn LD [("G", sendMessage $ G.ToEnclosing $ SomeMessage $ IncMasterN 1)
+                                 ,("", sendMessage $ IncMasterN 1)] )
+  , ((modm, xK_period), bindOn LD [("G", sendMessage $ G.ToEnclosing $ SomeMessage $ IncMasterN (-1))
+                                  ,("", sendMessage $ IncMasterN (-1))])
   , ((modm, xK_grave), windows W.focusDown)
   , ((modm, xK_BackSpace), killAll)
   , ((modm .|. controlMask, xK_s), sinkAll)
   -- Max/Minimize
   , ((modm, xK_x), withFocused $ sendMessage . maximizeRestore)
-  -- Sublayouts
-  , ((modm .|. controlMask, xK_h), sendMessage $ pullGroup L)
-  , ((modm .|. controlMask, xK_l), sendMessage $ pullGroup R)
-  , ((modm .|. controlMask, xK_k), sendMessage $ pullGroup U)
-  , ((modm .|. controlMask, xK_j), sendMessage $ pullGroup D)
+  -- Grouplayouts
+  , ((modm .|. controlMask, xK_u), GH.splitGroup)
+  , ((modm .|. controlMask, xK_j), GH.moveToGroupDown True)
+  , ((modm .|. controlMask, xK_k), GH.moveToGroupUp True)
 
-  , ((modm .|. controlMask, xK_m), withFocused (sendMessage . MergeAll))
-  , ((modm .|. controlMask, xK_u), withFocused (sendMessage . UnMerge))
-
-  , ((modm, xK_apostrophe), onGroup W.focusUp')
-  , ((modm, xK_semicolon), onGroup W.focusDown')
+  -- , ((modm, xK_apostrophe), onGroup W.focusUp')
+  , ((modm, xK_semicolon), GH.focusDown)
   -- , ((modm .|. shiftMask, xK_semicolon), onGroup W.swapUp')
   -- Workspace Groups
   , ((modm, xK_Up), promptWSGroupAdd myPromptTheme "Name this group: ")
@@ -253,19 +253,16 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm, xK_Left), promptWSGroupForget myPromptTheme "Delete Group: ")
   -- Workspace Bindings
   , ((modm, xK_Tab), cycleWorkspaceOnCurrentScreen [xK_Super_L] xK_Tab xK_grave)
-  , ((modm .|. shiftMask, xK_Return), bindOn [("WEB", spawn "firefox")
-                                             ,("ORG", spawn myOrgCmd)
-                                             ,("DOC", spawn myOrgCmd)
-                                             ,("", spawn "st")])
-  -- , ((modm, xK_w), selectWorkspace myPromptTheme)
+  , ((modm .|. shiftMask, xK_Return), bindOn WS [("WEB", spawn "firefox")
+                                                ,("ORG", spawn myOrgCmd)
+                                                ,("DOC", spawn myOrgCmd)
+                                                ,("", spawn "st")])
   , ((modm, xK_w), rofiGoto)
 
   , ((modm .|. shiftMask, xK_w), rofiWithWorkspace "shift" (windows . W.shift))
   , ((modm .|. controlMask, xK_w), rofiWithWorkspace "copy" (windows . copy))
   , ((modm .|. mod1Mask, xK_w), rofiWithWorkspace "remove" removeEmptyWorkspaceByTag)
   , ((modm .|. shiftMask, xK_BackSpace), removeWorkspace)
-  -- , ((modm, xK_Left ), DO.moveTo Prev HiddenNonEmptyWS)
-  -- , ((modm, xK_Right), DO.moveTo Next HiddenNonEmptyWS)
   , ((modm, xK_u), focusUrgent)
   -- Layout Management
   , ((modm, xK_p), sendMessage NextLayout)
@@ -391,25 +388,30 @@ mySpacing x = spacingRaw True (Border 0 x x x) True (Border x x x x) True
 myTiled = renamed [Replace "T"]
     $ avoidStruts
     $ mkToggle (single REFLECTX)
-    $ windowNavigation
-    $ addTabs shrinkText myTheme
-    $ subLayout [] Simplest
     $ mySpacing 4
-    $ focusTracking
     $ maximize
-    $ ResizableTall 1 (3/100) (1/2) []
+    $ focusTracking
+    $ Tall 1 (3/100) (1/2)
 
 myMirror = renamed [Replace "M"]
     $ avoidStruts
     $ mkToggle (single REFLECTX)
-    $ windowNavigation
-    $ addTabs shrinkText myTheme
-    $ subLayout [] Simplest
     $ mySpacing 4
-    $ focusTracking
     $ maximize
+    $ focusTracking
     $ Mirror
-    $ ResizableTall 1 (3/100) (1/2) []
+    $ Tall 1 (3/100) (1/2)
+
+myGroup = renamed [Replace "G"]
+    $ avoidStruts
+    $ mkToggle (single REFLECTX)
+    $ addTabs shrinkText myTheme
+    $ maximize
+    $ G.group Simplest
+    $ mySpacing 4
+    $ Tall 1 (3/100) (1/2)
+
+
 
 myFloat = renamed [Replace "F"]
     $ avoidStruts
@@ -421,7 +423,7 @@ myFloat = renamed [Replace "F"]
   where
     floatingDeco = noFrillsDeco shrinkText myTheme
 
-myGame = renamed [Replace "G"]
+myGame = renamed [Replace "GF"]
     $ noBorders
     $ maximizeWithPadding 0
     $ floatingDeco
@@ -440,21 +442,15 @@ myCross = renamed [Replace "C"]
     $ noBorders
     $ simpleCross
 
-myTab = renamed [Replace "B"]
-    $ avoidStruts
-    $ tabbed shrinkText myTheme
-
 myLayout = smartBorders
-   $ boringWindows
-   $ onWorkspace "WRK" (myTiled ||| myMirror)
-   $ onWorkspace "WEB" (myTab ||| myTiled)
+   $ onWorkspace "WRK" (myGroup ||| myTiled ||| myMirror)
+   $ onWorkspace "WEB" myGroup
    $ onWorkspace "VOD" myVideo
-   $ onWorkspace "MSG" (myCross ||| myFloat)
+   $ onWorkspace "MSG" (myFloat ||| myCross)
    $ onWorkspace "GAME" myGame
    $ onWorkspace "ENV" myFloat
    $ onWorkspace "TOR" myFloat
-   $ myTiled |||  myMirror  ||| myCross ||| myVideo
-    ||| myTab ||| myFloat
+   $ myTiled ||| myGroup ||| myFloat ||| myMirror  ||| myCross ||| myVideo
 
 myManageHook =
   composeAll . concat $
@@ -469,8 +465,6 @@ myManageHook =
   , [className =? "Zeal" --> doShiftAndGo "DOC" ]
   , [className =? "libreoffice" --> doShiftAndGo "ENV" ]
   , [className =? "qBittorrent" --> doShift "TOR"]
-  -- , [className =? "VirtualBox Manager" --> doShift "ENV"]
-  -- , [className =? "VirtualBox Machine" --> doShift "ENV"]
   , [className =? "Steam" --> doShift "GAME"]
   , [className =? "ieaseMusic" --> doSink]
   , [title =? "Ediff" --> doFloat]
@@ -484,11 +478,9 @@ myManageHook =
       , "octave-gui"
       , "Gnuplot"
       , "Wine"
-      -- , "obs"
       , "Xmessage"
       , "Octave"
       , "feh"
-      -- , "Anki"
       , "Pcmanfm"
       ]
     myTFloats = ["Add Downloads", "Library","emacs-capture"]
