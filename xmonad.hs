@@ -101,7 +101,7 @@ myProjects =
   , Project { projectName = "GEN"
             , projectDirectory = "~/"
             , projectStartHook = Just $ do
-                spawn "alacritty"
+                spawn "st"
             }
   , Project { projectName = "ENV"
             , projectDirectory = "~/"
@@ -180,7 +180,7 @@ myScratchPads =
        (title =? "org-agenda")
        (customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2))
   , NS "dropdown"
-    "alacritty -t dropdown -e zsh -c 'tmux has -t dropdown && exec tmux attach-session -d -t dropdown || exec tmux new-session -s dropdown'"
+    "st -t dropdown -e zsh -c 'tmux has -t dropdown && exec tmux attach-session -d -t dropdown || exec tmux new-session -s dropdown'"
       (title =? "dropdown")
       (customFloating $ W.RationalRect 0 0.02 1 0.5)
   ]
@@ -256,7 +256,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   , ((modm .|. shiftMask, xK_Return), bindOn [("WEB", spawn "firefox")
                                              ,("ORG", spawn myOrgCmd)
                                              ,("DOC", spawn myOrgCmd)
-                                             ,("", spawn "alacritty")])
+                                             ,("", spawn "st")])
   -- , ((modm, xK_w), selectWorkspace myPromptTheme)
   , ((modm, xK_w), rofiGoto)
 
