@@ -1,77 +1,75 @@
 {-# OPTIONS_GHC-fno-warn-missing-signatures -fno-warn-type-defaults #-}
-import XMonad hiding ((|||))
-import System.Exit
-import System.IO
+import           System.Exit
+import           System.IO
+import           XMonad                                hiding ((|||))
 
-import Control.Monad (when, join, liftM2)
-import Data.Maybe (maybeToList,fromJust,isJust)
-import Data.List
-import Data.Char (toLower)
-import Data.Function (on)
+import           Control.Monad                         (join, liftM2, when)
+import           Data.Char                             (toLower)
+import           Data.Function                         (on)
+import           Data.List
+import           Data.Maybe                            (fromJust, isJust,
+                                                        maybeToList)
 
-import XMonad.Actions.CycleWS
-import XMonad.Actions.UpdatePointer
-import XMonad.Actions.Submap
-import XMonad.Actions.NoBorders
-import XMonad.Actions.WithAll hiding (killAll)
-import XMonad.Actions.Promote
-import XMonad.Actions.CopyWindow
--- import XMonad.Actions.PerWorkspaceKeys
-import XMonad.Actions.ConditionalKeys
-import XMonad.Actions.DynamicProjects
-import XMonad.Actions.DynamicWorkspaces
-import XMonad.Actions.OnScreen
-import XMonad.Actions.CycleWorkspaceByScreen
-import XMonad.Actions.DynWG
+import           XMonad.Actions.ConditionalKeys
+import           XMonad.Actions.CopyWindow
+import           XMonad.Actions.CycleWorkspaceByScreen
+import           XMonad.Actions.CycleWS
+import           XMonad.Actions.DynamicProjects
+import           XMonad.Actions.DynamicWorkspaces
+import           XMonad.Actions.NoBorders
+import           XMonad.Actions.OnScreen
+import           XMonad.Actions.Promote
+import           XMonad.Actions.Submap
+import           XMonad.Actions.UpdatePointer
+import           XMonad.Actions.WithAll                hiding (killAll)
 
-import XMonad.Hooks.DynamicLog
-import XMonad.Hooks.EwmhDesktops
-import XMonad.Hooks.ManageDocks
-import XMonad.Hooks.ManageHelpers
-import XMonad.Hooks.SetWMName
-import XMonad.Hooks.ToggleHook
-import XMonad.Hooks.UrgencyHook
-import XMonad.Hooks.DynamicBars
-import XMonad.Hooks.WorkspaceHistory (workspaceHistoryHook)
-import XMonad.Hooks.PositionStoreHooks
+import           XMonad.Hooks.DynamicBars
+import           XMonad.Hooks.DynamicLog
+import           XMonad.Hooks.EwmhDesktops
+import           XMonad.Hooks.ManageDocks
+import           XMonad.Hooks.ManageHelpers
+import           XMonad.Hooks.PositionStoreHooks
+import           XMonad.Hooks.SetWMName
+import           XMonad.Hooks.ToggleHook
+import           XMonad.Hooks.UrgencyHook
+import           XMonad.Hooks.WorkspaceHistory         (workspaceHistoryHook)
 
-import XMonad.Layout.NoBorders
-import XMonad.Layout.Tabbed
-import XMonad.Layout.Renamed
-import XMonad.Layout.Spacing
-import XMonad.Layout.Simplest (Simplest(..))
-import XMonad.Layout.PositionStoreFloat
-import XMonad.Layout.NoFrillsDecoration
-import XMonad.Layout.BorderResize
-import XMonad.Layout.StateFull (focusTracking)
-import XMonad.Layout.Maximize
-import XMonad.Layout.Reflect
-import XMonad.Layout.MultiToggle
-import XMonad.Layout.MultiToggle.Instances
-import XMonad.Layout.LayoutCombinators
-import XMonad.Layout.LayoutModifier
-import XMonad.Layout.LayoutHints
-import XMonad.Layout.MosaicAlt
-import XMonad.Layout.Cross
-import XMonad.Layout.Tabbed
-import XMonad.Layout.PerWorkspace
-import XMonad.Layout.Groups as G
-import XMonad.Layout.Groups.Helpers as GH
+import           XMonad.Layout.BorderResize
+import           XMonad.Layout.Cross
+import           XMonad.Layout.Groups                  as G
+import           XMonad.Layout.Groups.Helpers          as GH
+import           XMonad.Layout.LayoutCombinators
+import           XMonad.Layout.LayoutHints
+import           XMonad.Layout.LayoutModifier
+import           XMonad.Layout.Maximize
+import           XMonad.Layout.MosaicAlt
+import           XMonad.Layout.MultiToggle
+import           XMonad.Layout.MultiToggle.Instances
+import           XMonad.Layout.NoBorders
+import           XMonad.Layout.NoFrillsDecoration
+import           XMonad.Layout.PerWorkspace
+import           XMonad.Layout.PositionStoreFloat
+import           XMonad.Layout.Reflect
+import           XMonad.Layout.Renamed
+import           XMonad.Layout.Simplest                (Simplest (..))
+import           XMonad.Layout.Spacing
+import           XMonad.Layout.StateFull               (focusTracking)
+import           XMonad.Layout.Tabbed
 
-import XMonad.Prompt
-import XMonad.Prompt.XMonad
-import XMonad.Prompt.Layout
-import XMonad.Prompt.FuzzyMatch
+import           XMonad.Prompt
+import           XMonad.Prompt.FuzzyMatch
+import           XMonad.Prompt.Layout
+import           XMonad.Prompt.XMonad
 
-import XMonad.Util.Cursor
-import XMonad.Util.NamedScratchpad
-import XMonad.Util.Run
-import XMonad.Util.Dmenu (menuArgs)
-import XMonad.Util.WorkspaceCompare
-import XMonad.Util.Font
+import           XMonad.Util.Cursor
+import           XMonad.Util.Dmenu                     (menuArgs)
+import           XMonad.Util.Font
+import           XMonad.Util.NamedScratchpad
+import           XMonad.Util.Run
+import           XMonad.Util.WorkspaceCompare
 
-import qualified Data.Map                         as M
-import qualified XMonad.StackSet                  as W
+import qualified Data.Map                              as M
+import qualified XMonad.StackSet                       as W
 
 
 rofiWithWorkspace prompt job = do
@@ -217,9 +215,9 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
                              ,("", spawn "rofi -show run")])
   -- Window Bindings
   , ((modm, xK_j), bindOn LD [("G", GH.focusGroupDown)
-                             ,("", GH.focusDown)])
+                             ,("", windows W.focusDown)])
   , ((modm, xK_k), bindOn LD [("G", GH.focusGroupUp)
-                             ,("", GH.focusUp)])
+                             ,("", windows W.focusUp)])
   , ((modm, xK_m), GH.focusGroupMaster)
   , ((modm, xK_Return), bindOn LD [("G", GH.swapGroupMaster)
                                   ,("", promote)] )
@@ -247,10 +245,6 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   -- , ((modm, xK_apostrophe), onGroup W.focusUp')
   , ((modm, xK_semicolon), GH.focusDown)
   -- , ((modm .|. shiftMask, xK_semicolon), onGroup W.swapUp')
-  -- Workspace Groups
-  , ((modm, xK_Up), promptWSGroupAdd myPromptTheme "Name this group: ")
-  , ((modm, xK_Right), promptWSGroupView myPromptTheme "Goto Group: ")
-  , ((modm, xK_Left), promptWSGroupForget myPromptTheme "Delete Group: ")
   -- Workspace Bindings
   , ((modm, xK_Tab), cycleWorkspaceOnCurrentScreen [xK_Super_L] xK_Tab xK_grave)
   , ((modm .|. shiftMask, xK_Return), bindOn WS [("WEB", spawn "firefox")
@@ -284,6 +278,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       , ((0, xK_f), spawn "firefox")
       , ((0, xK_c), spawn "chromium")
       , ((0, xK_q), spawn "qutebrowser")
+      , ((0, xK_t), spawn "st")
       , ((0, xK_h), namedScratchpadAction myScratchPads "htop")
       , ((0, xK_n), namedScratchpadAction myScratchPads "nm")
       , ((0, xK_r), namedScratchpadAction myScratchPads "arandr")
@@ -460,7 +455,6 @@ myManageHook =
   , [isDialog --> doCenterFloat]
   , [className =? c --> doCenterFloat | c <- myCFloats]
   , [title =? t --> doCenterFloat | t <- myTFloats]
-  , [className =? "Zathura" --> doShiftAndGo "DOC"]
   , [className =? "XMind ZEN" --> doShiftAndGo "DOC" ]
   , [className =? "Zeal" --> doShiftAndGo "DOC" ]
   , [className =? "okular" --> doShiftAndGo "DOC" ]
@@ -545,7 +539,6 @@ myStartupHook = setWMName "LG3D"
   <+> spawn "dunst &"
   <+> spawn "$HOME/.xmonad/startup.sh"
   <+> dynStatusBarStartup barCreate barDestroy
-  <+> addRawWSGroup "default" [(0,"WEB"),(1,"GEN"),(2,"WRK")]
 
 myToggleHook = toggleHook "float" doFloat
                <+> toggleHook "sink" doSink
